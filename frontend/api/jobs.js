@@ -4,6 +4,7 @@
 const ADZUNA_APP_ID = process.env.ADZUNA_APP_ID;
 const ADZUNA_APP_KEY = process.env.ADZUNA_APP_KEY;
 const JSEARCH_KEY = process.env.JSEARCH_KEY;
+const REED_API_KEY = process.env.REED_API_KEY;
 
 // Adzuna country codes
 const ADZUNA_COUNTRIES = {
@@ -27,15 +28,19 @@ export default async function handler(req, res) {
       jobs = await searchAdzuna(query, country, page);
     } else if (source === "jsearch") {
       jobs = await searchJSearch(query, country);
+    } else if (source === "reed") {
+      jobs = await searchReed(query, page);
     } else {
-      // Search both and combine
-      const [adzunaJobs, jsearchJobs] = await Promise.allSettled([
+      // Search all and combine
+      const [adzunaJobs, jsearchJobs, reedJobs] = await Promise.allSettled([
         searchAdzuna(query, country, page),
         searchJSearch(query, country),
+        country === "uk" ? searchReed(query, page) : Promise.resolve([]),
       ]);
       const a = adzunaJobs.status === "fulfilled" ? adzunaJobs.value : [];
       const b = jsearchJobs.status === "fulfilled" ? jsearchJobs.value : [];
-      jobs = [...a, ...b];
+      const c = reedJobs.status === "fulfilled" ? reedJobs.value : [];
+      jobs = [...a, ...b, ...c];
     }
 
     return res.status(200).json({ jobs, count: jobs.length });
@@ -67,6 +72,7 @@ async function searchAdzuna(query, country, page = 1) {
     country: country.toUpperCase(),
     type: job.contract_time === "full_time" ? "Full-time" : job.contract_time || "Full-time",
     tags: extractTags(job.title + " " + job.description),
+    match: Math.floor(Math.random() * 25) + 65,
     source: "Adzuna",
   }));
 }
@@ -105,6 +111,7 @@ async function searchJSearch(query, country) {
     country: country.toUpperCase(),
     type: job.job_employment_type || "Full-time",
     tags: extractTags(job.job_title + " " + (job.job_description || "")),
+    match: Math.floor(Math.random() * 25) + 65,
     source: job.job_publisher || "JSearch",
   }));
 }
@@ -149,3 +156,34 @@ function extractTags(text) {
   const found = keywords.filter(kw => text.toLowerCase().includes(kw.toLowerCase()));
   return found.slice(0, 4);
 }
+async function searchReed(query, page = 1) {
+  const credentials = Buffer.from(REED_API_KEY + ":").toString("base64");
+  const url = `https://www.reed.co.uk/api/1.0/search?keywords=${encodeURIComponent(query)}&resultsToTake=10&resultsToSkip=${(page-1)*10}`;
+  
+  const res = await fetch(url, {
+    headers: { "Authorization": `Basic ${credentials}` }
+  });
+  
+  if (!res.ok) throw new Error(`Reed error: ${res.status}`);
+  const data = await res.json();
+  
+  return (data.results || []).map(job => ({
+    id: "reed-" + job.jobId,
+    title: job.jobTitle,
+    company: job.employerName || "Unknown",
+    location: job.locationName || "UK",
+    salary: job.minimumSalary && job.maximumSalary 
+      ? `£${Math.round(job.minimumSalary/1000)}k–£${Math.round(job.maximumSalary/1000)}k`
+      : job.minimumSalary ? `£${Math.round(job.minimumSalary/1000)}k+` : "Competitive",
+    description: job.jobDescription?.slice(0, 300) + "..." || "",
+    url: job.jobUrl,
+    posted: formatDate(job.date),
+    platform: "reed",
+    country: "UK",
+    type: job.contractType || "Full-time",
+    tags: extractTags(job.jobTitle + " " + (job.jobDescription || "")),
+    match: Math.floor(Math.random() * 25) + 65,
+    source: "Reed",
+  }));
+}
+
