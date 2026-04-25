@@ -300,6 +300,7 @@ export default function App() {
   const [jobs, setJobs] = useState(SAMPLE_JOBS);
   const [jobFilter, setJobFilter] = useState("all");
   const [jobSearch, setJobSearch] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState("uk");
   const [jobSearching, setJobSearching] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
   const [applications, setApplications] = useState([
@@ -465,13 +466,17 @@ CV: ${cv}`);
   }
 
   // ── Job Search ──
-  async function searchJobs() {
+async function searchJobs() {
     setJobSearching(true);
-    await new Promise(r => setTimeout(r, 1800));
-    const q = jobSearch.toLowerCase();
-    if (q) {
-      setJobs(SAMPLE_JOBS.filter(j => j.title.toLowerCase().includes(q) || j.company.toLowerCase().includes(q) || j.tags.some(t => t.toLowerCase().includes(q))));
-    } else {
+    try {
+      const res = await fetch(`/api/jobs?query=${encodeURIComponent(jobSearch || "product manager")}&country=${selectedCountry}&source=both`);
+      const data = await res.json();
+      if (data.jobs && data.jobs.length > 0) {
+        setJobs(data.jobs);
+      } else {
+        setJobs(SAMPLE_JOBS);
+      }
+    } catch {
       setJobs(SAMPLE_JOBS);
     }
     setJobSearching(false);
@@ -758,7 +763,21 @@ CV: ${cv}`);
                 ))}
               </div>
             </Card>
-
+<div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+  {[
+    { code: "uk", label: "🇬🇧 United Kingdom" },
+    { code: "us", label: "🇺🇸 United States" },
+    { code: "in", label: "🇮🇳 India" },
+  ].map(c => (
+    <button key={c.code} onClick={() => setSelectedCountry(c.code)} style={{
+      padding: "8px 18px", borderRadius: 20,
+      background: selectedCountry === c.code ? "rgba(245,158,11,0.15)" : "rgba(255,255,255,0.04)",
+      border: `1px solid ${selectedCountry === c.code ? "rgba(245,158,11,0.4)" : "rgba(255,255,255,0.08)"}`,
+      color: selectedCountry === c.code ? "#f59e0b" : "#64748b",
+      fontSize: 13, fontWeight: 600, cursor: "pointer",
+    }}>{c.label}</button>
+  ))}
+</div>
             <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
               <input style={{ ...inputSt, flex: 1 }} placeholder="Search jobs, companies, skills…" value={jobSearch} onChange={e => setJobSearch(e.target.value)} onKeyDown={e => e.key === "Enter" && searchJobs()}/>
               <button onClick={searchJobs} disabled={jobSearching} style={btnPrimary({ flexShrink: 0 })}>
