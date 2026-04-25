@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+ 	import { useState, useRef, useEffect } from "react";
 
 // ─── CONSTANTS ───────────────────────────────────────────────────────────────
 
@@ -68,7 +68,7 @@ async function callClaude(userPrompt, systemPrompt) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-4-5",
       max_tokens: 1000,
       system: systemPrompt || "You are an elite resume strategist. Return only valid JSON, no markdown, no backticks.",
       messages: [{ role: "user", content: userPrompt }],
