@@ -13,7 +13,7 @@ const TABS = [
   { id:"tracker", label:"My Applications", icon:"◉" },
   { id:"cover", label:"Cover Letter", icon:"◎" },
   { id:"interview", label:"Interview Prep", icon:"◆" },
-  { id:"pricing", label:"Pricing", icon="◇" },
+  { id:"pricing", label:"Pricing", icon:"◇" },
 ];
 
 const COUNTRIES = [
