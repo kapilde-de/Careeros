@@ -1,769 +1,483 @@
 import { useState, useRef } from "react";
 
-// ─── DESIGN TOKENS (Resume.io inspired — clean light professional) ─────────────
-const C = {
-  bg: "#f7f8fc",
-  white: "#ffffff",
-  navy: "#1a2332",
-  navyLight: "#2d3f55",
-  teal: "#0ea5a0",
-  tealLight: "#e6f7f7",
-  tealDark: "#0b8a86",
-  blue: "#3b6ef8",
-  blueLight: "#eef2ff",
-  gray50: "#f8f9fa",
-  gray100: "#f1f3f7",
-  gray200: "#e4e8f0",
-  gray300: "#cbd2dd",
-  gray400: "#9aa5b8",
-  gray500: "#6b7a92",
-  gray600: "#4a5568",
-  gray700: "#2d3748",
-  green: "#10b981",
-  greenLight: "#ecfdf5",
-  amber: "#f59e0b",
-  amberLight: "#fffbeb",
-  red: "#ef4444",
-  redLight: "#fef2f2",
-  purple: "#7c3aed",
-  purpleLight: "#f5f3ff",
-  shadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04)",
-  shadowMd: "0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04)",
-  shadowLg: "0 10px 30px rgba(0,0,0,0.08), 0 4px 8px rgba(0,0,0,0.04)",
-};
-
-// ─── RESUME FORMATS ───────────────────────────────────────────────────────────
 const RESUME_FORMATS = [
-  {
-    id: "classic",
-    name: "Classic",
-    desc: "Traditional chronological — trusted by recruiters everywhere",
-    icon: "📄",
-    accentColor: "#1a2332",
-    preview: "Single column, serif headings, clean bullets",
-  },
-  {
-    id: "modern",
-    name: "Modern",
-    desc: "Two-column layout with colour accents — stands out visually",
-    icon: "✨",
-    accentColor: "#0ea5a0",
-    preview: "Two-column, teal accents, skill bars",
-  },
-  {
-    id: "executive",
-    name: "Executive",
-    desc: "Senior-level formatting for Director, VP and C-suite roles",
-    icon: "👔",
-    accentColor: "#1e40af",
-    preview: "Bold header, navy accents, achievement-focused",
-  },
-  {
-    id: "minimal",
-    name: "Minimal",
-    desc: "Ultra-clean design — lets your experience do the talking",
-    icon: "◻",
-    accentColor: "#374151",
-    preview: "Whitespace-first, thin lines, no clutter",
-  },
-  {
-    id: "ats",
-    name: "ATS-Safe",
-    desc: "100% plain text — beats every automated screening system",
-    icon: "🤖",
-    accentColor: "#059669",
-    preview: "Plain text, no tables, no columns, maximum parseability",
-  },
+  { id:"classic", name:"Classic", desc:"Traditional, ATS-safe", accentColor:"#1e3a5f", fontFamily:"'Georgia', serif" },
+  { id:"modern", name:"Modern", desc:"Bold, contemporary", accentColor:"#2563eb", fontFamily:"'Helvetica Neue', sans-serif" },
+  { id:"minimal", name:"Minimal", desc:"Clean, whitespace-focused", accentColor:"#374151", fontFamily:"'Garamond', serif" },
+  { id:"executive", name:"Executive", desc:"Senior-level gravitas", accentColor:"#92400e", fontFamily:"'Times New Roman', serif" },
 ];
 
 const TABS = [
-  { id: "builder", label: "Resume Builder", icon: "✦" },
-  { id: "jobs", label: "Job Search", icon: "⊕" },
-  { id: "tracker", label: "Applications", icon: "◎" },
-  { id: "cover", label: "Cover Letter", icon: "✉" },
-  { id: "interview", label: "Interview Prep", icon: "◆" },
-  { id: "pricing", label: "Pricing", icon: "◇" },
+  { id:"builder", label:"Resume Builder", icon:"✦" },
+  { id:"jobs", label:"Job Search", icon:"◈" },
+  { id:"tracker", label:"My Applications", icon:"◉" },
+  { id:"cover", label:"Cover Letter", icon:"◎" },
+  { id:"interview", label:"Interview Prep", icon:"◆" },
+  { id:"pricing", label:"Pricing", icon="◇" },
 ];
 
 const COUNTRIES = [
-  { code: "uk", label: "🇬🇧 United Kingdom", currency: "£" },
-  { code: "us", label: "🇺🇸 United States", currency: "$" },
-  { code: "in", label: "🇮🇳 India", currency: "₹" },
+  { code:"uk", label:"🇬🇧 United Kingdom" },
+  { code:"us", label:"🇺🇸 United States" },
+  { code:"in", label:"🇮🇳 India" },
 ];
 
 const JOB_PLATFORMS = [
-  { id: "linkedin", name: "LinkedIn", color: "#0077b5" },
-  { id: "indeed", name: "Indeed", color: "#003A9B" },
-  { id: "reed", name: "Reed", color: "#cc0000" },
-  { id: "adzuna", name: "Adzuna", color: "#00bcd4" },
-  { id: "jsearch", name: "JSearch", color: "#7c3aed" },
+  { id:"linkedin", name:"LinkedIn", color:"#0077b5", bg:"#e8f4fd", border:"#bfdbfe" },
+  { id:"indeed", name:"Indeed", color:"#003A9B", bg:"#eef2ff", border:"#c7d2fe" },
+  { id:"reed", name:"Reed", color:"#cc0000", bg:"#fef2f2", border:"#fecaca" },
+  { id:"adzuna", name:"Adzuna", color:"#0891b2", bg:"#ecfeff", border:"#a5f3fc" },
+  { id:"glassdoor", name:"Glassdoor", color:"#0caa41", bg:"#f0fdf4", border:"#bbf7d0" },
+  { id:"jsearch", name:"JSearch", color:"#7c3aed", bg:"#f5f3ff", border:"#ddd6fe" },
 ];
 
 const TIERS = [
-  { name: "Free", price: "£0", period: "", features: ["3 tailored resumes/month","Basic ATS scoring","5 job searches/day","1 cover letter/month","Classic resume format"], cta: "Get Started Free", highlight: false, gumroad: null },
-  { name: "Pro", price: "£19", period: "/month", features: ["Unlimited resume tailoring","All 5 resume formats","ATS + Hiring Manager scores","Salary intelligence","Visa sponsorship filter","Unlimited job search","Unlimited cover letters","Interview prep coaching","PDF + HTML download"], cta: "Start Pro — £19/mo", highlight: true, gumroad: "https://gumroad.com/l/careeros-pro" },
-  { name: "Enterprise", price: "£99", period: "/month", features: ["Everything in Pro","Team workspace (up to 10)","Bulk resume optimization","API access","Recruiter dashboard","White-label option","Dedicated account manager"], cta: "Contact Sales", highlight: false, gumroad: "https://gumroad.com/l/careeros-enterprise" },
+  { name:"Free", price:"£0", features:["3 tailored resumes/mo","Basic ATS score","5 job searches/day","1 cover letter/mo"], cta:"Get Started", highlight:false, color:"#6b7280", gumroad:null },
+  { name:"Pro", price:"£19", period:"/mo", features:["Unlimited resume tailoring","ATS + Hiring Manager scores","Salary intelligence","4 resume formats + preview","Unlimited job search","Cover letters","Interview prep AI"], cta:"Upgrade to Pro", highlight:true, color:"#4f46e5", gumroad:"https://gumroad.com/l/careeros-pro" },
+  { name:"Enterprise", price:"£99", period:"/mo", features:["Everything in Pro","Team workspace","Bulk optimization","API access","Recruiter dashboard","White-label"], cta:"Contact Sales", highlight:false, color:"#059669", gumroad:"https://gumroad.com/l/careeros-enterprise" },
 ];
 
 const STATUS_COLORS = {
-  Saved:     { bg: "#f1f5f9", text: "#64748b", border: "#e2e8f0", dot: "#94a3b8" },
-  Applied:   { bg: "#eff6ff", text: "#3b82f6", border: "#bfdbfe", dot: "#3b82f6" },
-  Interview: { bg: "#fffbeb", text: "#d97706", border: "#fde68a", dot: "#f59e0b" },
-  Offer:     { bg: "#f0fdf4", text: "#16a34a", border: "#bbf7d0", dot: "#22c55e" },
-  Rejected:  { bg: "#fef2f2", text: "#dc2626", border: "#fecaca", dot: "#ef4444" },
+  "Saved":{ bg:"#f8fafc", text:"#64748b", border:"#e2e8f0", dot:"#94a3b8" },
+  "Applied":{ bg:"#eff6ff", text:"#2563eb", border:"#bfdbfe", dot:"#3b82f6" },
+  "Interview":{ bg:"#fffbeb", text:"#d97706", border:"#fde68a", dot:"#f59e0b" },
+  "Offer":{ bg:"#f0fdf4", text:"#16a34a", border:"#bbf7d0", dot:"#22c55e" },
+  "Rejected":{ bg:"#fef2f2", text:"#dc2626", border:"#fecaca", dot:"#ef4444" },
 };
 
 const LOADING_PHASES = [
-  { icon: "🔍", text: "Parsing job description..." },
-  { icon: "👤", text: "Analysing your background..." },
-  { icon: "🧠", text: "Running semantic matching..." },
-  { icon: "📊", text: "Calculating ATS score..." },
-  { icon: "🎯", text: "Scoring hiring manager appeal..." },
-  { icon: "💰", text: "Running salary intelligence..." },
-  { icon: "✍️", text: "Crafting tailored resume bullets..." },
-  { icon: "✨", text: "Finalising your resume..." },
+  { icon:"🔍", text:"Parsing job description..." },
+  { icon:"🧠", text:"Matching your experience..." },
+  { icon:"📊", text:"Calculating ATS score..." },
+  { icon:"✍️", text:"Writing tailored resume..." },
+  { icon:"✨", text:"Finalising results..." },
 ];
 
-// ─── API ──────────────────────────────────────────────────────────────────────
-async function callClaude(prompt, system) {
-  const res = await fetch("/api/claude", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-5",
-      max_tokens: 8000,
-      system: system || "You are an elite resume strategist. Return only valid JSON, no markdown, no backticks.",
-      messages: [{ role: "user", content: prompt }],
-    }),
-  });
-  const data = await res.json();
-  const text = data.content?.map(b => b.text || "").join("") || "{}";
-  return JSON.parse(text.replace(/```json|```/g, "").trim());
-}
+const SAMPLE_CV = `Sarah Chen | sarah.chen@email.com | +44 7700 900123 | London, UK
 
-// ─── RESUME HTML GENERATORS (5 formats) ──────────────────────────────────────
-function generateResumeHTML(resume, atsScore, hmScore, format = "classic") {
-  const name = resume.name || "";
-  const contact = resume.contact || "";
-  const summary = resume.summary || "";
-  const skills = resume.skills || [];
-  const experience = resume.experience || [];
-  const education = resume.education || "";
+EXPERIENCE
+Senior Product Manager — FinTech Scale-up (2021–2024)
+• Led product strategy for B2B SaaS platform, growing ARR from £2M to £8M
+• Managed roadmap across 3 product lines, coordinating 20+ engineers
+• Launched ML-powered fraud detection, reducing chargebacks by 41%
 
-  const expHTML = experience.map(exp => `
-    <div class="job">
-      <div class="job-header">
-        <div><span class="job-title">${exp.title}</span> <span class="job-company">· ${exp.company}</span></div>
-        <span class="job-period">${exp.period}</span>
-      </div>
-      ${(exp.bullets||[]).map(b => `<div class="bullet">${b}</div>`).join("")}
-    </div>`).join("");
+Product Manager — Consumer App (2019–2021)
+• Owned mobile app from MVP to 500k users
+• A/B tests improved onboarding conversion by 28%
 
-  const formats = {
-    classic: `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${name}</title>
-<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Georgia,serif;color:#1a1a1a;background:#fff;max-width:780px;margin:32px auto;padding:40px;font-size:13px}
-h1{font-size:26px;font-weight:700;color:#1a2332;letter-spacing:-0.3px;margin-bottom:3px}
-.contact{font-size:12px;color:#6b7a92;margin-bottom:4px}
-.scores{display:flex;gap:10px;margin:12px 0}
-.badge{padding:3px 12px;border-radius:20px;font-size:11px;font-weight:600}
-.ats{background:#ecfdf5;border:1px solid #6ee7b7;color:#065f46}
-.hm{background:#fef9c3;border:1px solid #fde047;color:#713f12}
-hr{border:none;border-top:2px solid #1a2332;margin:14px 0 10px}
-.st{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#1a2332;margin:16px 0 8px}
-.summary{font-size:13px;line-height:1.75;color:#374151}
-.skills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:4px}
-.skill{padding:3px 10px;background:#f1f5f9;border-radius:12px;font-size:11px;color:#374151;border:1px solid #e2e8f0}
-.job{margin-bottom:16px}.job-header{display:flex;justify-content:space-between;margin-bottom:5px}
-.job-title{font-size:13px;font-weight:700;color:#1a2332}.job-company{font-size:12px;color:#6b7a92}
-.job-period{font-size:11px;color:#9aa5b8}
-.bullet{font-size:12px;color:#374151;padding-left:14px;position:relative;line-height:1.65;margin-bottom:3px}
-.bullet::before{content:"▸";position:absolute;left:0;color:#0ea5a0}
-.education{font-size:12px;color:#374151;line-height:1.6}
-.footer{margin-top:28px;padding-top:12px;border-top:1px solid #e2e8f0;font-size:10px;color:#9aa5b8;text-align:center}
-@media print{body{margin:0;padding:24px}}</style></head><body>
-<h1>${name}</h1><div class="contact">${contact}</div>
-<div class="scores"><span class="badge ats">ATS: ${atsScore}%</span>${hmScore?`<span class="badge hm">Human Appeal: ${hmScore}%</span>`:""}</div>
-<hr><div class="st">Professional Summary</div><div class="summary">${summary}</div>
-<div class="st">Core Skills</div><div class="skills">${skills.map(s=>`<span class="skill">${s}</span>`).join("")}</div>
-<div class="st">Experience</div>${expHTML}
-<div class="st">Education & Certifications</div><div class="education">${education}</div>
-<div class="footer">Generated by CareerOS · careeros-rose.vercel.app</div></body></html>`,
+SKILLS: Product strategy, Roadmapping, SQL, Figma, JIRA, Agile/Scrum
 
-    modern: `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${name}</title>
-<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',sans-serif;color:#1a1a1a;background:#fff;display:grid;grid-template-columns:240px 1fr;min-height:100vh;font-size:13px}
-.sidebar{background:#0ea5a0;color:#fff;padding:32px 20px}
-.main{padding:32px 28px;background:#fff}
-h1{font-size:22px;font-weight:700;color:#fff;margin-bottom:4px}
-.contact-item{font-size:11px;color:rgba(255,255,255,0.8);margin-bottom:3px}
-.sidebar-st{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.6);margin:20px 0 8px}
-.skill{background:rgba(255,255,255,0.15);border-radius:4px;padding:3px 8px;font-size:11px;color:#fff;display:inline-block;margin:2px 2px 2px 0}
-.ats-box{background:rgba(255,255,255,0.15);border-radius:8px;padding:10px;margin-top:16px;text-align:center}
-.ats-num{font-size:28px;font-weight:800;color:#fff}.ats-label{font-size:10px;color:rgba(255,255,255,0.7)}
-.st{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#0ea5a0;margin:20px 0 8px;border-bottom:2px solid #e6f7f7;padding-bottom:4px}
-.summary{font-size:13px;line-height:1.75;color:#374151}
-.job{margin-bottom:16px}.job-header{display:flex;justify-content:space-between;margin-bottom:5px}
-.job-title{font-weight:700;color:#1a2332}.job-company{color:#6b7a92;font-size:12px}
-.job-period{font-size:11px;color:#9aa5b8;background:#f1f5f9;padding:2px 8px;border-radius:10px}
-.bullet{font-size:12px;color:#374151;padding-left:14px;position:relative;line-height:1.65;margin-bottom:3px}
-.bullet::before{content:"▸";position:absolute;left:0;color:#0ea5a0}
-.education{font-size:12px;color:#374151}
-@media print{body{display:block}.sidebar{padding:20px}.main{padding:20px}}</style></head>
-<body>
-<div class="sidebar">
-  <h1>${name}</h1>
-  ${contact.split("•").map(c=>`<div class="contact-item">${c.trim()}</div>`).join("")}
-  <div class="ats-box"><div class="ats-num">${atsScore}%</div><div class="ats-label">ATS Match</div></div>
-  ${hmScore?`<div class="ats-box" style="margin-top:8px"><div class="ats-num">${hmScore}%</div><div class="ats-label">Human Appeal</div></div>`:""}
-  <div class="sidebar-st">Core Skills</div>
-  ${skills.map(s=>`<span class="skill">${s}</span>`).join("")}
-</div>
-<div class="main">
-  <div class="st">Profile</div><div class="summary">${summary}</div>
-  <div class="st">Experience</div>${expHTML}
-  <div class="st">Education & Certifications</div><div class="education">${education}</div>
-</div></body></html>`,
+EDUCATION: B.Sc Computer Science, University of Edinburgh, 2019`;
 
-    executive: `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${name}</title>
-<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Georgia',serif;color:#1e293b;background:#fff;max-width:780px;margin:32px auto;padding:44px;font-size:13px}
-.header{border-bottom:3px solid #1e40af;padding-bottom:16px;margin-bottom:20px}
-h1{font-size:30px;font-weight:700;color:#1e293b;letter-spacing:-0.5px;margin-bottom:4px}
-.title-line{font-size:14px;color:#1e40af;font-weight:600;margin-bottom:6px}
-.contact{font-size:12px;color:#64748b}
-.scores{display:flex;gap:12px;margin-top:10px}
-.badge{padding:4px 14px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:0.5px}
-.ats{background:#1e40af;color:#fff}.hm{background:#0ea5a0;color:#fff}
-.st{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#1e40af;margin:18px 0 8px}
-.summary{font-size:13px;line-height:1.8;color:#374151;border-left:3px solid #1e40af;padding-left:12px}
-.skills{display:flex;flex-wrap:wrap;gap:8px}
-.skill{padding:4px 12px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:3px;font-size:11px;color:#1e40af;font-weight:600}
-.job{margin-bottom:18px;border-left:2px solid #e2e8f0;padding-left:14px}
-.job-header{display:flex;justify-content:space-between;margin-bottom:6px}
-.job-title{font-size:14px;font-weight:700;color:#1e293b}.job-company{font-size:12px;color:#1e40af;font-weight:600}
-.job-period{font-size:11px;color:#94a3b8;font-style:italic}
-.bullet{font-size:12px;color:#374151;padding-left:14px;position:relative;line-height:1.7;margin-bottom:4px}
-.bullet::before{content:"■";position:absolute;left:0;color:#1e40af;font-size:7px;top:4px}
-.education{font-size:12px;color:#374151;line-height:1.6}
-.footer{margin-top:28px;font-size:10px;color:#94a3b8;text-align:center;border-top:1px solid #e2e8f0;padding-top:12px}
-@media print{body{margin:0;padding:24px}}</style></head><body>
-<div class="header">
-  <h1>${name}</h1>
-  <div class="contact">${contact}</div>
-  <div class="scores"><span class="badge ats">ATS Score: ${atsScore}%</span>${hmScore?`<span class="badge hm">Human Appeal: ${hmScore}%</span>`:""}</div>
-</div>
-<div class="st">Executive Summary</div><div class="summary">${summary}</div>
-<div class="st">Core Competencies</div><div class="skills">${skills.map(s=>`<span class="skill">${s}</span>`).join("")}</div>
-<div class="st">Career History</div>${expHTML}
-<div class="st">Education & Professional Development</div><div class="education">${education}</div>
-<div class="footer">Generated by CareerOS · careeros-rose.vercel.app</div></body></html>`,
+// ─── RESUME HTML GENERATORS ───────────────────────────────────────────────────
 
-    minimal: `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${name}</title>
-<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Helvetica Neue',Helvetica,sans-serif;color:#111;background:#fff;max-width:720px;margin:48px auto;padding:0 40px;font-size:13px;line-height:1.6}
-h1{font-size:24px;font-weight:300;letter-spacing:-0.5px;color:#111;margin-bottom:3px}
-.contact{font-size:12px;color:#888;margin-bottom:16px}
-.score-line{font-size:11px;color:#aaa;margin-bottom:24px}
-.st{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#888;margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid #eee}
-.summary{font-size:13px;line-height:1.8;color:#333}
-.skills{font-size:12px;color:#555;line-height:2}
-.job{margin-bottom:18px}
-.job-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
-.job-title{font-size:13px;font-weight:600;color:#111}
-.job-co{font-size:12px;color:#666}
-.job-period{font-size:11px;color:#aaa}
-.bullet{font-size:12px;color:#444;padding-left:12px;position:relative;line-height:1.7;margin-bottom:2px}
-.bullet::before{content:"–";position:absolute;left:0;color:#bbb}
-.education{font-size:12px;color:#555}
-.footer{margin-top:36px;font-size:10px;color:#ccc;text-align:right}
-@media print{body{margin:0;padding:20px}}</style></head><body>
-<h1>${name}</h1><div class="contact">${contact}</div>
-<div class="score-line">ATS Match ${atsScore}%${hmScore?` · Human Appeal ${hmScore}%`:""}</div>
-<div class="st">Summary</div><div class="summary">${summary}</div>
-<div class="st">Skills</div><div class="skills">${skills.join("  ·  ")}</div>
-<div class="st">Experience</div>${expHTML}
-<div class="st">Education</div><div class="education">${education}</div>
-<div class="footer">CareerOS · careeros-rose.vercel.app</div></body></html>`,
-
-    ats: `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${name}</title>
-<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Courier New',monospace;color:#000;background:#fff;max-width:700px;margin:32px auto;padding:40px;font-size:12px;line-height:1.6}
-h1{font-size:18px;font-weight:700;margin-bottom:3px}
-.contact{margin-bottom:8px}
-.score-line{margin-bottom:16px;font-size:11px;color:#555}
-.st{font-weight:700;font-size:12px;text-transform:uppercase;margin:16px 0 6px;border-bottom:1px solid #000;padding-bottom:2px}
-.summary{margin-bottom:4px}
-.skills{margin-bottom:4px}
-.job{margin-bottom:14px}
-.job-title{font-weight:700}
-.job-meta{margin-bottom:4px}
-.bullet{padding-left:16px;margin-bottom:2px}
-.bullet::before{content:"- "}
-.footer{margin-top:24px;font-size:10px;color:#888;border-top:1px solid #ccc;padding-top:8px}
-@media print{body{margin:0;padding:16px}}</style></head><body>
-<h1>${name}</h1>
-<div class="contact">${contact}</div>
-<div class="score-line">ATS Match: ${atsScore}% | Human Appeal: ${hmScore||"N/A"}%</div>
-<div class="st">PROFESSIONAL SUMMARY</div><div class="summary">${summary}</div>
-<div class="st">CORE SKILLS</div><div class="skills">${skills.join(" | ")}</div>
-<div class="st">WORK EXPERIENCE</div>
-${experience.map(exp=>`<div class="job"><div class="job-title">${exp.title}</div><div class="job-meta">${exp.company} | ${exp.period}</div>${(exp.bullets||[]).map(b=>`<div class="bullet">${b}</div>`).join("")}</div>`).join("")}
-<div class="st">EDUCATION AND CERTIFICATIONS</div><div>${education}</div>
-<div class="footer">Generated by CareerOS | careeros-rose.vercel.app</div></body></html>`,
+function generateResumeHTML(resume, format) {
+  if (!resume) return `<html><body style="font-family:sans-serif;padding:40px;color:#999;text-align:center"><p style="margin-top:80px;font-size:14px">Generate a resume first to see preview</p></body></html>`;
+  const f = RESUME_FORMATS.find(x => x.id === format) || RESUME_FORMATS[0];
+  const templates = {
+    classic:`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${resume.name}</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:${f.fontFamily};color:#1a1a1a;background:#fff;max-width:750px;margin:32px auto;padding:48px}h1{font-size:26px;font-weight:700;color:${f.accentColor};margin-bottom:3px}.contact{font-size:12px;color:#555;margin-bottom:18px;border-bottom:2px solid ${f.accentColor};padding-bottom:10px}.st{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:${f.accentColor};margin:16px 0 7px;border-bottom:1px solid #e5e7eb;padding-bottom:3px}.summary{font-size:13px;line-height:1.75;color:#374151}.skills{display:flex;flex-wrap:wrap;gap:5px;margin-top:3px}.skill{padding:3px 9px;border:1px solid ${f.accentColor}30;border-radius:3px;font-size:11px;color:#374151}.job{margin-bottom:13px}.jh{display:flex;justify-content:space-between;margin-bottom:2px}.jt{font-size:13px;font-weight:700;color:#111}.jp{font-size:11px;color:#888}.jc{font-size:12px;color:#555;margin-bottom:3px}.b{font-size:12px;color:#374151;line-height:1.65;padding-left:12px;position:relative;margin-bottom:2px}.b::before{content:"•";position:absolute;left:0;color:${f.accentColor}}.edu{font-size:12px;color:#374151;line-height:1.6}.footer{margin-top:24px;padding-top:8px;border-top:1px solid #e5e7eb;font-size:10px;color:#9ca3af;text-align:center}@media print{body{margin:0;padding:32px}}</style></head><body><h1>${resume.name}</h1><div class="contact">${resume.contact}</div><div class="st">Professional Summary</div><div class="summary">${resume.summary}</div><div class="st">Core Skills</div><div class="skills">${resume.skills?.map(s=>`<span class="skill">${s}</span>`).join("")||""}</div><div class="st">Experience</div>${resume.experience?.map(e=>`<div class="job"><div class="jh"><span class="jt">${e.title}</span><span class="jp">${e.period}</span></div><div class="jc">${e.company}</div>${e.bullets?.map(b=>`<div class="b">${b}</div>`).join("")||""}</div>`).join("")||""}<div class="st">Education & Certifications</div><div class="edu">${resume.education}</div><div class="footer">Generated by CareerOS · careeros-rose.vercel.app</div></body></html>`,
+    modern:`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${resume.name}</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:${f.fontFamily};color:#1a1a1a;background:#fff;max-width:750px;margin:32px auto}.hdr{background:${f.accentColor};color:#fff;padding:26px 38px 20px}h1{font-size:27px;font-weight:800;margin-bottom:3px}.contact{font-size:12px;opacity:0.85}.body{padding:22px 38px}.st{font-size:10px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:${f.accentColor};margin:18px 0 9px}.summary{font-size:13px;line-height:1.75;color:#374151}.skills{display:flex;flex-wrap:wrap;gap:5px}.skill{padding:3px 11px;background:${f.accentColor}15;border-radius:20px;font-size:11px;color:${f.accentColor};font-weight:600}.job{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #f3f4f6}.jh{display:flex;justify-content:space-between;margin-bottom:2px}.jt{font-size:14px;font-weight:700;color:#111}.jp{font-size:11px;color:#888;background:#f9fafb;padding:2px 8px;border-radius:10px}.jc{font-size:12px;color:${f.accentColor};font-weight:600;margin-bottom:4px}.b{font-size:12px;color:#374151;line-height:1.65;padding-left:13px;position:relative;margin-bottom:2px}.b::before{content:"▸";position:absolute;left:0;color:${f.accentColor}}.edu{font-size:12px;color:#374151;line-height:1.6}.footer{margin-top:14px;font-size:10px;color:#9ca3af;text-align:center;padding:10px 0;border-top:1px solid #f3f4f6}@media print{body{margin:0}}</style></head><body><div class="hdr"><h1>${resume.name}</h1><div class="contact">${resume.contact}</div></div><div class="body"><div class="st">Profile</div><div class="summary">${resume.summary}</div><div class="st">Skills</div><div class="skills">${resume.skills?.map(s=>`<span class="skill">${s}</span>`).join("")||""}</div><div class="st">Experience</div>${resume.experience?.map(e=>`<div class="job"><div class="jh"><span class="jt">${e.title}</span><span class="jp">${e.period}</span></div><div class="jc">${e.company}</div>${e.bullets?.map(b=>`<div class="b">${b}</div>`).join("")||""}</div>`).join("")||""}<div class="st">Education</div><div class="edu">${resume.education}</div><div class="footer">Generated by CareerOS · careeros-rose.vercel.app</div></div></body></html>`,
+    minimal:`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${resume.name}</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:${f.fontFamily};color:#1a1a1a;background:#fff;max-width:700px;margin:48px auto;padding:60px}h1{font-size:30px;font-weight:300;letter-spacing:2px;text-transform:uppercase;color:#111;margin-bottom:4px}.contact{font-size:11px;color:#888;letter-spacing:1px;margin-bottom:32px}.st{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#aaa;margin:24px 0 8px}.div{height:1px;background:#f0f0f0;margin-bottom:12px}.summary{font-size:13px;line-height:1.9;color:#444}.skills{font-size:12px;color:#555;line-height:2}.job{margin-bottom:16px}.jh{display:flex;justify-content:space-between;margin-bottom:2px}.jt{font-size:13px;font-weight:600;color:#111}.jp{font-size:11px;color:#aaa}.jc{font-size:11px;color:#888;margin-bottom:4px;font-style:italic}.b{font-size:12px;color:#444;line-height:1.75;padding-left:14px;position:relative;margin-bottom:2px}.b::before{content:"—";position:absolute;left:0;color:#ccc}.edu{font-size:12px;color:#555;line-height:1.7}.footer{margin-top:36px;font-size:10px;color:#ccc;text-align:center}@media print{body{margin:0;padding:40px}}</style></head><body><h1>${resume.name}</h1><div class="contact">${resume.contact}</div><div class="st">Summary</div><div class="div"></div><div class="summary">${resume.summary}</div><div class="st">Skills</div><div class="div"></div><div class="skills">${resume.skills?.join("  ·  ")||""}</div><div class="st">Experience</div><div class="div"></div>${resume.experience?.map(e=>`<div class="job"><div class="jh"><span class="jt">${e.title}</span><span class="jp">${e.period}</span></div><div class="jc">${e.company}</div>${e.bullets?.map(b=>`<div class="b">${b}</div>`).join("")||""}</div>`).join("")||""}<div class="st">Education</div><div class="div"></div><div class="edu">${resume.education}</div><div class="footer">Generated by CareerOS</div></body></html>`,
+    executive:`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${resume.name}</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:${f.fontFamily};color:#1a1a1a;background:#fff;max-width:760px;margin:32px auto;padding:50px}.top{height:4px;background:${f.accentColor};margin-bottom:28px}h1{font-size:29px;font-weight:700;color:#111;letter-spacing:0.5px;margin-bottom:3px}.contact{font-size:12px;color:#666;margin-bottom:5px}.tl{height:1px;background:${f.accentColor};margin:12px 0 20px}.section{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid #f0ece4}.st{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:${f.accentColor};margin-bottom:9px}.summary{font-size:13px;line-height:1.8;color:#2d2d2d;font-style:italic;padding-left:14px;border-left:3px solid ${f.accentColor}25}.skills{display:flex;flex-wrap:wrap;gap:7px}.skill{padding:3px 13px;border:1px solid ${f.accentColor}30;font-size:11px;color:#444;background:#fafafa}.job{margin-bottom:14px}.jh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px}.jt{font-size:14px;font-weight:700;color:#111}.jp{font-size:11px;color:#888}.jc{font-size:12px;color:${f.accentColor};font-weight:600;margin-bottom:4px}.b{font-size:12px;color:#2d2d2d;line-height:1.7;padding-left:13px;position:relative;margin-bottom:3px}.b::before{content:"◆";position:absolute;left:0;color:${f.accentColor};font-size:7px;top:5px}.edu{font-size:12px;color:#444;line-height:1.8}.footer{margin-top:18px;font-size:10px;color:#bbb;text-align:right}@media print{body{margin:0;padding:36px}}</style></head><body><div class="top"></div><h1>${resume.name}</h1><div class="contact">${resume.contact}</div><div class="tl"></div><div class="section"><div class="st">Executive Profile</div><div class="summary">${resume.summary}</div></div><div class="section"><div class="st">Core Competencies</div><div class="skills">${resume.skills?.map(s=>`<span class="skill">${s}</span>`).join("")||""}</div></div><div class="section"><div class="st">Career History</div>${resume.experience?.map(e=>`<div class="job"><div class="jh"><span class="jt">${e.title}</span><span class="jp">${e.period}</span></div><div class="jc">${e.company}</div>${e.bullets?.map(b=>`<div class="b">${b}</div>`).join("")||""}</div>`).join("")||""}</div><div class="section"><div class="st">Education & Professional Development</div><div class="edu">${resume.education}</div></div><div class="footer">Generated by CareerOS · careeros-rose.vercel.app</div></body></html>`,
   };
-
-  return formats[format] || formats.classic;
+  return templates[format] || templates.classic;
 }
 
-function downloadResume(resume, atsScore, hmScore, format) {
-  if (!resume) return;
-  const html = generateResumeHTML(resume, atsScore, hmScore, format);
-  const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+function downloadResume(resume, format) {
+  const html = generateResumeHTML(resume, format);
+  const blob = new Blob([html], { type:"text/html;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `${(resume.name||"Resume").replace(/\s+/g,"_")}_${format}_CareerOS.html`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  a.download = `${resume.name?.replace(/\s+/g,"_")}_${format}_Resume.html`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
 
+// ─── API ──────────────────────────────────────────────────────────────────────
+
+async function callClaude(prompt) {
+  const res = await fetch("/api/claude", {
+    method:"POST", headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({ model:"claude-sonnet-4-5", max_tokens:4000,
+      system:"You are an expert resume writer. Return only valid JSON. No markdown, no backticks.",
+      messages:[{role:"user",content:prompt}] }),
+  });
+  const data = await res.json();
+  const text = data.content?.map(b=>b.text||"").join("")||"{}";
+  return JSON.parse(text.replace(/```json|```/g,"").trim());
+}
+
 // ─── COMPONENTS ──────────────────────────────────────────────────────────────
-function ScoreRing({ score, size = 64, color = C.teal }) {
-  const r = (size - 8) / 2;
-  const circ = 2 * Math.PI * r;
-  const s = Math.max(0, Math.min(100, score || 0));
-  const dash = (s / 100) * circ;
-  const c = color || (s >= 80 ? C.green : s >= 65 ? C.amber : s > 0 ? C.red : C.gray300);
+
+function ScoreRing({score,size=72,color}) {
+  const r=(size-8)/2, circ=2*Math.PI*r, s=Math.max(0,Math.min(100,score||0));
+  const c=color||(s>=80?"#16a34a":s>=65?"#d97706":s>0?"#dc2626":"#d1d5db");
   return (
-    <svg width={size} height={size} style={{ transform: "rotate(-90deg)", flexShrink: 0 }}>
-      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={C.gray100} strokeWidth={5}/>
+    <svg width={size} height={size} style={{transform:"rotate(-90deg)",flexShrink:0}}>
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="#f1f5f9" strokeWidth={5}/>
       <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={c} strokeWidth={5}
-        strokeDasharray={`${dash} ${circ}`} strokeLinecap="round"
-        style={{ transition: "stroke-dasharray 1s ease" }}/>
-      <text x={size/2} y={size/2+5} textAnchor="middle" fill={c}
-        fontSize={size*0.22} fontWeight="700"
-        style={{ transform:`rotate(90deg)`, transformOrigin:`${size/2}px ${size/2}px` }}>
-        {s > 0 ? `${s}%` : "—"}
+        strokeDasharray={`${(s/100)*circ} ${circ}`} strokeLinecap="round"
+        style={{transition:"stroke-dasharray 1.2s ease"}}/>
+      <text x={size/2} y={size/2+5} textAnchor="middle" fill={c} fontSize={size*0.2} fontWeight="700"
+        style={{transform:`rotate(90deg)`,transformOrigin:`${size/2}px ${size/2}px`}}>
+        {s>0?`${s}%`:"—"}
       </text>
     </svg>
   );
 }
 
-function Badge({ children, color = C.gray500, bg = C.gray100 }) {
-  return (
-    <span style={{ display:"inline-block", padding:"3px 10px", borderRadius:20, background:bg, color, fontSize:11, fontWeight:600, margin:"2px 3px 2px 0" }}>
-      {children}
-    </span>
-  );
+function Chip({text,color="#6b7280",bg="#f1f5f9"}) {
+  return <span style={{display:"inline-block",padding:"3px 10px",borderRadius:5,background:bg,color,fontSize:11,fontWeight:500,margin:"2px 3px 2px 0"}}>{text}</span>;
 }
 
-function PlatformTag({ platform }) {
-  const p = JOB_PLATFORMS.find(x => x.id === platform) || { name: platform||"Job Board", color: C.gray500 };
-  return (
-    <span style={{ display:"inline-flex", alignItems:"center", padding:"2px 9px", borderRadius:12, background:`${p.color}12`, border:`1px solid ${p.color}30`, color:p.color, fontSize:11, fontWeight:700 }}>
-      {p.name}
-    </span>
-  );
+function PBadge({platform}) {
+  const p=JOB_PLATFORMS.find(x=>x.id===platform)||{name:platform||"Job Board",color:"#6b7280",bg:"#f1f5f9",border:"#e2e8f0"};
+  return <span style={{display:"inline-flex",alignItems:"center",padding:"2px 9px",borderRadius:5,background:p.bg,border:`1px solid ${p.border}`,color:p.color,fontSize:11,fontWeight:600}}>{p.name}</span>;
 }
 
-function Card({ children, style = {}, noPad = false }) {
+function SBadge({status}) {
+  const s=STATUS_COLORS[status]||STATUS_COLORS["Saved"];
+  return <span style={{display:"inline-flex",alignItems:"center",gap:5,padding:"3px 10px",borderRadius:5,background:s.bg,border:`1px solid ${s.border}`,color:s.text,fontSize:11,fontWeight:600}}>
+    <span style={{width:6,height:6,borderRadius:"50%",background:s.dot,flexShrink:0}}/>
+    {status}
+  </span>;
+}
+
+function Card({children,style={}}) {
+  return <div style={{background:"#fff",border:"1px solid #e8ecf0",borderRadius:12,padding:22,marginBottom:14,boxShadow:"0 1px 3px rgba(0,0,0,0.04)",...style}}>{children}</div>;
+}
+
+function SLabel({children,color="#4f46e5"}) {
+  return <div style={{fontSize:10,fontWeight:700,letterSpacing:2,color,textTransform:"uppercase",marginBottom:12}}>{children}</div>;
+}
+
+function FormatPicker({resume,selected,onSelect,onDownload}) {
   return (
-    <div style={{ background:C.white, borderRadius:12, boxShadow:C.shadow, border:`1px solid ${C.gray200}`, padding:noPad?0:24, marginBottom:16, ...style }}>
-      {children}
+    <div>
+      <div style={{fontSize:12,fontWeight:600,color:"#374151",marginBottom:10}}>Choose your resume format:</div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:10,marginBottom:14}}>
+        {RESUME_FORMATS.map(f=>(
+          <div key={f.id} onClick={()=>onSelect(f.id)}
+            style={{border:`2px solid ${selected===f.id?f.accentColor:"#e8ecf0"}`,borderRadius:9,padding:11,cursor:"pointer",background:selected===f.id?f.accentColor+"08":"#fafbfc",transition:"all 0.15s"}}>
+            <div style={{background:"#fff",border:"1px solid #f3f4f6",borderRadius:5,padding:7,marginBottom:8,height:64,overflow:"hidden"}}>
+              {f.id==="modern"&&<div style={{background:f.accentColor,height:14,margin:"-7px -7px 5px",borderRadius:"4px 4px 0 0"}}/>}
+              {f.id==="executive"&&<div style={{background:f.accentColor,height:3,margin:"-7px -7px 5px"}}/>}
+              <div style={{height:5,background:f.accentColor,borderRadius:2,marginBottom:3,width:"80%"}}/>
+              <div style={{height:2,background:"#e5e7eb",borderRadius:1,marginBottom:4,width:"50%"}}/>
+              {[1,2,3,4].map(i=><div key={i} style={{height:2,background:"#f3f4f6",borderRadius:1,marginBottom:2,width:`${55+i*10}%`}}/>)}
+            </div>
+            <div style={{fontSize:12,fontWeight:700,color:selected===f.id?f.accentColor:"#374151"}}>{f.name}</div>
+            <div style={{fontSize:10,color:"#9ca3af",marginTop:1}}>{f.desc}</div>
+          </div>
+        ))}
+      </div>
+      <div style={{border:"1px solid #e8ecf0",borderRadius:9,overflow:"hidden",marginBottom:12}}>
+        <div style={{background:"#f8fafc",borderBottom:"1px solid #e8ecf0",padding:"8px 14px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <span style={{fontSize:11,color:"#6b7280",fontWeight:500}}>Preview — {RESUME_FORMATS.find(f=>f.id===selected)?.name}</span>
+          <button onClick={()=>onDownload(selected)} style={{background:"#4f46e5",color:"#fff",border:"none",borderRadius:6,padding:"4px 13px",fontSize:11,fontWeight:600,cursor:"pointer"}}>⬇ Download</button>
+        </div>
+        <iframe srcDoc={generateResumeHTML(resume,selected)} style={{width:"100%",height:460,border:"none",background:"#fff"}} title="Resume Preview"/>
+      </div>
+      <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
+        {RESUME_FORMATS.map(f=>(
+          <button key={f.id} onClick={()=>onDownload(f.id)}
+            style={{background:selected===f.id?"#4f46e5":"#fff",border:`1px solid ${selected===f.id?"#4f46e5":"#e8ecf0"}`,color:selected===f.id?"#fff":"#374151",borderRadius:6,padding:"6px 13px",fontSize:11,fontWeight:500,cursor:"pointer"}}>
+            ⬇ {f.name}
+          </button>
+        ))}
+      </div>
     </div>
-  );
-}
-
-function SectionLabel({ children }) {
-  return (
-    <div style={{ fontSize:10, fontWeight:700, letterSpacing:1.5, color:C.teal, textTransform:"uppercase", marginBottom:12 }}>
-      {children}
-    </div>
-  );
-}
-
-function StatusDot({ status }) {
-  const s = STATUS_COLORS[status] || STATUS_COLORS.Saved;
-  return (
-    <span style={{ display:"inline-flex", alignItems:"center", gap:5, padding:"3px 10px", borderRadius:20, background:s.bg, border:`1px solid ${s.border}`, color:s.text, fontSize:11, fontWeight:600 }}>
-      <span style={{ width:6, height:6, borderRadius:"50%", background:s.dot, display:"inline-block" }}/>
-      {status}
-    </span>
   );
 }
 
 // ─── MAIN APP ────────────────────────────────────────────────────────────────
-export default function App() {
-  const [tab, setTab] = useState("builder");
-  const [jd, setJd] = useState("");
-  const [cv, setCv] = useState("");
-  const [selectedFormat, setSelectedFormat] = useState("classic");
-  const [resumeResult, setResumeResult] = useState(null);
-  const [resumeLoading, setResumeLoading] = useState(false);
-  const [loadingPhase, setLoadingPhase] = useState(0);
-  const [coverResult, setCoverResult] = useState(null);
-  const [coverLoading, setCoverLoading] = useState(false);
-  const [interviewResult, setInterviewResult] = useState(null);
-  const [interviewLoading, setInterviewLoading] = useState(false);
-  const [jobs, setJobs] = useState([]);
-  const [jobSearch, setJobSearch] = useState("");
-  const [selectedCountry, setSelectedCountry] = useState("uk");
-  const [visaOnly, setVisaOnly] = useState(false);
-  const [jobSearching, setJobSearching] = useState(false);
-  const [selectedJob, setSelectedJob] = useState(null);
-  const [applications, setApplications] = useState([]);
-  const [applyingJob, setApplyingJob] = useState(null);
-  const [applySuccess, setApplySuccess] = useState(null);
-  const [copied, setCopied] = useState(false);
-  const [downloadSuccess, setDownloadSuccess] = useState(false);
-  const resultRef = useRef(null);
 
-  function startLoadingAnimation() {
-    setLoadingPhase(0);
-    const iv = setInterval(() => {
-      setLoadingPhase(p => { if (p >= LOADING_PHASES.length - 1) { clearInterval(iv); return p; } return p + 1; });
-    }, 3500);
+export default function App() {
+  const [tab,setTab]=useState("builder");
+  const [jd,setJd]=useState("");
+  const [cv,setCv]=useState("");
+  const [result,setResult]=useState(null);
+  const [loading,setLoading]=useState(false);
+  const [phase,setPhase]=useState(0);
+  const [fmt,setFmt]=useState("classic");
+  const [coverResult,setCoverResult]=useState(null);
+  const [coverLoading,setCoverLoading]=useState(false);
+  const [intResult,setIntResult]=useState(null);
+  const [intLoading,setIntLoading]=useState(false);
+  const [jobs,setJobs]=useState([]);
+  const [jobQ,setJobQ]=useState("");
+  const [country,setCountry]=useState("uk");
+  const [jobLoading,setJobLoading]=useState(false);
+  const [apps,setApps]=useState([]);
+  const [applying,setApplying]=useState(null);
+  const [applied,setApplied]=useState(null);
+  const [copied,setCopied]=useState(false);
+  const [jobFmt,setJobFmt]=useState(null);
+  const [jobFmtSel,setJobFmtSel]=useState("classic");
+  const ref=useRef(null);
+
+  function startPhase() {
+    setPhase(0);
+    const iv=setInterval(()=>setPhase(p=>{if(p>=LOADING_PHASES.length-1){clearInterval(iv);return p;}return p+1;}),4000);
     return iv;
   }
 
-  async function generateResume() {
-    if (!jd?.trim() || !cv?.trim()) return;
-    setResumeLoading(true);
-    setResumeResult(null);
-    const iv = startLoadingAnimation();
+  async function generate() {
+    if(!jd?.trim()||!cv?.trim()) return;
+    setLoading(true); setResult(null);
+    const iv=startPhase();
     try {
-      const result = await callClaude(`
-You are an elite executive resume writer trusted by top recruiters. You help professionals succeed across global job markets.
-
-Return ONLY this exact JSON — NO markdown, NO backticks:
-
-{
-  "jdAnalysis": {
-    "role": "exact job title",
-    "company": "company name",
-    "mustHave": ["req1","req2","req3","req4","req5","req6"],
-    "niceToHave": ["nice1","nice2","nice3","nice4"],
-    "keywords": ["kw1","kw2","kw3","kw4","kw5","kw6","kw7","kw8","kw9","kw10","kw11","kw12","kw13","kw14","kw15"],
-    "seniorityLevel": "level",
-    "hiringIntent": "2 specific sentences on what the hiring manager really wants"
-  },
-  "matchScore": 75,
-  "hiringManagerScore": 70,
-  "salaryIntelligence": {
-    "marketMin": "£X",
-    "marketMax": "£Y",
-    "recommendedAsk": "£Z",
-    "insight": "1 sentence salary negotiation insight"
-  },
-  "visaFriendly": true,
-  "gapAnalysis": {
-    "strengths": ["s1","s2","s3","s4","s5","s6"],
-    "gaps": ["g1","g2","g3","g4","g5"],
-    "transferable": ["t1","t2","t3","t4","t5"]
-  },
-  "resume": {
-    "name": "FULL NAME IN CAPS",
-    "contact": "email • phone • location",
-    "summary": "3-4 sentence unique executive summary. No generic phrases. Specific hook. Quantified impact.",
-    "skills": ["skill1","skill2","skill3","skill4","skill5","skill6","skill7","skill8","skill9","skill10"],
-    "experience": [
-      {
-        "title": "Job Title",
-        "company": "Company",
-        "period": "dates",
-        "bullets": ["Strong verb + initiative + quantified outcome","Strong verb + initiative + quantified outcome","Strong verb + initiative + quantified outcome","Strong verb + initiative + quantified outcome","Strong verb + initiative + quantified outcome"]
-      }
-    ],
-    "education": "Degrees and certifications"
-  },
-  "hiringManagerInsights": {
-    "firstImpression": "What hiring manager thinks in first 10 seconds",
-    "humanAppeal": "What makes this resume compelling to a human",
-    "redFlags": ["concern1","concern2"],
-    "standoutFactors": ["standout1","standout2"]
-  },
-  "improvements": ["tip1","tip2","tip3","tip4","tip5"]
-}
-
-RULES: matchScore 0-100 based on keyword/experience/seniority fit. hiringManagerScore 0-100 based on narrative/achievement quality. Every bullet: strong verb + specific project + metric. visaFriendly: true if company likely sponsors Skilled Worker visas. Return ONLY JSON.
-
-JOB DESCRIPTION: ${jd}
-CANDIDATE BACKGROUND: ${cv}`);
-      clearInterval(iv);
-      setResumeResult(result);
-      setTimeout(() => resultRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
-    } catch(e) {
-      clearInterval(iv);
-      setResumeResult({ error: "Generation failed. Please check your inputs and try again." });
-    } finally {
-      setResumeLoading(false);
-    }
-  }
-
-  async function generateCover() {
-    if (!jd || !cv) return;
-    setCoverLoading(true);
-    setCoverResult(null);
-    try {
-      const r = await callClaude(`Write a compelling, personalised cover letter. British English spelling. Return ONLY JSON:
-{"subject":"Application for [Role] — [Name]","letter":"4 paragraphs. Para 1: Strong hook referencing something specific about the company — NOT 'I am writing to apply'. Para 2: Most relevant achievement with metric. Para 3: Why this specific company. Para 4: Confident direct close. 260-300 words total."}
+      const r=await callClaude(`Analyse this JD and CV. Return ONLY JSON (no markdown):
+{"jdAnalysis":{"role":"title","company":"name","mustHave":["r1","r2","r3","r4","r5"],"niceToHave":["n1","n2","n3"],"keywords":["k1","k2","k3","k4","k5","k6","k7","k8","k9","k10"],"hiringIntent":"1-2 sentences"},"matchScore":75,"hiringManagerScore":70,"salaryIntelligence":{"marketMin":"£X","marketMax":"£Y","recommendedAsk":"£Z","insight":"1 sentence"},"gapAnalysis":{"strengths":["s1","s2","s3","s4","s5"],"gaps":["g1","g2","g3"],"transferable":["t1","t2","t3","t4"]},"resume":{"name":"FULL NAME","contact":"email • phone • location","summary":"3 sentences. Unique hook. Quantified. No clichés.","skills":["sk1","sk2","sk3","sk4","sk5","sk6","sk7","sk8"],"experience":[{"title":"Title","company":"Co","period":"dates","bullets":["verb+initiative+metric","verb+initiative+metric","verb+initiative+metric","verb+initiative+metric"]}],"education":"Degree | certs"},"hiringManagerInsights":{"firstImpression":"10 second read","humanAppeal":"compelling factor","redFlags":["r1","r2"],"standoutFactors":["s1","s2"]},"improvements":["t1","t2","t3","t4"]}
+Rules: matchScore 0-100. hiringManagerScore 0-100. Every bullet verb+metric. Return ONLY JSON.
 JD: ${jd}
 CV: ${cv}`);
+      clearInterval(iv); setResult(r);
+      setTimeout(()=>ref.current?.scrollIntoView({behavior:"smooth"}),100);
+    } catch {
+      clearInterval(iv); setResult({error:"Generation failed. Check inputs and retry."});
+    } finally { setLoading(false); }
+  }
+
+  async function genCover() {
+    if(!jd||!cv) return;
+    setCoverLoading(true); setCoverResult(null);
+    try {
+      const r=await callClaude(`Write a professional cover letter. Return ONLY JSON:
+{"subject":"Application for [Role] — [Name]","letter":"4 paragraphs. Para 1: Specific company hook (NOT 'I am writing to apply'). Para 2: Key achievement with metric. Para 3: Why this company. Para 4: Confident close. British English. 260 words max."}
+JD: ${jd} CV: ${cv}`);
       setCoverResult(r);
-    } catch { setCoverResult({ error: "Failed. Please retry." }); }
-    setCoverLoading(false);
+    } catch { setCoverResult({error:"Failed. Retry."}); }
+    finally { setCoverLoading(false); }
   }
 
-  async function generateInterview() {
-    if (!jd || !cv) return;
-    setInterviewLoading(true);
-    setInterviewResult(null);
+  async function genInterview() {
+    if(!jd||!cv) return;
+    setIntLoading(true); setIntResult(null);
     try {
-      const r = await callClaude(`Generate comprehensive interview preparation. Return ONLY JSON:
-{"keyThemes":["t1","t2","t3","t4"],"likelyQuestions":[{"question":"Q1","tip":"coaching tip"},{"question":"Q2","tip":"tip"},{"question":"Q3","tip":"tip"},{"question":"Q4","tip":"tip"},{"question":"Q5","tip":"tip"}],"starStories":[{"theme":"Leadership","situation":"...","task":"...","action":"...","result":"metric"},{"theme":"Delivery Under Pressure","situation":"...","task":"...","action":"...","result":"metric"},{"theme":"Stakeholder Management","situation":"...","task":"...","action":"...","result":"metric"}],"questionsToAsk":["q1","q2","q3"],"redFlags":["concern + how to address it 1","concern + how to address it 2"]}
-JD: ${jd}
-CV: ${cv}`);
-      setInterviewResult(r);
-    } catch { setInterviewResult({ error: "Failed. Please retry." }); }
-    setInterviewLoading(false);
+      const r=await callClaude(`Generate interview prep. Return ONLY JSON:
+{"keyThemes":["t1","t2","t3","t4"],"likelyQuestions":[{"question":"Q","tip":"tip"},{"question":"Q","tip":"tip"},{"question":"Q","tip":"tip"},{"question":"Q","tip":"tip"},{"question":"Q","tip":"tip"}],"starStories":[{"theme":"Leadership","situation":"...","task":"...","action":"...","result":"metric"},{"theme":"Problem Solving","situation":"...","task":"...","action":"...","result":"metric"}],"questionsToAsk":["q1","q2","q3"],"redFlags":["concern + how to address"]}
+JD: ${jd} CV: ${cv}`);
+      setIntResult(r);
+    } catch { setIntResult({error:"Failed. Retry."}); }
+    finally { setIntLoading(false); }
   }
 
   async function searchJobs() {
-    setJobSearching(true);
-    setJobs([]);
+    setJobLoading(true); setJobs([]);
     try {
-      const vp = visaOnly ? "&visa=true" : "";
-      const res = await fetch(`/api/jobs?query=${encodeURIComponent(jobSearch||"software engineer")}&country=${selectedCountry}${vp}`);
-      const data = await res.json();
-      setJobs(data.jobs || []);
+      const res=await fetch(`/api/jobs?query=${encodeURIComponent(jobQ||"product manager")}&country=${country}&source=both`);
+      const data=await res.json();
+      setJobs(data.jobs||[]);
     } catch { setJobs([]); }
-    setJobSearching(false);
+    setJobLoading(false);
   }
 
-  async function applyToJob(job) {
-    setApplyingJob(job.id);
-    if (job.url) window.open(job.url, "_blank");
-    setApplications(prev => prev.find(a=>a.title===job.title&&a.company===job.company) ? prev : [...prev, { id:Date.now(), title:job.title, company:job.company, platform:job.platform, status:"Applied", appliedDate:"Today", match:job.match||0, url:job.url }]);
-    setApplyingJob(null);
-    setApplySuccess(job.id);
-    setTimeout(() => setApplySuccess(null), 3000);
+  function applyJob(job,e) {
+    e.stopPropagation(); setApplying(job.id);
+    const url=job.url?.startsWith("http")?job.url:`https://www.google.com/search?q=${encodeURIComponent(job.title+" "+job.company+" apply")}`;
+    window.open(url,"_blank");
+    setApps(prev=>prev.find(a=>a.title===job.title&&a.company===job.company)?prev:[...prev,{id:Date.now(),title:job.title,company:job.company,platform:job.platform,status:"Applied",appliedDate:"Today",match:job.match||0}]);
+    setTimeout(()=>{setApplying(null);setApplied(job.id);setTimeout(()=>setApplied(null),2000);},600);
   }
 
-  function handleDownload() {
-    if (!resumeResult?.resume) return;
-    downloadResume(resumeResult.resume, resumeResult.matchScore||0, resumeResult.hiringManagerScore||0, selectedFormat);
-    setDownloadSuccess(true);
-    setTimeout(() => setDownloadSuccess(false), 2000);
+  function saveJob(job,e) {
+    e.stopPropagation();
+    setApps(prev=>prev.find(a=>a.title===job.title&&a.company===job.company)?prev:[...prev,{id:Date.now(),title:job.title,company:job.company,platform:job.platform,status:"Saved",appliedDate:"—",match:job.match||0}]);
   }
 
-  // Styles
-  const inp = { width:"100%", boxSizing:"border-box", background:C.white, border:`1.5px solid ${C.gray200}`, borderRadius:8, padding:"11px 14px", color:C.navy, fontSize:13, fontFamily:"inherit", outline:"none", transition:"border-color 0.2s", lineHeight:1.6 };
-  const btnPrimary = (x={}) => ({ background:C.teal, color:"#fff", border:"none", borderRadius:8, padding:"11px 22px", fontSize:13, fontWeight:600, cursor:"pointer", display:"inline-flex", alignItems:"center", gap:7, transition:"background 0.15s", ...x });
-  const btnOutline = (x={}) => ({ background:"transparent", border:`1.5px solid ${C.gray200}`, color:C.gray600, borderRadius:8, padding:"10px 18px", fontSize:13, cursor:"pointer", transition:"all 0.15s", ...x });
+  const inp={width:"100%",boxSizing:"border-box",background:"#fff",border:"1.5px solid #e2e8f0",borderRadius:8,padding:"11px 14px",color:"#111827",fontSize:13,fontFamily:"inherit",outline:"none",lineHeight:1.6};
+  const btn=(x={})=>({background:"#4f46e5",color:"#fff",border:"none",borderRadius:8,padding:"10px 20px",fontSize:13,fontWeight:600,cursor:"pointer",display:"inline-flex",alignItems:"center",gap:6,...x});
+  const ghost=(x={})=>({background:"#fff",border:"1.5px solid #e2e8f0",color:"#374151",borderRadius:8,padding:"9px 16px",fontSize:13,cursor:"pointer",...x});
 
   return (
-    <div style={{ minHeight:"100vh", background:C.bg, fontFamily:"'DM Sans','Segoe UI',system-ui,sans-serif", color:C.navy }}>
+    <div style={{minHeight:"100vh",background:"#f4f6f9",color:"#111827",fontFamily:"'Inter','Segoe UI',system-ui,sans-serif"}}>
       <style>{`
-        @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
         @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
-        button:hover{opacity:0.9}
-        input:focus,textarea:focus{border-color:${C.teal} !important;box-shadow:0 0 0 3px ${C.teal}18}
+        @keyframes prog{0%,100%{opacity:0.8}50%{opacity:1}}
+        input:focus,textarea:focus{border-color:#4f46e5 !important;box-shadow:0 0 0 3px rgba(79,70,229,0.1) !important;outline:none}
+        .jcard{transition:all 0.15s}
+        .jcard:hover{border-color:#c7d2fe !important;box-shadow:0 2px 12px rgba(79,70,229,0.08) !important}
+        button:active{transform:scale(0.98)}
       `}</style>
 
       {/* ── HEADER ── */}
-      <div style={{ background:C.white, borderBottom:`1px solid ${C.gray200}`, position:"sticky", top:0, zIndex:100, boxShadow:"0 1px 4px rgba(0,0,0,0.05)" }}>
-        <div style={{ maxWidth:1200, margin:"0 auto", padding:"0 32px", display:"flex", alignItems:"center", justifyContent:"space-between", height:60 }}>
-          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-            <div style={{ width:34, height:34, borderRadius:9, background:`linear-gradient(135deg,${C.teal},${C.blue})`, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:800, fontSize:16, color:"#fff" }}>C</div>
+      <div style={{background:"#fff",borderBottom:"1px solid #e8ecf0",position:"sticky",top:0,zIndex:100,boxShadow:"0 1px 4px rgba(0,0,0,0.06)"}}>
+        <div style={{maxWidth:1180,margin:"0 auto",padding:"0 28px",display:"flex",alignItems:"center",justifyContent:"space-between",height:60}}>
+          <div style={{display:"flex",alignItems:"center",gap:10}}>
+            <div style={{width:34,height:34,borderRadius:9,background:"linear-gradient(135deg,#4f46e5,#7c3aed)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:16,color:"#fff",letterSpacing:-0.5}}>C</div>
             <div>
-              <div style={{ fontSize:17, fontWeight:700, color:C.navy, letterSpacing:-0.5 }}>CareerOS</div>
-              <div style={{ fontSize:9, color:C.gray400, letterSpacing:2, textTransform:"uppercase" }}>AI Career Platform</div>
+              <div style={{fontSize:16,fontWeight:700,color:"#111827",letterSpacing:-0.4}}>CareerOS</div>
+              <div style={{fontSize:9,color:"#9ca3af",letterSpacing:1.8,textTransform:"uppercase"}}>AI Career Platform</div>
             </div>
           </div>
 
-          <nav style={{ display:"flex", gap:2 }}>
-            {TABS.map(t => (
-              <button key={t.id} onClick={() => setTab(t.id)} style={{ background:tab===t.id?C.tealLight:"transparent", border:tab===t.id?`1px solid ${C.teal}30`:"1px solid transparent", color:tab===t.id?C.teal:C.gray500, borderRadius:7, padding:"6px 14px", fontSize:12, cursor:"pointer", fontWeight:tab===t.id?600:400, transition:"all 0.15s" }}>
-                {t.label}
-              </button>
+          <nav style={{display:"flex",background:"#f4f6f9",borderRadius:9,padding:3,border:"1px solid #e8ecf0",gap:1}}>
+            {TABS.map(t=>(
+              <button key={t.id} onClick={()=>setTab(t.id)} style={{
+                background:tab===t.id?"#fff":"transparent",
+                border:"none",
+                boxShadow:tab===t.id?"0 1px 3px rgba(0,0,0,0.1)":"none",
+                color:tab===t.id?"#4f46e5":"#6b7280",
+                borderRadius:7,padding:"5px 13px",fontSize:12,cursor:"pointer",
+                fontWeight:tab===t.id?600:400,transition:"all 0.15s",
+                display:"flex",alignItems:"center",gap:5,
+              }}><span style={{fontSize:10}}>{t.icon}</span>{t.label}</button>
             ))}
           </nav>
 
-          <button onClick={() => setTab("pricing")} style={{ background:`linear-gradient(135deg,${C.teal},${C.blue})`, color:"#fff", border:"none", borderRadius:8, padding:"8px 20px", fontSize:13, fontWeight:600, cursor:"pointer" }}>
-            Upgrade to Pro →
+          <button onClick={()=>setTab("pricing")} style={btn({padding:"8px 18px",fontSize:12,borderRadius:8,background:"linear-gradient(135deg,#4f46e5,#7c3aed)"})}>
+            ↑ Upgrade Pro
           </button>
         </div>
       </div>
 
-      <div style={{ maxWidth:1200, margin:"0 auto", padding:"40px 32px 80px" }}>
+      <div style={{maxWidth:1180,margin:"0 auto",padding:"28px 28px 80px"}}>
 
-        {/* ══════════════ RESUME BUILDER ══════════════ */}
-        {tab === "builder" && (
-          <div style={{ animation:"fadeUp 0.35s ease" }}>
-
-            {/* Hero */}
-            <div style={{ textAlign:"center", marginBottom:44 }}>
-              <div style={{ display:"inline-block", padding:"4px 16px", borderRadius:20, background:C.tealLight, color:C.teal, fontSize:11, fontWeight:700, letterSpacing:1.5, textTransform:"uppercase", marginBottom:16 }}>
-                AI Resume Builder · ATS & Hiring Manager Scoring · Salary Intelligence
-              </div>
-              <h1 style={{ fontSize:44, fontWeight:800, color:C.navy, lineHeight:1.15, letterSpacing:-1.5, marginBottom:14 }}>
-                Land more interviews.<br/>
-                <span style={{ color:C.teal }}>Faster.</span>
-              </h1>
-              <p style={{ color:C.gray500, fontSize:16, maxWidth:480, margin:"0 auto 24px" }}>
-                Paste a job description, paste your CV — get a tailored resume, ATS score, salary intelligence, and interview coaching in under 60 seconds.
-              </p>
-              <div style={{ display:"flex", gap:10, justifyContent:"center", flexWrap:"wrap" }}>
-                {[{i:"🎯",l:"Dual ATS + Human Score"},{i:"💰",l:"Salary Intelligence"},{i:"🛂",l:"Visa Sponsorship Filter"},{i:"📄",l:"5 Resume Formats"},{i:"✉",l:"Cover Letter AI"},{i:"◆",l:"Interview Coach"}].map(f => (
-                  <span key={f.l} style={{ display:"inline-flex", alignItems:"center", gap:5, padding:"5px 13px", borderRadius:20, background:C.white, border:`1px solid ${C.gray200}`, fontSize:12, color:C.gray600, boxShadow:C.shadow }}>
-                    <span>{f.i}</span><span>{f.l}</span>
-                  </span>
-                ))}
+        {/* ════ RESUME BUILDER ════ */}
+        {tab==="builder"&&(
+          <div style={{animation:"fadeIn 0.3s ease"}}>
+            {/* Hero banner */}
+            <div style={{background:"linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%)",borderRadius:16,padding:"36px 44px",marginBottom:24,position:"relative",overflow:"hidden"}}>
+              <div style={{position:"absolute",top:-20,right:-20,width:200,height:200,background:"rgba(255,255,255,0.05)",borderRadius:"50%"}}/>
+              <div style={{position:"absolute",bottom:-40,right:80,width:120,height:120,background:"rgba(255,255,255,0.05)",borderRadius:"50%"}}/>
+              <div style={{position:"relative"}}>
+                <div style={{display:"inline-flex",alignItems:"center",gap:6,padding:"4px 12px",borderRadius:20,background:"rgba(255,255,255,0.15)",color:"#e0e7ff",fontSize:11,fontWeight:600,letterSpacing:1,textTransform:"uppercase",marginBottom:14}}>
+                  ATS Score · Human Appeal · Salary Intelligence · 4 Formats
+                </div>
+                <h1 style={{fontSize:34,fontWeight:800,color:"#fff",lineHeight:1.2,marginBottom:10,letterSpacing:-0.8}}>
+                  AI Resume Tailoring That<br/>Actually Gets Interviews
+                </h1>
+                <p style={{color:"rgba(255,255,255,0.75)",fontSize:14,maxWidth:440}}>
+                  Paste a job description and your CV. Get a tailored resume, ATS score, salary insights, and interview prep in under 30 seconds.
+                </p>
               </div>
             </div>
 
-            {/* Resume Format Selector */}
-            <Card style={{ marginBottom:24 }}>
-              <SectionLabel>Choose Your Resume Format</SectionLabel>
-              <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:10 }}>
-                {RESUME_FORMATS.map(fmt => (
-                  <div key={fmt.id} onClick={() => setSelectedFormat(fmt.id)} style={{ border:`2px solid ${selectedFormat===fmt.id?fmt.accentColor:C.gray200}`, borderRadius:10, padding:"14px 12px", cursor:"pointer", background:selectedFormat===fmt.id?`${fmt.accentColor}08`:C.white, transition:"all 0.15s" }}>
-                    <div style={{ fontSize:22, marginBottom:6 }}>{fmt.icon}</div>
-                    <div style={{ fontSize:13, fontWeight:700, color:selectedFormat===fmt.id?fmt.accentColor:C.navy, marginBottom:3 }}>{fmt.name}</div>
-                    <div style={{ fontSize:11, color:C.gray500, lineHeight:1.4, marginBottom:5 }}>{fmt.desc}</div>
-                    <div style={{ fontSize:10, color:C.gray400, fontStyle:"italic" }}>{fmt.preview}</div>
-                  </div>
-                ))}
-              </div>
-            </Card>
+            {/* Feature pills */}
+            <div style={{display:"flex",gap:8,marginBottom:20,flexWrap:"wrap"}}>
+              {[{i:"🎯",l:"Dual Scoring"},{i:"💰",l:"Salary Intel"},{i:"📄",l:"4 Formats + Preview"},{i:"⚡",l:"30 Seconds"},{i:"✉",l:"Cover Letter"},{i:"◆",l:"Interview Prep"}].map(f=>(
+                <div key={f.l} style={{display:"flex",alignItems:"center",gap:5,padding:"5px 12px",borderRadius:20,background:"#fff",border:"1px solid #e8ecf0",fontSize:11,color:"#6b7280",fontWeight:500,boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}>
+                  {f.i} {f.l}
+                </div>
+              ))}
+            </div>
 
             {/* Inputs */}
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:20, marginBottom:20 }}>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14,marginBottom:14}}>
               <div>
-                <label style={{ fontSize:12, fontWeight:600, color:C.gray700, display:"block", marginBottom:7 }}>JOB DESCRIPTION</label>
-                <textarea style={{ ...inp, height:260, resize:"vertical" }} placeholder="Paste any job description here..." value={jd} onChange={e=>setJd(e.target.value)}/>
+                <label style={{display:"block",fontSize:11,fontWeight:700,color:"#374151",marginBottom:6,letterSpacing:0.5,textTransform:"uppercase"}}>Job Description</label>
+                <textarea style={{...inp,height:240,resize:"vertical"}} placeholder="Paste any job description here..." value={jd} onChange={e=>setJd(e.target.value)}/>
               </div>
               <div>
-                <label style={{ fontSize:12, fontWeight:600, color:C.gray700, display:"block", marginBottom:7 }}>YOUR CV / BACKGROUND</label>
-                <textarea style={{ ...inp, height:260, resize:"vertical" }} placeholder="Paste your CV, LinkedIn export, or describe your experience..." value={cv} onChange={e=>setCv(e.target.value)}/>
+                <label style={{display:"block",fontSize:11,fontWeight:700,color:"#374151",marginBottom:6,letterSpacing:0.5,textTransform:"uppercase"}}>Your CV / Background</label>
+                <textarea style={{...inp,height:240,resize:"vertical"}} placeholder="Paste your CV or describe your experience..." value={cv} onChange={e=>setCv(e.target.value)}/>
+                {!cv&&<button onClick={()=>setCv(SAMPLE_CV)} style={{...ghost(),marginTop:8,fontSize:11,padding:"5px 12px"}}>Use sample CV →</button>}
               </div>
             </div>
 
-            {/* Loading bar */}
-            {resumeLoading && (
-              <div style={{ background:C.white, border:`1px solid ${C.teal}30`, borderRadius:10, padding:"16px 20px", marginBottom:20, boxShadow:C.shadowMd }}>
-                <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-                  <div style={{ width:20, height:20, border:`2px solid ${C.teal}40`, borderTopColor:C.teal, borderRadius:"50%", animation:"spin 0.8s linear infinite", flexShrink:0 }}/>
-                  <div style={{ flex:1 }}>
-                    <div style={{ fontSize:14, fontWeight:600, color:C.navy, marginBottom:3 }}>{LOADING_PHASES[loadingPhase]?.icon} {LOADING_PHASES[loadingPhase]?.text}</div>
-                    <div style={{ height:4, background:C.gray100, borderRadius:4, overflow:"hidden" }}>
-                      <div style={{ height:"100%", background:C.teal, borderRadius:4, width:`${((loadingPhase+1)/LOADING_PHASES.length)*100}%`, transition:"width 3.5s ease" }}/>
+            {/* Progress bar */}
+            {loading&&(
+              <div style={{background:"#fff",border:"1px solid #e0e7ff",borderRadius:10,padding:"14px 18px",marginBottom:14,boxShadow:"0 1px 4px rgba(79,70,229,0.1)",animation:"prog 2s infinite"}}>
+                <div style={{display:"flex",alignItems:"center",gap:12}}>
+                  <div style={{width:16,height:16,border:"2px solid #e0e7ff",borderTopColor:"#4f46e5",borderRadius:"50%",animation:"spin 0.8s linear infinite",flexShrink:0}}/>
+                  <div style={{flex:1}}>
+                    <div style={{fontSize:13,fontWeight:600,color:"#4f46e5",marginBottom:6}}>{LOADING_PHASES[phase]?.icon} {LOADING_PHASES[phase]?.text}</div>
+                    <div style={{height:4,background:"#e0e7ff",borderRadius:2}}>
+                      <div style={{height:4,background:"linear-gradient(90deg,#4f46e5,#7c3aed)",borderRadius:2,width:`${((phase+1)/LOADING_PHASES.length)*100}%`,transition:"width 0.5s ease"}}/>
                     </div>
                   </div>
-                  <div style={{ fontSize:12, color:C.gray400 }}>{loadingPhase+1}/{LOADING_PHASES.length}</div>
+                  <div style={{fontSize:11,color:"#a5b4fc",fontWeight:600}}>{Math.round(((phase+1)/LOADING_PHASES.length)*100)}%</div>
                 </div>
               </div>
             )}
 
-            {/* Action buttons */}
-            <div style={{ display:"flex", gap:10, marginBottom:36, flexWrap:"wrap", alignItems:"center" }}>
-              <button onClick={generateResume} disabled={resumeLoading||!jd||!cv} style={{ ...btnPrimary({ opacity:resumeLoading||!jd||!cv?0.5:1, padding:"13px 28px", fontSize:14, fontWeight:700 }) }}>
-                {resumeLoading ? "Generating..." : "✦ Generate Tailored Resume"}
+            <div style={{display:"flex",gap:10,marginBottom:24,flexWrap:"wrap"}}>
+              <button onClick={generate} disabled={loading||!jd||!cv} style={{...btn(),opacity:loading||!jd||!cv?0.5:1,background:"linear-gradient(135deg,#4f46e5,#7c3aed)"}}>
+                {loading?"Generating...":"✦ Generate Tailored Resume"}
               </button>
-              {resumeResult && !resumeResult.error && (<>
-                <button onClick={handleDownload} style={btnOutline({ color:downloadSuccess?C.green:C.blue, borderColor:downloadSuccess?C.green:C.blue })}>
-                  {downloadSuccess?"✓ Downloaded!":"⬇ Download Resume"}
+              {result&&!result.error&&(<>
+                <button onClick={()=>{setTab("cover");genCover();}} style={ghost({color:"#7c3aed",borderColor:"#ddd6fe"})}>✉ Cover Letter</button>
+                <button onClick={()=>{setTab("interview");genInterview();}} style={ghost({color:"#0891b2",borderColor:"#bae6fd"})}>◆ Interview Prep</button>
+                <button onClick={()=>{navigator.clipboard.writeText([result.resume?.name,result.resume?.contact,"",result.resume?.summary].join("\n"));setCopied(true);setTimeout(()=>setCopied(false),1500);}} style={ghost({color:copied?"#16a34a":"#6b7280"})}>
+                  {copied?"✓ Copied":"Copy Text"}
                 </button>
-                <button onClick={()=>{navigator.clipboard.writeText(resumeResult.resume?.summary||"");setCopied(true);setTimeout(()=>setCopied(false),1800);}} style={btnOutline({ color:copied?C.green:C.gray600 })}>
-                  {copied?"✓ Copied":"Copy Summary"}
-                </button>
-                <button onClick={()=>{setTab("cover");generateCover();}} style={btnOutline({ color:C.purple, borderColor:C.purple })}>✉ Cover Letter</button>
-                <button onClick={()=>{setTab("interview");generateInterview();}} style={btnOutline({ color:C.blue, borderColor:C.blue })}>◆ Interview Prep</button>
               </>)}
             </div>
 
-            {/* Results */}
-            {resumeResult && !resumeResult.error && (
-              <div ref={resultRef} style={{ animation:"fadeUp 0.4s ease" }}>
-
-                {/* 4 score cards */}
-                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr 1fr", gap:14, marginBottom:16 }}>
-                  <Card style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:8, padding:20, textAlign:"center" }}>
-                    <div style={{ fontSize:11, fontWeight:600, color:C.gray500, letterSpacing:1, textTransform:"uppercase" }}>ATS Score</div>
-                    <ScoreRing score={resumeResult.matchScore} size={74} color={resumeResult.matchScore>=80?C.green:resumeResult.matchScore>=65?C.amber:C.red}/>
-                    <div style={{ fontSize:11, fontWeight:700, color:resumeResult.matchScore>=80?C.green:resumeResult.matchScore>=65?C.amber:C.red }}>
-                      {resumeResult.matchScore>=80?"Strong Match":resumeResult.matchScore>=65?"Good Match":"Needs Work"}
+            {result&&!result.error&&(
+              <div ref={ref}>
+                {/* 3 score cards */}
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12,marginBottom:14}}>
+                  <Card style={{display:"flex",flexDirection:"column",alignItems:"center",gap:8}}>
+                    <SLabel>ATS Score</SLabel>
+                    <ScoreRing score={result.matchScore} size={76}/>
+                    <div style={{fontSize:11,fontWeight:600,color:result.matchScore>=80?"#16a34a":result.matchScore>=65?"#d97706":"#dc2626"}}>
+                      {result.matchScore>=80?"Strong Match":result.matchScore>=65?"Good Match":"Needs Work"}
                     </div>
                   </Card>
-
-                  <Card style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:8, padding:20, textAlign:"center" }}>
-                    <div style={{ fontSize:11, fontWeight:600, color:C.gray500, letterSpacing:1, textTransform:"uppercase" }}>Human Appeal</div>
-                    <ScoreRing score={resumeResult.hiringManagerScore} size={74} color={C.purple}/>
-                    <div style={{ fontSize:11, fontWeight:700, color:C.purple }}>Hiring Manager</div>
+                  <Card style={{display:"flex",flexDirection:"column",alignItems:"center",gap:8}}>
+                    <SLabel color="#7c3aed">Human Appeal</SLabel>
+                    <ScoreRing score={result.hiringManagerScore} size={76} color="#7c3aed"/>
+                    <div style={{fontSize:11,fontWeight:600,color:"#7c3aed"}}>Hiring Manager View</div>
                   </Card>
-
-                  <Card style={{ padding:20 }}>
-                    <div style={{ fontSize:11, fontWeight:600, color:C.gray500, letterSpacing:1, textTransform:"uppercase", marginBottom:10 }}>💰 Salary Intelligence</div>
-                    {resumeResult.salaryIntelligence ? (<>
-                      <div style={{ fontSize:22, fontWeight:800, color:C.green, marginBottom:2 }}>{resumeResult.salaryIntelligence.recommendedAsk}</div>
-                      <div style={{ fontSize:11, color:C.gray500, marginBottom:6 }}>Market: {resumeResult.salaryIntelligence.marketMin}–{resumeResult.salaryIntelligence.marketMax}</div>
-                      <div style={{ fontSize:11, color:C.gray600, lineHeight:1.5 }}>{resumeResult.salaryIntelligence.insight}</div>
-                    </>) : <div style={{ fontSize:12, color:C.gray400 }}>Not available</div>}
-                  </Card>
-
-                  <Card style={{ padding:20 }}>
-                    <div style={{ fontSize:11, fontWeight:600, color:C.gray500, letterSpacing:1, textTransform:"uppercase", marginBottom:10 }}>🛂 Visa Status</div>
-                    <div style={{ fontSize:24, marginBottom:6 }}>{resumeResult.visaFriendly?"✅":"⚠️"}</div>
-                    <div style={{ fontSize:13, fontWeight:700, color:resumeResult.visaFriendly?C.green:C.amber, marginBottom:4 }}>
-                      {resumeResult.visaFriendly?"Likely Sponsors Visas":"Check Sponsorship"}
-                    </div>
-                    <div style={{ fontSize:11, color:C.gray500 }}>Based on company & sector analysis</div>
+                  <Card>
+                    <SLabel color="#059669">💰 Salary Intelligence</SLabel>
+                    {result.salaryIntelligence?(<>
+                      <div style={{fontSize:24,fontWeight:800,color:"#059669",marginBottom:2}}>{result.salaryIntelligence.recommendedAsk}</div>
+                      <div style={{fontSize:10,color:"#9ca3af",marginBottom:5}}>Market: {result.salaryIntelligence.marketMin} – {result.salaryIntelligence.marketMax}</div>
+                      <div style={{fontSize:11,color:"#6b7280",lineHeight:1.6}}>{result.salaryIntelligence.insight}</div>
+                    </>):<div style={{fontSize:12,color:"#9ca3af"}}>Not available</div>}
                   </Card>
                 </div>
 
                 {/* JD Analysis */}
                 <Card>
-                  <SectionLabel>JD Analysis — {resumeResult.jdAnalysis?.role} at {resumeResult.jdAnalysis?.company}</SectionLabel>
-                  <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:18 }}>
+                  <SLabel>JD Analysis — {result.jdAnalysis?.role} at {result.jdAnalysis?.company}</SLabel>
+                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:14}}>
                     <div>
-                      <div style={{ fontSize:10, fontWeight:700, color:C.green, letterSpacing:1, textTransform:"uppercase", marginBottom:7 }}>Must-Have</div>
-                      {resumeResult.jdAnalysis?.mustHave?.map(s=><Badge key={s} color={C.green} bg={C.greenLight}>{s}</Badge>)}
+                      <div style={{fontSize:10,color:"#9ca3af",fontWeight:600,marginBottom:6,letterSpacing:1}}>MUST-HAVE</div>
+                      {result.jdAnalysis?.mustHave?.map(s=><Chip key={s} text={s} color="#16a34a" bg="#f0fdf4"/>)}
                     </div>
                     <div>
-                      <div style={{ fontSize:10, fontWeight:700, color:C.amber, letterSpacing:1, textTransform:"uppercase", marginBottom:7 }}>Nice to Have</div>
-                      {resumeResult.jdAnalysis?.niceToHave?.map(s=><Badge key={s} color={C.amber} bg={C.amberLight}>{s}</Badge>)}
+                      <div style={{fontSize:10,color:"#9ca3af",fontWeight:600,marginBottom:6,letterSpacing:1}}>NICE TO HAVE</div>
+                      {result.jdAnalysis?.niceToHave?.map(s=><Chip key={s} text={s} color="#d97706" bg="#fffbeb"/>)}
                     </div>
                     <div>
-                      <div style={{ fontSize:10, fontWeight:700, color:C.purple, letterSpacing:1, textTransform:"uppercase", marginBottom:7 }}>ATS Keywords</div>
-                      {resumeResult.jdAnalysis?.keywords?.map(k=><Badge key={k} color={C.purple} bg={C.purpleLight}>{k}</Badge>)}
+                      <div style={{fontSize:10,color:"#9ca3af",fontWeight:600,marginBottom:6,letterSpacing:1}}>ATS KEYWORDS</div>
+                      {result.jdAnalysis?.keywords?.map(k=><Chip key={k} text={k} color="#7c3aed" bg="#f5f3ff"/>)}
                     </div>
                   </div>
-                  <div style={{ marginTop:14, padding:"12px 14px", background:C.tealLight, borderRadius:8, borderLeft:`3px solid ${C.teal}` }}>
-                    <div style={{ fontSize:10, fontWeight:700, color:C.teal, marginBottom:4 }}>HIRING INTENT</div>
-                    <div style={{ fontSize:12, color:C.gray700, lineHeight:1.6 }}>{resumeResult.jdAnalysis?.hiringIntent}</div>
-                  </div>
+                  {result.jdAnalysis?.hiringIntent&&(
+                    <div style={{marginTop:12,padding:11,background:"#f0f0ff",borderRadius:7,borderLeft:"3px solid #4f46e5"}}>
+                      <div style={{fontSize:10,fontWeight:700,color:"#4f46e5",marginBottom:3}}>HIRING INTENT</div>
+                      <div style={{fontSize:12,color:"#374151",lineHeight:1.6}}>{result.jdAnalysis.hiringIntent}</div>
+                    </div>
+                  )}
                 </Card>
 
-                {/* Hiring Manager Psychology */}
-                {resumeResult.hiringManagerInsights && (
+                {/* HM Psychology */}
+                {result.hiringManagerInsights&&(
                   <Card>
-                    <SectionLabel>🧠 Hiring Manager Psychology</SectionLabel>
-                    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:14 }}>
-                      {[
-                        {label:"FIRST IMPRESSION (10 seconds)",key:"firstImpression",color:C.purple,bg:C.purpleLight},
-                        {label:"HUMAN APPEAL",key:"humanAppeal",color:C.green,bg:C.greenLight},
-                      ].map(({label,key,color,bg})=>(
-                        <div key={key}>
-                          <div style={{ fontSize:10, fontWeight:700, color, letterSpacing:1, marginBottom:7 }}>{label}</div>
-                          <div style={{ fontSize:12, color:C.gray700, lineHeight:1.6, padding:"10px 12px", background:bg, borderRadius:7 }}>{resumeResult.hiringManagerInsights[key]}</div>
-                        </div>
-                      ))}
-                      <div>
-                        <div style={{ fontSize:10, fontWeight:700, color:C.red, letterSpacing:1, marginBottom:7 }}>POTENTIAL RED FLAGS</div>
-                        {resumeResult.hiringManagerInsights.redFlags?.map((r,i)=><div key={i} style={{ fontSize:12, color:C.gray700, padding:"4px 0", borderBottom:`1px solid ${C.gray100}` }}>⚠ {r}</div>)}
+                    <SLabel color="#7c3aed">🧠 Hiring Manager Psychology</SLabel>
+                    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:11}}>
+                      <div style={{padding:11,background:"#f5f3ff",borderRadius:7}}>
+                        <div style={{fontSize:10,fontWeight:700,color:"#7c3aed",marginBottom:5}}>FIRST IMPRESSION (10 seconds)</div>
+                        <div style={{fontSize:12,color:"#374151",lineHeight:1.6}}>{result.hiringManagerInsights.firstImpression}</div>
+                      </div>
+                      <div style={{padding:11,background:"#f0fdf4",borderRadius:7}}>
+                        <div style={{fontSize:10,fontWeight:700,color:"#16a34a",marginBottom:5}}>HUMAN APPEAL</div>
+                        <div style={{fontSize:12,color:"#374151",lineHeight:1.6}}>{result.hiringManagerInsights.humanAppeal}</div>
                       </div>
                       <div>
-                        <div style={{ fontSize:10, fontWeight:700, color:C.amber, letterSpacing:1, marginBottom:7 }}>STANDOUT FACTORS</div>
-                        {resumeResult.hiringManagerInsights.standoutFactors?.map((s,i)=><div key={i} style={{ fontSize:12, color:C.gray700, padding:"4px 0", borderBottom:`1px solid ${C.gray100}` }}>⭐ {s}</div>)}
+                        <div style={{fontSize:10,fontWeight:700,color:"#dc2626",marginBottom:5}}>POTENTIAL RED FLAGS</div>
+                        {result.hiringManagerInsights.redFlags?.map((r,i)=><div key={i} style={{fontSize:12,color:"#6b7280",padding:"3px 0"}}>⚠ {r}</div>)}
+                      </div>
+                      <div>
+                        <div style={{fontSize:10,fontWeight:700,color:"#d97706",marginBottom:5}}>STANDOUT FACTORS</div>
+                        {result.hiringManagerInsights.standoutFactors?.map((s,i)=><div key={i} style={{fontSize:12,color:"#6b7280",padding:"3px 0"}}>⭐ {s}</div>)}
                       </div>
                     </div>
                   </Card>
@@ -771,228 +485,169 @@ CV: ${cv}`);
 
                 {/* Gap Analysis */}
                 <Card>
-                  <SectionLabel>Gap Analysis</SectionLabel>
-                  <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:18 }}>
-                    {[["✓ Strengths","strengths",C.green,C.greenLight],["✗ Gaps","gaps",C.red,C.redLight],["⇄ Transferable","transferable",C.amber,C.amberLight]].map(([label,key,c,bg])=>(
+                  <SLabel>Gap Analysis</SLabel>
+                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:14}}>
+                    {[["✓ Strengths","strengths","#16a34a"],["✗ Gaps","gaps","#dc2626"],["⇄ Transferable","transferable","#d97706"]].map(([label,key,color])=>(
                       <div key={key}>
-                        <div style={{ fontSize:11, fontWeight:700, color:c, marginBottom:8 }}>{label}</div>
-                        {resumeResult.gapAnalysis?.[key]?.map((s,i)=>(
-                          <div key={i} style={{ fontSize:12, color:C.gray700, padding:"5px 0", borderBottom:`1px solid ${C.gray100}`, display:"flex", gap:7, alignItems:"flex-start" }}>
-                            <span style={{ color:c, flexShrink:0 }}>•</span>{s}
-                          </div>
-                        ))}
+                        <div style={{fontSize:11,fontWeight:700,color,marginBottom:8}}>{label}</div>
+                        {result.gapAnalysis?.[key]?.map((s,i)=><div key={i} style={{fontSize:12,color:"#6b7280",padding:"3px 0",borderBottom:"1px solid #f9fafb"}}>• {s}</div>)}
                       </div>
                     ))}
                   </div>
                 </Card>
 
-                {/* Resume Preview with format picker */}
-                <Card noPad>
-                  <div style={{ padding:"20px 24px 16px", borderBottom:`1px solid ${C.gray100}`, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                    <div>
-                      <SectionLabel style={{ marginBottom:2 }}>✦ Tailored Resume</SectionLabel>
-                      <div style={{ fontSize:12, color:C.gray500 }}>Format: <strong style={{ color:C.navy }}>{RESUME_FORMATS.find(f=>f.id===selectedFormat)?.name}</strong> · Download to open/print as PDF</div>
-                    </div>
-                    <div style={{ display:"flex", gap:8 }}>
-                      {RESUME_FORMATS.map(fmt=>(
-                        <button key={fmt.id} onClick={()=>setSelectedFormat(fmt.id)} style={{ padding:"5px 12px", borderRadius:6, border:`1.5px solid ${selectedFormat===fmt.id?fmt.accentColor:C.gray200}`, background:selectedFormat===fmt.id?`${fmt.accentColor}10`:C.white, color:selectedFormat===fmt.id?fmt.accentColor:C.gray500, fontSize:11, fontWeight:600, cursor:"pointer" }}>
-                          {fmt.icon} {fmt.name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div style={{ padding:"24px" }}>
-                    {/* Resume content preview */}
-                    <div style={{ background:C.gray50, borderRadius:8, padding:24, border:`1px solid ${C.gray200}` }}>
-                      {resumeResult.resume && (<>
-                        <div style={{ marginBottom:16, paddingBottom:14, borderBottom:`2px solid ${C.navy}` }}>
-                          <div style={{ fontSize:22, fontWeight:800, color:C.navy }}>{resumeResult.resume.name}</div>
-                          <div style={{ fontSize:12, color:C.gray500, marginTop:3 }}>{resumeResult.resume.contact}</div>
-                          <div style={{ display:"flex", gap:8, marginTop:8 }}>
-                            <span style={{ fontSize:11, fontWeight:600, color:C.green, background:C.greenLight, padding:"3px 10px", borderRadius:12 }}>ATS: {resumeResult.matchScore}%</span>
-                            {resumeResult.hiringManagerScore && <span style={{ fontSize:11, fontWeight:600, color:C.purple, background:C.purpleLight, padding:"3px 10px", borderRadius:12 }}>Human: {resumeResult.hiringManagerScore}%</span>}
-                          </div>
-                        </div>
-                        <div style={{ marginBottom:14 }}>
-                          <div style={{ fontSize:10, fontWeight:700, color:C.teal, letterSpacing:1.5, textTransform:"uppercase", marginBottom:7 }}>Professional Summary</div>
-                          <p style={{ fontSize:13, color:C.gray700, lineHeight:1.75, margin:0 }}>{resumeResult.resume.summary}</p>
-                        </div>
-                        <div style={{ marginBottom:14 }}>
-                          <div style={{ fontSize:10, fontWeight:700, color:C.teal, letterSpacing:1.5, textTransform:"uppercase", marginBottom:7 }}>Core Skills</div>
-                          {resumeResult.resume.skills?.map(s=><Badge key={s} color={C.teal} bg={C.tealLight}>{s}</Badge>)}
-                        </div>
-                        <div style={{ marginBottom:14 }}>
-                          <div style={{ fontSize:10, fontWeight:700, color:C.teal, letterSpacing:1.5, textTransform:"uppercase", marginBottom:10 }}>Experience</div>
-                          {resumeResult.resume.experience?.map((exp,i)=>(
-                            <div key={i} style={{ marginBottom:16, paddingBottom:16, borderBottom:i<resumeResult.resume.experience.length-1?`1px solid ${C.gray100}`:"none" }}>
-                              <div style={{ display:"flex", justifyContent:"space-between", marginBottom:7 }}>
-                                <div><span style={{ fontSize:13, fontWeight:700, color:C.navy }}>{exp.title}</span><span style={{ color:C.gray300, margin:"0 7px" }}>|</span><span style={{ fontSize:12, color:C.gray600 }}>{exp.company}</span></div>
-                                <span style={{ fontSize:11, color:C.gray400 }}>{exp.period}</span>
-                              </div>
-                              {exp.bullets?.map((b,j)=><div key={j} style={{ fontSize:12, color:C.gray700, paddingLeft:14, lineHeight:1.65, position:"relative", marginBottom:3 }}><span style={{ position:"absolute", left:0, color:C.teal }}>▸</span>{b}</div>)}
-                            </div>
-                          ))}
-                        </div>
-                        <div>
-                          <div style={{ fontSize:10, fontWeight:700, color:C.teal, letterSpacing:1.5, textTransform:"uppercase", marginBottom:7 }}>Education & Certifications</div>
-                          <div style={{ fontSize:12, color:C.gray700 }}>{resumeResult.resume.education}</div>
-                        </div>
-                      </>)}
-                    </div>
-                    <div style={{ marginTop:16, display:"flex", gap:10 }}>
-                      <button onClick={handleDownload} style={{ ...btnPrimary(), flex:1, justifyContent:"center" }}>
-                        ⬇ Download as {RESUME_FORMATS.find(f=>f.id===selectedFormat)?.name} Format
-                      </button>
-                    </div>
-                  </div>
+                {/* Format picker + resume preview */}
+                <Card>
+                  <SLabel>✦ Your Tailored Resume</SLabel>
+                  <FormatPicker resume={result.resume} selected={fmt} onSelect={setFmt} onDownload={f=>downloadResume(result.resume,f)}/>
                 </Card>
 
                 {/* Improvements */}
                 <Card>
-                  <SectionLabel>💡 Strategic Improvements</SectionLabel>
-                  {resumeResult.improvements?.map((tip,i)=>(
-                    <div key={i} style={{ display:"flex", gap:12, padding:"10px 0", borderBottom:i<resumeResult.improvements.length-1?`1px solid ${C.gray100}`:"none" }}>
-                      <div style={{ width:24, height:24, borderRadius:"50%", background:C.tealLight, color:C.teal, fontSize:11, fontWeight:700, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>{i+1}</div>
-                      <div style={{ fontSize:13, color:C.gray700, lineHeight:1.65 }}>{tip}</div>
+                  <SLabel>💡 Strategic Improvements</SLabel>
+                  {result.improvements?.map((tip,i)=>(
+                    <div key={i} style={{display:"flex",gap:12,padding:"10px 0",borderBottom:i<result.improvements.length-1?"1px solid #f9fafb":"none"}}>
+                      <div style={{width:22,height:22,borderRadius:"50%",background:"#f0f0ff",border:"1px solid #c7d2fe",color:"#4f46e5",fontSize:10,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{i+1}</div>
+                      <div style={{fontSize:12,color:"#6b7280",lineHeight:1.7}}>{tip}</div>
                     </div>
                   ))}
                 </Card>
               </div>
             )}
-            {resumeResult?.error && <div style={{ background:C.redLight, border:`1px solid #fecaca`, borderRadius:8, padding:"12px 16px", color:C.red, fontSize:13 }}>⚠ {resumeResult.error}</div>}
+            {result?.error&&<div style={{background:"#fef2f2",border:"1px solid #fecaca",borderRadius:10,padding:14,color:"#dc2626",fontSize:13}}>⚠ {result.error}</div>}
           </div>
         )}
 
-        {/* ══════════════ JOB SEARCH ══════════════ */}
-        {tab === "jobs" && (
-          <div style={{ animation:"fadeUp 0.35s ease" }}>
-            <div style={{ marginBottom:28 }}>
-              <h2 style={{ fontSize:28, fontWeight:800, color:C.navy, marginBottom:6, letterSpacing:-0.5 }}>Job Search</h2>
-              <p style={{ color:C.gray500, fontSize:14 }}>Real jobs from Adzuna, JSearch (LinkedIn/Indeed/Glassdoor) & Reed · UK · US · India</p>
+        {/* ════ JOB SEARCH ════ */}
+        {tab==="jobs"&&(
+          <div style={{animation:"fadeIn 0.3s ease"}}>
+            <div style={{marginBottom:20}}>
+              <h2 style={{fontSize:26,fontWeight:800,color:"#111827",marginBottom:4,letterSpacing:-0.5}}>Job Search</h2>
+              <p style={{color:"#6b7280",fontSize:14}}>Real jobs from Adzuna, JSearch, Reed · UK · US · India</p>
+            </div>
+            <div style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap"}}>
+              {COUNTRIES.map(c=>(
+                <button key={c.code} onClick={()=>setCountry(c.code)} style={{padding:"8px 18px",borderRadius:20,background:country===c.code?"#4f46e5":"#fff",border:`1.5px solid ${country===c.code?"#4f46e5":"#e2e8f0"}`,color:country===c.code?"#fff":"#374151",fontSize:13,fontWeight:500,cursor:"pointer",boxShadow:country===c.code?"0 2px 6px rgba(79,70,229,0.25)":"none"}}>{c.label}</button>
+              ))}
+            </div>
+            <div style={{display:"flex",gap:10,marginBottom:20}}>
+              <input style={{...inp,flex:1}} placeholder={`Search jobs in ${COUNTRIES.find(c=>c.code===country)?.label}...`} value={jobQ} onChange={e=>setJobQ(e.target.value)} onKeyDown={e=>e.key==="Enter"&&searchJobs()}/>
+              <button onClick={searchJobs} disabled={jobLoading} style={btn({flexShrink:0,background:"linear-gradient(135deg,#4f46e5,#7c3aed)"})}>{jobLoading?"Searching...":"Search Jobs"}</button>
             </div>
 
-            <Card>
-              <div style={{ display:"flex", gap:8, marginBottom:16, flexWrap:"wrap" }}>
-                {COUNTRIES.map(c=>(
-                  <button key={c.code} onClick={()=>setSelectedCountry(c.code)} style={{ padding:"8px 18px", borderRadius:20, background:selectedCountry===c.code?C.teal:C.white, border:`1.5px solid ${selectedCountry===c.code?C.teal:C.gray200}`, color:selectedCountry===c.code?"#fff":C.gray600, fontSize:13, fontWeight:600, cursor:"pointer" }}>
-                    {c.label}
-                  </button>
-                ))}
-                <button onClick={()=>setVisaOnly(!visaOnly)} style={{ padding:"8px 18px", borderRadius:20, background:visaOnly?C.greenLight:C.white, border:`1.5px solid ${visaOnly?C.green:C.gray200}`, color:visaOnly?C.green:C.gray600, fontSize:13, fontWeight:600, cursor:"pointer" }}>
-                  🛂 {visaOnly?"✓ Visa Sponsorship Only":"Visa Sponsorship Filter"}
-                </button>
-              </div>
-              <div style={{ display:"flex", gap:10 }}>
-                <input style={{ ...inp, flex:1 }} placeholder={`Search jobs in ${COUNTRIES.find(c=>c.code===selectedCountry)?.label}...`} value={jobSearch} onChange={e=>setJobSearch(e.target.value)} onKeyDown={e=>e.key==="Enter"&&searchJobs()}/>
-                <button onClick={searchJobs} disabled={jobSearching} style={btnPrimary({ flexShrink:0, padding:"11px 24px" })}>
-                  {jobSearching?"Searching...":"Search Jobs"}
-                </button>
-              </div>
-            </Card>
-
-            {jobSearching && (
-              <div style={{ textAlign:"center", padding:48 }}>
-                <div style={{ width:36, height:36, border:`3px solid ${C.teal}30`, borderTopColor:C.teal, borderRadius:"50%", animation:"spin 0.8s linear infinite", margin:"0 auto 14px" }}/>
-                <div style={{ color:C.gray500, fontSize:13 }}>Searching Adzuna, JSearch & Reed...</div>
+            {jobLoading&&(
+              <div style={{textAlign:"center",padding:48}}>
+                <div style={{width:28,height:28,border:"3px solid #e0e7ff",borderTopColor:"#4f46e5",borderRadius:"50%",animation:"spin 0.8s linear infinite",margin:"0 auto 12px"}}/>
+                <div style={{color:"#6b7280",fontSize:13}}>Searching Adzuna, JSearch, Reed...</div>
               </div>
             )}
 
-            {!jobSearching && jobs.length===0 && (
-              <div style={{ textAlign:"center", padding:64 }}>
-                <div style={{ fontSize:40, marginBottom:14 }}>🔍</div>
-                <div style={{ fontSize:17, fontWeight:600, color:C.navy, marginBottom:8 }}>Search for real jobs above</div>
-                <div style={{ fontSize:13, color:C.gray500 }}>Try "product manager", "software engineer", "data analyst"</div>
+            {!jobLoading&&jobs.length===0&&(
+              <div style={{textAlign:"center",padding:60,color:"#9ca3af"}}>
+                <div style={{fontSize:44,marginBottom:14}}>🔍</div>
+                <div style={{fontSize:16,fontWeight:600,color:"#374151",marginBottom:6}}>Search for jobs above</div>
+                <div style={{fontSize:13}}>Try "product manager", "software engineer", "data analyst"</div>
               </div>
             )}
 
             {jobs.map(job=>(
-              <Card key={job.id} style={{ cursor:"pointer", border:selectedJob===job.id?`1.5px solid ${C.teal}`:`1px solid ${C.gray200}`, transition:"all 0.15s" }} onClick={()=>setSelectedJob(selectedJob===job.id?null:job.id)}>
-                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:14 }}>
-                  <div style={{ flex:1 }}>
-                    <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6, flexWrap:"wrap" }}>
-                      <span style={{ fontSize:15, fontWeight:700, color:C.navy }}>{job.title}</span>
-                      <PlatformTag platform={job.platform}/>
-                      {visaOnly && <span style={{ fontSize:10, fontWeight:700, color:C.green, background:C.greenLight, padding:"2px 8px", borderRadius:10 }}>🛂 Visa</span>}
+              <div key={job.id} className="jcard" style={{background:"#fff",border:"1.5px solid #e8ecf0",borderRadius:12,padding:18,marginBottom:10,boxShadow:"0 1px 3px rgba(0,0,0,0.04)"}}>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:12}}>
+                  <div style={{flex:1}}>
+                    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:5,flexWrap:"wrap"}}>
+                      <span style={{fontSize:15,fontWeight:700,color:"#111827"}}>{job.title}</span>
+                      <PBadge platform={job.platform}/>
+                      {job.visaSponsorship&&(
+                        <span style={{fontSize:10,fontWeight:700,color:"#16a34a",background:"#f0fdf4",border:"1px solid #bbf7d0",padding:"2px 8px",borderRadius:10}}>🛂 Visa Sponsorship</span>
+                      )}
                     </div>
-                    <div style={{ display:"flex", gap:14, marginBottom:8, flexWrap:"wrap" }}>
-                      <span style={{ fontSize:12, color:C.gray600, fontWeight:500 }}>🏢 {job.company}</span>
-                      <span style={{ fontSize:12, color:C.gray500 }}>📍 {job.location}</span>
-                      {job.salary&&job.salary!=="Competitive"&&<span style={{ fontSize:12, color:C.gray500 }}>💰 {job.salary}</span>}
-                      <span style={{ fontSize:12, color:C.gray400 }}>🕐 {job.posted}</span>
+                    <div style={{display:"flex",gap:14,marginBottom:6,flexWrap:"wrap"}}>
+                      <span style={{fontSize:12,color:"#6b7280"}}>🏢 {job.company}</span>
+                      <span style={{fontSize:12,color:"#9ca3af"}}>📍 {job.location}</span>
+                      {job.salary&&job.salary!=="Competitive"&&<span style={{fontSize:12,color:"#9ca3af"}}>💰 {job.salary}</span>}
+                      <span style={{fontSize:12,color:"#9ca3af"}}>🕐 {job.posted}</span>
                     </div>
-                    {job.tags?.length>0&&<div>{job.tags.map(t=><Badge key={t}>{t}</Badge>)}</div>}
-                  </div>
-                  <ScoreRing score={job.match} size={52} color={C.teal}/>
-                </div>
-
-                {selectedJob===job.id&&(
-                  <div style={{ marginTop:16, paddingTop:16, borderTop:`1px solid ${C.gray100}` }}>
-                    <p style={{ fontSize:13, color:C.gray600, lineHeight:1.7, marginBottom:16 }}>{job.description}</p>
-                    <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
-                      <button onClick={e=>{e.stopPropagation();setJd(job.description+"\n\nRole: "+job.title+"\nCompany: "+job.company);setTab("builder");}} style={btnPrimary()}>✦ Tailor Resume</button>
-                      <button onClick={e=>{e.stopPropagation();applyToJob(job);}} disabled={applyingJob===job.id} style={btnOutline({color:C.blue,borderColor:C.blue})}>
-                        {applyingJob===job.id?"Opening...":applySuccess===job.id?"✓ Opened!":"Apply Now →"}
+                    {job.tags?.length>0&&<div style={{marginBottom:8}}>{job.tags.map(t=><Chip key={t} text={t}/>)}</div>}
+                    {job.description&&<p style={{fontSize:12,color:"#9ca3af",lineHeight:1.6,marginBottom:12}}>{job.description}</p>}
+                    <div style={{display:"flex",gap:8,flexWrap:"wrap",alignItems:"center"}}>
+                      <button onClick={e=>applyJob(job,e)} disabled={applying===job.id}
+                        style={btn({fontSize:12,padding:"8px 16px",background:applied===job.id?"#16a34a":"linear-gradient(135deg,#4f46e5,#7c3aed)"})}>
+                        {applying===job.id?"Opening...":applied===job.id?"✓ Applied!":"Apply Now →"}
                       </button>
-                      <button onClick={e=>{e.stopPropagation();setApplications(prev=>prev.find(a=>a.title===job.title&&a.company===job.company)?prev:[...prev,{id:Date.now(),title:job.title,company:job.company,platform:job.platform,status:"Saved",appliedDate:"—",match:0}]);}} style={btnOutline()}>☆ Save</button>
+                      <button onClick={e=>{e.stopPropagation();setJd((job.description||job.title)+"\n\nRole: "+job.title+"\nCompany: "+job.company);setTab("builder");}}
+                        style={ghost({fontSize:12,color:"#4f46e5",borderColor:"#c7d2fe"})}>✦ Tailor Resume</button>
+                      <button onClick={e=>saveJob(job,e)}
+                        style={ghost({fontSize:12,color:apps.find(a=>a.title===job.title&&a.company===job.company)?"#16a34a":"#6b7280",borderColor:apps.find(a=>a.title===job.title&&a.company===job.company)?"#bbf7d0":"#e2e8f0"})}>
+                        {apps.find(a=>a.title===job.title&&a.company===job.company)?"✓ Saved":"☆ Save"}
+                      </button>
+                      {result?.resume&&(
+                        <button onClick={e=>{e.stopPropagation();setJobFmt(jobFmt===job.id?null:job.id);setJobFmtSel("classic");}}
+                          style={ghost({fontSize:12,color:"#7c3aed",borderColor:"#ddd6fe"})}>
+                          {jobFmt===job.id?"✕ Close":"📄 Download Resume"}
+                        </button>
+                      )}
                     </div>
+                    {jobFmt===job.id&&result?.resume&&(
+                      <div style={{marginTop:14,padding:16,background:"#f8fafc",borderRadius:8,border:"1px solid #e8ecf0"}}>
+                        <FormatPicker resume={result.resume} selected={jobFmtSel} onSelect={setJobFmtSel} onDownload={f=>downloadResume(result.resume,f)}/>
+                      </div>
+                    )}
                   </div>
-                )}
-              </Card>
+                  <ScoreRing score={job.match} size={52}/>
+                </div>
+              </div>
             ))}
-
-            {jobs.length>0&&<div style={{ textAlign:"center", padding:"12px 0", fontSize:11, color:C.gray400 }}>{jobs.length} real jobs · Adzuna + JSearch + Reed · Live data</div>}
+            {jobs.length>0&&<div style={{textAlign:"center",padding:"12px 0",fontSize:11,color:"#d1d5db"}}>{jobs.length} live jobs · Adzuna + JSearch + Reed</div>}
           </div>
         )}
 
-        {/* ══════════════ TRACKER ══════════════ */}
-        {tab === "tracker" && (
-          <div style={{ animation:"fadeUp 0.35s ease" }}>
-            <div style={{ marginBottom:24 }}>
-              <h2 style={{ fontSize:28, fontWeight:800, color:C.navy, marginBottom:6, letterSpacing:-0.5 }}>Application Tracker</h2>
-              <p style={{ color:C.gray500, fontSize:14 }}>Track every application. Save from Job Search to populate this board.</p>
+        {/* ════ TRACKER ════ */}
+        {tab==="tracker"&&(
+          <div style={{animation:"fadeIn 0.3s ease"}}>
+            <div style={{marginBottom:20}}>
+              <h2 style={{fontSize:26,fontWeight:800,color:"#111827",marginBottom:4,letterSpacing:-0.5}}>Application Tracker</h2>
+              <p style={{color:"#6b7280",fontSize:14}}>Track every application from saved to offer.</p>
             </div>
-
-            {applications.length===0 ? (
-              <div style={{ textAlign:"center", padding:64 }}>
-                <div style={{ fontSize:40, marginBottom:14 }}>📋</div>
-                <div style={{ fontSize:17, fontWeight:600, color:C.navy, marginBottom:8 }}>No applications yet</div>
-                <div style={{ fontSize:13, color:C.gray500 }}>Go to Job Search → click a job → Save or Apply</div>
+            {apps.length===0?(
+              <div style={{textAlign:"center",padding:60,color:"#9ca3af"}}>
+                <div style={{fontSize:44,marginBottom:14}}>📋</div>
+                <div style={{fontSize:16,fontWeight:600,color:"#374151",marginBottom:6}}>No applications yet</div>
+                <div style={{fontSize:13}}>Go to Job Search and apply or save jobs</div>
               </div>
-            ) : (<>
-              <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:12, marginBottom:24 }}>
+            ):(<>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:12,marginBottom:20}}>
                 {[
-                  {label:"Total Applied",value:applications.filter(a=>a.status!=="Saved").length,color:C.blue},
-                  {label:"Saved",value:applications.filter(a=>a.status==="Saved").length,color:C.gray500},
-                  {label:"Interviewing",value:applications.filter(a=>a.status==="Interview").length,color:C.amber},
-                  {label:"Offers",value:applications.filter(a=>a.status==="Offer").length,color:C.green},
-                  {label:"Response Rate",value:applications.length?Math.round((applications.filter(a=>["Interview","Offer"].includes(a.status)).length/Math.max(1,applications.filter(a=>a.status!=="Saved").length))*100)+"%":"—",color:C.teal},
+                  {label:"Applied",value:apps.filter(a=>a.status!=="Saved").length,color:"#4f46e5"},
+                  {label:"Saved",value:apps.filter(a=>a.status==="Saved").length,color:"#6b7280"},
+                  {label:"Interview",value:apps.filter(a=>a.status==="Interview").length,color:"#d97706"},
+                  {label:"Offers",value:apps.filter(a=>a.status==="Offer").length,color:"#16a34a"},
+                  {label:"Avg Match",value:apps.length?Math.round(apps.reduce((s,a)=>s+(a.match||0),0)/apps.length)+"%":"—",color:"#7c3aed"},
                 ].map(s=>(
-                  <Card key={s.label} style={{ padding:"16px 18px" }}>
-                    <div style={{ fontSize:10, color:C.gray500, fontWeight:700, letterSpacing:1, textTransform:"uppercase", marginBottom:8 }}>{s.label}</div>
-                    <div style={{ fontSize:28, fontWeight:800, color:s.color }}>{s.value}</div>
-                  </Card>
+                  <div key={s.label} style={{background:"#fff",border:"1px solid #e8ecf0",borderRadius:10,padding:"14px 16px",boxShadow:"0 1px 3px rgba(0,0,0,0.04)"}}>
+                    <div style={{fontSize:10,color:"#9ca3af",fontWeight:600,letterSpacing:1,textTransform:"uppercase",marginBottom:6}}>{s.label}</div>
+                    <div style={{fontSize:26,fontWeight:800,color:s.color}}>{s.value}</div>
+                  </div>
                 ))}
               </div>
-
-              <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:12 }}>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:12}}>
                 {["Saved","Applied","Interview","Offer","Rejected"].map(status=>(
                   <div key={status}>
-                    <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:10 }}>
-                      <StatusDot status={status}/>
-                      <span style={{ fontSize:11, color:C.gray400 }}>{applications.filter(a=>a.status===status).length}</span>
+                    <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:8}}>
+                      <SBadge status={status}/>
+                      <span style={{fontSize:11,color:"#9ca3af"}}>{apps.filter(a=>a.status===status).length}</span>
                     </div>
-                    {applications.filter(a=>a.status===status).map(app=>(
-                      <Card key={app.id} style={{ padding:14, marginBottom:10 }}>
-                        <div style={{ fontSize:12, fontWeight:700, color:C.navy, marginBottom:3, lineHeight:1.4 }}>{app.title}</div>
-                        <div style={{ fontSize:11, color:C.gray500, marginBottom:10 }}>{app.company}</div>
-                        <PlatformTag platform={app.platform}/>
-                        <div style={{ display:"flex", gap:4, marginTop:10, flexWrap:"wrap" }}>
+                    {apps.filter(a=>a.status===status).map(app=>(
+                      <div key={app.id} style={{background:"#fff",border:"1px solid #e8ecf0",borderRadius:8,padding:12,marginBottom:8,boxShadow:"0 1px 2px rgba(0,0,0,0.03)"}}>
+                        <div style={{fontSize:12,fontWeight:600,color:"#111827",marginBottom:3,lineHeight:1.4}}>{app.title}</div>
+                        <div style={{fontSize:11,color:"#9ca3af",marginBottom:8}}>{app.company}</div>
+                        <PBadge platform={app.platform}/>
+                        <div style={{display:"flex",gap:4,marginTop:10,flexWrap:"wrap"}}>
                           {["Applied","Interview","Offer","Rejected"].filter(s=>s!==status).slice(0,2).map(s=>(
-                            <button key={s} onClick={()=>setApplications(prev=>prev.map(a=>a.id===app.id?{...a,status:s}:a))} style={{ background:C.gray50, border:`1px solid ${C.gray200}`, color:C.gray600, borderRadius:6, padding:"3px 8px", fontSize:10, cursor:"pointer" }}>→ {s}</button>
+                            <button key={s} onClick={()=>setApps(prev=>prev.map(a=>a.id===app.id?{...a,status:s}:a))} style={{background:"#f8fafc",border:"1px solid #e8ecf0",color:"#6b7280",borderRadius:5,padding:"2px 8px",fontSize:9,fontWeight:600,cursor:"pointer"}}>→{s}</button>
                           ))}
-                          <button onClick={()=>setApplications(prev=>prev.filter(a=>a.id!==app.id))} style={{ background:C.redLight, border:`1px solid #fecaca`, color:C.red, borderRadius:6, padding:"3px 8px", fontSize:10, cursor:"pointer" }}>✕</button>
+                          <button onClick={()=>setApps(prev=>prev.filter(a=>a.id!==app.id))} style={{background:"#fef2f2",border:"1px solid #fecaca",color:"#dc2626",borderRadius:5,padding:"2px 8px",fontSize:9,fontWeight:600,cursor:"pointer"}}>✕</button>
                         </div>
-                      </Card>
+                      </div>
                     ))}
                   </div>
                 ))}
@@ -1001,131 +656,118 @@ CV: ${cv}`);
           </div>
         )}
 
-        {/* ══════════════ COVER LETTER ══════════════ */}
-        {tab === "cover" && (
-          <div style={{ animation:"fadeUp 0.35s ease" }}>
-            <h2 style={{ fontSize:28, fontWeight:800, color:C.navy, marginBottom:6, letterSpacing:-0.5 }}>Cover Letter Generator</h2>
-            <p style={{ color:C.gray500, fontSize:14, marginBottom:28 }}>Professional cover letters — personalised, direct, no generic openers.</p>
-            {(!jd||!cv)&&<div style={{ background:C.amberLight, border:`1px solid #fde68a`, borderRadius:8, padding:"12px 16px", marginBottom:20, color:"#92400e", fontSize:13 }}>⚡ Add your JD and CV in Resume Builder first.</div>}
-            <button onClick={generateCover} disabled={coverLoading||!jd||!cv} style={{ ...btnPrimary({ opacity:coverLoading||!jd||!cv?0.5:1, marginBottom:28, padding:"13px 28px" }) }}>
-              {coverLoading?"Writing cover letter...":"✉ Generate Cover Letter"}
+        {/* ════ COVER LETTER ════ */}
+        {tab==="cover"&&(
+          <div style={{animation:"fadeIn 0.3s ease"}}>
+            <h2 style={{fontSize:26,fontWeight:800,color:"#111827",marginBottom:4,letterSpacing:-0.5}}>Cover Letter</h2>
+            <p style={{color:"#6b7280",fontSize:14,marginBottom:18}}>Personalised, professional cover letters in seconds.</p>
+            {(!jd||!cv)&&<div style={{background:"#fffbeb",border:"1px solid #fde68a",borderRadius:8,padding:12,marginBottom:14,color:"#92400e",fontSize:13}}>⚡ Add your JD and CV in Resume Builder first.</div>}
+            <button onClick={genCover} disabled={coverLoading||!jd||!cv} style={{...btn(),opacity:coverLoading||!jd||!cv?0.5:1,marginBottom:18,background:"linear-gradient(135deg,#4f46e5,#7c3aed)"}}>
+              {coverLoading?"Writing...":"✉ Generate Cover Letter"}
             </button>
             {coverResult&&!coverResult.error&&(
               <Card>
-                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:14 }}>
-                  <SectionLabel style={{ marginBottom:0 }}>Cover Letter</SectionLabel>
-                  <div style={{ display:"flex", gap:8 }}>
-                    <button onClick={()=>navigator.clipboard.writeText(coverResult.letter)} style={btnOutline({fontSize:12,padding:"7px 14px"})}>Copy</button>
-                    <button onClick={()=>{const blob=new Blob([coverResult.letter],{type:"text/plain"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="cover_letter.txt";a.click();}} style={btnOutline({fontSize:12,padding:"7px 14px",color:C.blue,borderColor:C.blue})}>⬇ Download</button>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+                  <div style={{fontSize:12,color:"#6b7280"}}>Subject: <strong>{coverResult.subject}</strong></div>
+                  <div style={{display:"flex",gap:8}}>
+                    <button onClick={()=>navigator.clipboard.writeText(coverResult.letter)} style={ghost({fontSize:11,padding:"5px 12px"})}>Copy</button>
+                    <button onClick={()=>{const b=new Blob([coverResult.letter],{type:"text/plain"});const u=URL.createObjectURL(b);const a=document.createElement("a");a.href=u;a.download="cover_letter.txt";a.click();}} style={ghost({fontSize:11,padding:"5px 12px",color:"#4f46e5",borderColor:"#c7d2fe"})}>⬇ Download</button>
                   </div>
                 </div>
-                <div style={{ fontSize:12, color:C.gray500, marginBottom:12 }}>Subject: {coverResult.subject}</div>
-                <div style={{ background:C.gray50, borderRadius:8, padding:24, fontSize:13, color:C.gray700, lineHeight:1.9, whiteSpace:"pre-wrap", border:`1px solid ${C.gray200}` }}>{coverResult.letter}</div>
+                <div style={{background:"#f8fafc",borderRadius:8,padding:20,fontSize:13,color:"#374151",lineHeight:2,whiteSpace:"pre-wrap"}}>{coverResult.letter}</div>
               </Card>
             )}
-            {coverResult?.error&&<div style={{ background:C.redLight, border:`1px solid #fecaca`, borderRadius:8, padding:"12px 16px", color:C.red, fontSize:13 }}>⚠ {coverResult.error}</div>}
+            {coverResult?.error&&<div style={{background:"#fef2f2",border:"1px solid #fecaca",borderRadius:8,padding:12,color:"#dc2626",fontSize:13}}>⚠ {coverResult.error}</div>}
           </div>
         )}
 
-        {/* ══════════════ INTERVIEW PREP ══════════════ */}
-        {tab === "interview" && (
-          <div style={{ animation:"fadeUp 0.35s ease" }}>
-            <h2 style={{ fontSize:28, fontWeight:800, color:C.navy, marginBottom:6, letterSpacing:-0.5 }}>Interview Preparation</h2>
-            <p style={{ color:C.gray500, fontSize:14, marginBottom:28 }}>Likely questions, STAR stories, coaching tips, and red flags to prepare for.</p>
-            {(!jd||!cv)&&<div style={{ background:C.amberLight, border:`1px solid #fde68a`, borderRadius:8, padding:"12px 16px", marginBottom:20, color:"#92400e", fontSize:13 }}>⚡ Add your JD and CV in Resume Builder first.</div>}
-            <button onClick={generateInterview} disabled={interviewLoading||!jd||!cv} style={{ ...btnPrimary({ opacity:interviewLoading||!jd||!cv?0.5:1, marginBottom:28, padding:"13px 28px" }) }}>
-              {interviewLoading?"Preparing insights...":"◆ Generate Interview Prep"}
+        {/* ════ INTERVIEW PREP ════ */}
+        {tab==="interview"&&(
+          <div style={{animation:"fadeIn 0.3s ease"}}>
+            <h2 style={{fontSize:26,fontWeight:800,color:"#111827",marginBottom:4,letterSpacing:-0.5}}>Interview Preparation</h2>
+            <p style={{color:"#6b7280",fontSize:14,marginBottom:18}}>AI coaching — questions, STAR stories, and what to ask them.</p>
+            {(!jd||!cv)&&<div style={{background:"#fffbeb",border:"1px solid #fde68a",borderRadius:8,padding:12,marginBottom:14,color:"#92400e",fontSize:13}}>⚡ Add your JD and CV in Resume Builder first.</div>}
+            <button onClick={genInterview} disabled={intLoading||!jd||!cv} style={{...btn(),opacity:intLoading||!jd||!cv?0.5:1,marginBottom:18,background:"linear-gradient(135deg,#4f46e5,#7c3aed)"}}>
+              {intLoading?"Preparing...":"◆ Generate Interview Prep"}
             </button>
-
-            {interviewResult&&!interviewResult.error&&(<>
+            {intResult&&!intResult.error&&(<>
               <Card>
-                <SectionLabel>Key Themes</SectionLabel>
-                {interviewResult.keyThemes?.map(t=><Badge key={t} color={C.green} bg={C.greenLight}>{t}</Badge>)}
+                <SLabel>Key Themes</SLabel>
+                {intResult.keyThemes?.map(t=><Chip key={t} text={t} color="#4f46e5" bg="#eef2ff"/>)}
               </Card>
               <Card>
-                <SectionLabel>Likely Questions & Coaching Tips</SectionLabel>
-                {interviewResult.likelyQuestions?.map((q,i)=>(
-                  <div key={i} style={{ marginBottom:18, paddingBottom:18, borderBottom:i<interviewResult.likelyQuestions.length-1?`1px solid ${C.gray100}`:"none" }}>
-                    <div style={{ fontSize:13, fontWeight:600, color:C.navy, marginBottom:7 }}>Q: {q.question}</div>
-                    <div style={{ fontSize:12, color:C.gray600, paddingLeft:12, borderLeft:`2px solid ${C.teal}`, lineHeight:1.6 }}>💡 {q.tip}</div>
+                <SLabel>Likely Questions</SLabel>
+                {intResult.likelyQuestions?.map((q,i)=>(
+                  <div key={i} style={{marginBottom:14,paddingBottom:14,borderBottom:i<intResult.likelyQuestions.length-1?"1px solid #f9fafb":"none"}}>
+                    <div style={{fontSize:13,fontWeight:600,color:"#111827",marginBottom:5}}>Q: {q.question}</div>
+                    <div style={{fontSize:12,color:"#6b7280",paddingLeft:12,borderLeft:"2px solid #c7d2fe",lineHeight:1.6}}>💡 {q.tip}</div>
                   </div>
                 ))}
               </Card>
               <Card>
-                <SectionLabel>STAR Stories</SectionLabel>
-                {interviewResult.starStories?.map((s,i)=>(
-                  <div key={i} style={{ marginBottom:22, paddingBottom:22, borderBottom:i<interviewResult.starStories.length-1?`1px solid ${C.gray100}`:"none" }}>
-                    <div style={{ fontSize:13, fontWeight:700, color:C.amber, marginBottom:10 }}>⭐ {s.theme}</div>
+                <SLabel>STAR Stories</SLabel>
+                {intResult.starStories?.map((s,i)=>(
+                  <div key={i} style={{marginBottom:18,paddingBottom:18,borderBottom:i<intResult.starStories.length-1?"1px solid #f9fafb":"none"}}>
+                    <div style={{fontSize:12,fontWeight:700,color:"#d97706",marginBottom:10}}>⭐ {s.theme}</div>
                     {["situation","task","action","result"].map(k=>(
-                      <div key={k} style={{ display:"grid", gridTemplateColumns:"90px 1fr", gap:12, marginBottom:7 }}>
-                        <div style={{ fontSize:10, fontWeight:700, color:C.gray400, textTransform:"uppercase", letterSpacing:1 }}>{k}</div>
-                        <div style={{ fontSize:12, color:C.gray700, lineHeight:1.6 }}>{s[k]}</div>
+                      <div key={k} style={{display:"grid",gridTemplateColumns:"80px 1fr",gap:8,marginBottom:5}}>
+                        <div style={{fontSize:10,fontWeight:700,color:"#9ca3af",textTransform:"uppercase",letterSpacing:1}}>{k}</div>
+                        <div style={{fontSize:12,color:"#374151",lineHeight:1.6}}>{s[k]}</div>
                       </div>
                     ))}
                   </div>
                 ))}
               </Card>
-              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
-                <Card>
-                  <SectionLabel>Questions to Ask Them</SectionLabel>
-                  {interviewResult.questionsToAsk?.map((q,i)=><div key={i} style={{ fontSize:12, color:C.gray700, padding:"6px 0", borderBottom:`1px solid ${C.gray100}`, display:"flex", gap:7 }}><span style={{ color:C.teal }}>→</span>{q}</div>)}
-                </Card>
-                <Card>
-                  <SectionLabel>Red Flags to Address</SectionLabel>
-                  {interviewResult.redFlags?.map((r,i)=><div key={i} style={{ fontSize:12, color:C.gray700, padding:"6px 0", borderBottom:`1px solid ${C.gray100}`, display:"flex", gap:7 }}><span style={{ color:C.red }}>⚠</span>{r}</div>)}
-                </Card>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+                <Card><SLabel>Questions to Ask</SLabel>{intResult.questionsToAsk?.map((q,i)=><div key={i} style={{fontSize:12,color:"#6b7280",padding:"5px 0",borderBottom:"1px solid #f9fafb"}}>→ {q}</div>)}</Card>
+                <Card><SLabel>Red Flags to Address</SLabel>{intResult.redFlags?.map((r,i)=><div key={i} style={{fontSize:12,color:"#6b7280",padding:"5px 0",borderBottom:"1px solid #f9fafb"}}>⚠ {r}</div>)}</Card>
               </div>
             </>)}
-            {interviewResult?.error&&<div style={{ background:C.redLight, border:`1px solid #fecaca`, borderRadius:8, padding:"12px 16px", color:C.red, fontSize:13 }}>⚠ {interviewResult.error}</div>}
+            {intResult?.error&&<div style={{background:"#fef2f2",border:"1px solid #fecaca",borderRadius:8,padding:12,color:"#dc2626",fontSize:13}}>⚠ {intResult.error}</div>}
           </div>
         )}
 
-        {/* ══════════════ PRICING ══════════════ */}
-        {tab === "pricing" && (
-          <div style={{ animation:"fadeUp 0.35s ease" }}>
-            <div style={{ textAlign:"center", marginBottom:44 }}>
-              <h2 style={{ fontSize:36, fontWeight:800, color:C.navy, marginBottom:10, letterSpacing:-1 }}>Simple, Transparent Pricing</h2>
-              <p style={{ color:C.gray500, fontSize:16 }}>Start free. Upgrade when you're ready to get serious.</p>
+        {/* ════ PRICING ════ */}
+        {tab==="pricing"&&(
+          <div style={{animation:"fadeIn 0.3s ease"}}>
+            <div style={{textAlign:"center",marginBottom:32}}>
+              <h2 style={{fontSize:34,fontWeight:800,color:"#111827",marginBottom:8,letterSpacing:-0.8}}>Simple Pricing</h2>
+              <p style={{color:"#6b7280",fontSize:15}}>Start free. Upgrade when ready.</p>
             </div>
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:20, marginBottom:48 }}>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:16,marginBottom:32}}>
               {TIERS.map(t=>(
-                <div key={t.name} style={{ background:t.highlight?C.navy:C.white, border:`1px solid ${t.highlight?C.navy:C.gray200}`, borderRadius:14, padding:28, position:"relative", transform:t.highlight?"scale(1.02)":"scale(1)", boxShadow:t.highlight?C.shadowLg:C.shadow }}>
-                  {t.highlight&&<div style={{ position:"absolute", top:-12, left:"50%", transform:"translateX(-50%)", background:C.teal, color:"#fff", fontSize:10, fontWeight:700, padding:"4px 16px", borderRadius:20, letterSpacing:1, textTransform:"uppercase", whiteSpace:"nowrap" }}>Most Popular</div>}
-                  <div style={{ fontSize:12, fontWeight:700, color:t.highlight?C.teal:C.gray500, letterSpacing:1.5, textTransform:"uppercase", marginBottom:14 }}>{t.name}</div>
-                  <div style={{ marginBottom:22 }}>
-                    <span style={{ fontSize:40, fontWeight:800, color:t.highlight?"#fff":C.navy }}>{t.price}</span>
-                    {t.period&&<span style={{ fontSize:14, color:t.highlight?"rgba(255,255,255,0.6)":C.gray400 }}>{t.period}</span>}
+                <div key={t.name} style={{background:"#fff",border:`2px solid ${t.highlight?"#4f46e5":"#e8ecf0"}`,borderRadius:14,padding:28,position:"relative",boxShadow:t.highlight?"0 8px 28px rgba(79,70,229,0.15)":"0 1px 4px rgba(0,0,0,0.04)"}}>
+                  {t.highlight&&<div style={{position:"absolute",top:-12,left:"50%",transform:"translateX(-50%)",background:"linear-gradient(135deg,#4f46e5,#7c3aed)",color:"#fff",fontSize:10,fontWeight:700,padding:"3px 14px",borderRadius:20,letterSpacing:1,textTransform:"uppercase",whiteSpace:"nowrap"}}>Most Popular</div>}
+                  <div style={{fontSize:13,fontWeight:700,color:t.color,marginBottom:12}}>{t.name}</div>
+                  <div style={{marginBottom:20}}>
+                    <span style={{fontSize:36,fontWeight:800,color:"#111827"}}>{t.price}</span>
+                    {t.period&&<span style={{fontSize:13,color:"#6b7280"}}>{t.period}</span>}
                   </div>
-                  <div style={{ marginBottom:28 }}>
-                    {t.features.map(f=>(
-                      <div key={f} style={{ display:"flex", gap:9, padding:"7px 0", borderBottom:`1px solid ${t.highlight?"rgba(255,255,255,0.08)":C.gray100}`, fontSize:12, color:t.highlight?"rgba(255,255,255,0.8)":C.gray600 }}>
-                        <span style={{ color:t.highlight?C.teal:C.teal, fontWeight:700 }}>✓</span>{f}
-                      </div>
-                    ))}
+                  <div style={{marginBottom:24}}>
+                    {t.features.map(f=><div key={f} style={{display:"flex",gap:8,padding:"6px 0",borderBottom:"1px solid #f9fafb",fontSize:12,color:"#6b7280"}}><span style={{color:t.color}}>✓</span>{f}</div>)}
                   </div>
-                  <button onClick={()=>{if(t.gumroad)window.open(t.gumroad,"_blank");else alert("You're on the free plan!");}} style={{ width:"100%", padding:13, background:t.highlight?C.teal:"transparent", border:t.highlight?"none":`1.5px solid ${C.gray300}`, color:t.highlight?"#fff":C.navy, borderRadius:8, fontSize:13, fontWeight:700, cursor:"pointer" }}>
+                  <button onClick={()=>{if(t.gumroad)window.open(t.gumroad,"_blank");else alert("You're on the free plan!");}}
+                    style={{width:"100%",padding:12,background:t.highlight?"linear-gradient(135deg,#4f46e5,#7c3aed)":"#fff",border:t.highlight?"none":`2px solid ${t.color}`,color:t.highlight?"#fff":t.color,borderRadius:8,fontSize:13,fontWeight:700,cursor:"pointer"}}>
                     {t.cta}
                   </button>
-                  {t.gumroad&&<div style={{ fontSize:10, color:t.highlight?"rgba(255,255,255,0.4)":C.gray400, textAlign:"center", marginTop:8 }}>Secure payment via Gumroad · Cancel anytime</div>}
                 </div>
               ))}
             </div>
-
             <Card>
-              <SectionLabel>Why CareerOS</SectionLabel>
-              <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16 }}>
+              <SLabel>Why CareerOS</SLabel>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:12}}>
                 {[
-                  {icon:"🎯",title:"Dual Scoring",desc:"ATS score AND Hiring Manager Psychology score — the only platform that does both"},
-                  {icon:"📄",title:"5 Resume Formats",desc:"Classic, Modern, Executive, Minimal, ATS-Safe — download any format instantly"},
-                  {icon:"🛂",title:"Visa Intelligence",desc:"Filter jobs by visa sponsorship availability — saves hours of research"},
-                  {icon:"💰",title:"Salary Intelligence",desc:"Know your market value before every salary conversation"},
-                  {icon:"🌍",title:"UK · US · India",desc:"Real jobs from Adzuna, JSearch, and Reed across three major markets"},
-                  {icon:"🔄",title:"Full Circle Platform",desc:"Job → Resume → Cover Letter → Interview Prep → Tracker. All connected."},
+                  {i:"🎯",t:"Dual Scoring",d:"ATS score AND Hiring Manager psychology — the only platform that does both"},
+                  {i:"💰",t:"Salary Intelligence",d:"Know your market value and what to negotiate before every interview"},
+                  {i:"📄",t:"4 Resume Formats",d:"Classic, Modern, Minimal, Executive — with live preview before download"},
+                  {i:"⚡",t:"30 Second Results",d:"Full analysis in under 30 seconds"},
+                  {i:"🔄",t:"Full Circle",d:"Job search → resume → cover letter → interview prep → tracker"},
+                  {i:"🌍",t:"Global Jobs",d:"Real jobs from Adzuna, JSearch, Reed across UK, US and India"},
                 ].map(item=>(
-                  <div key={item.title} style={{ padding:16, background:C.gray50, borderRadius:10, border:`1px solid ${C.gray200}` }}>
-                    <div style={{ fontSize:22, marginBottom:8 }}>{item.icon}</div>
-                    <div style={{ fontSize:13, fontWeight:700, color:C.navy, marginBottom:5 }}>{item.title}</div>
-                    <div style={{ fontSize:12, color:C.gray500, lineHeight:1.5 }}>{item.desc}</div>
+                  <div key={item.t} style={{padding:14,background:"#f8fafc",borderRadius:10,border:"1px solid #e8ecf0"}}>
+                    <div style={{fontSize:20,marginBottom:8}}>{item.i}</div>
+                    <div style={{fontSize:13,fontWeight:700,color:"#111827",marginBottom:4}}>{item.t}</div>
+                    <div style={{fontSize:12,color:"#6b7280",lineHeight:1.5}}>{item.d}</div>
                   </div>
                 ))}
               </div>
@@ -1134,10 +776,8 @@ CV: ${cv}`);
         )}
       </div>
 
-      {/* FOOTER */}
-      <div style={{ borderTop:`1px solid ${C.gray200}`, padding:"20px 32px", textAlign:"center", background:C.white }}>
-        <span style={{ color:C.teal, fontWeight:700 }}>CareerOS</span>
-        <span style={{ color:C.gray400, fontSize:12 }}> — AI-powered career platform · Resume · Cover Letter · Job Search · Interview Prep · Application Tracker</span>
+      <div style={{borderTop:"1px solid #e8ecf0",padding:"16px 28px",textAlign:"center",color:"#d1d5db",fontSize:11,background:"#fff"}}>
+        <span style={{color:"#4f46e5",fontWeight:700}}>CareerOS</span> · AI Career Platform · Resume · Jobs · Cover Letter · Interview Prep · Tracker
       </div>
     </div>
   );
