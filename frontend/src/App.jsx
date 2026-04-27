@@ -698,31 +698,71 @@ Return ONLY JSON:
               {!user&&<button onClick={()=>{setAuthMode("signup");setShowAuth(true);}} style={{...btn({padding:"12px 28px",fontSize:15,background:"linear-gradient(135deg,#0d9488,#0891b2)",borderRadius:10})}}>Create Free Account →</button>}
             </div>
 
-            {/* ── VIRAL FEATURE 1: One-URL Apply ── */}
+            {/* ── VIRAL FEATURE 1: Smart Job Import ── */}
             <div style={{background:"linear-gradient(135deg,#042f2e,#0d9488)",borderRadius:14,padding:20,marginBottom:20,position:"relative",overflow:"hidden"}}>
               <div style={{position:"absolute",top:-20,right:-20,width:120,height:120,background:"rgba(255,255,255,0.05)",borderRadius:"50%"}}/>
-              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
                 <span style={{fontSize:20}}>⚡</span>
-                <div>
-                  <div style={{fontSize:14,fontWeight:800,color:"#fff"}}>One-URL Apply</div>
-                  <div style={{fontSize:11,color:"#99f6e4"}}>Paste any job URL — we extract the JD automatically</div>
+                <div style={{flex:1}}>
+                  <div style={{fontSize:14,fontWeight:800,color:"#fff"}}>Smart Job Import</div>
+                  <div style={{fontSize:11,color:"#99f6e4"}}>Works with Reed, Adzuna, TotalJobs, CV-Library and more</div>
                 </div>
                 <ViralBadge text="🔥 NEW"/>
               </div>
-              <div style={{display:"flex",gap:8}}>
+              <div style={{display:"flex",gap:8,marginBottom:10}}>
                 <input
                   style={{flex:1,background:"rgba(255,255,255,0.15)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:8,padding:"10px 14px",color:"#fff",fontSize:13,fontFamily:"inherit",outline:"none"}}
-                  placeholder="Paste LinkedIn, Reed, Indeed, or any job URL..."
-                  value={jobUrl} onChange={e=>setJobUrl(e.target.value)}
+                  placeholder="Paste Reed, Adzuna, TotalJobs, or any job URL..."
+                  value={jobUrl} onChange={e=>{setJobUrl(e.target.value);setUrlError("");}}
                   onKeyDown={e=>e.key==="Enter"&&handleUrlImport()}
                 />
                 <button onClick={handleUrlImport} disabled={urlLoading||!jobUrl}
-                  style={{background:"rgba(255,255,255,0.2)",color:"#fff",border:"1px solid rgba(255,255,255,0.4)",borderRadius:8,padding:"10px 18px",fontSize:13,fontWeight:600,cursor:"pointer",flexShrink:0,whiteSpace:"nowrap"}}>
-                  {urlLoading?"Fetching...":"Import JD →"}
+                  style={{background:"rgba(255,255,255,0.2)",color:"#fff",border:"1px solid rgba(255,255,255,0.4)",borderRadius:8,padding:"10px 18px",fontSize:13,fontWeight:600,cursor:urlLoading||!jobUrl?"not-allowed":"pointer",flexShrink:0,whiteSpace:"nowrap",opacity:urlLoading||!jobUrl?0.6:1}}>
+                  {urlLoading?"Fetching...":"Import →"}
                 </button>
               </div>
-              {urlError&&<div style={{marginTop:8,fontSize:12,color:"#fca5a5"}}>{urlError}</div>}
-              {jd&&!urlError&&jobUrl&&<div style={{marginTop:8,fontSize:12,color:"#99f6e4"}}>✓ Job description imported — ready to generate!</div>}
+
+              {/* Platform guide */}
+              <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:urlError?10:0}}>
+                {[
+                  {name:"Reed",color:"#fca5a5",works:true},
+                  {name:"Adzuna",color:"#99f6e4",works:true},
+                  {name:"TotalJobs",color:"#99f6e4",works:true},
+                  {name:"CV-Library",color:"#99f6e4",works:true},
+                  {name:"Indeed",color:"#fcd34d",works:"partial"},
+                  {name:"LinkedIn",color:"#fca5a5",works:false},
+                ].map(p=>(
+                  <div key={p.name} style={{display:"flex",alignItems:"center",gap:3,padding:"2px 8px",borderRadius:10,background:"rgba(255,255,255,0.1)",fontSize:10,fontWeight:600}}>
+                    <span style={{color:p.works===true?"#4ade80":p.works==="partial"?"#fcd34d":"#f87171"}}>
+                      {p.works===true?"✓":p.works==="partial"?"~":"✕"}
+                    </span>
+                    <span style={{color:"rgba(255,255,255,0.85)"}}>{p.name}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Error with helpful guidance */}
+              {urlError&&(
+                <div style={{marginTop:8,background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"10px 12px"}}>
+                  <div style={{fontSize:12,color:"#fca5a5",marginBottom:urlError.includes("LinkedIn")||urlError.includes("Indeed")?8:0}}>{urlError}</div>
+                  {(urlError.includes("LinkedIn")||urlError.includes("login"))&&(
+                    <div style={{fontSize:11,color:"#99f6e4",lineHeight:1.7}}>
+                      <div style={{fontWeight:700,marginBottom:4}}>How to copy from LinkedIn/Indeed:</div>
+                      <div>1. Open the job in your browser</div>
+                      <div>2. Click "Show more" to expand the full description</div>
+                      <div>3. Select all the job description text (Ctrl+A won't work — select manually)</div>
+                      <div>4. Copy (Ctrl+C) and paste into the Job Description box below</div>
+                      <button onClick={async()=>{
+                        try{const t=await navigator.clipboard.readText();if(t&&t.length>100){setJd(t);setUrlError("");}else{setUrlError("Clipboard is empty or too short — please manually paste in the box below.");}}
+                        catch{setUrlError("Could not read clipboard. Please paste manually in the box below.");}
+                      }} style={{marginTop:8,background:"rgba(255,255,255,0.2)",border:"1px solid rgba(255,255,255,0.4)",color:"#fff",borderRadius:6,padding:"5px 12px",fontSize:11,fontWeight:600,cursor:"pointer"}}>
+                        📋 Paste from clipboard
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+              {!urlError&&jd&&urlLoading===false&&<div style={{marginTop:8,fontSize:12,color:"#4ade80",fontWeight:600}}>✓ Job description imported successfully!</div>}
             </div>
 
             {/* Format picker */}
