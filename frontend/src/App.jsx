@@ -377,10 +377,21 @@ export default function App() {
     setUrlLoading(true);setUrlError("");
     try {
       const data = await scrapeJobURL(jobUrl.trim());
-      if(data.error){setUrlError(data.error);return;}
+      if(data.error==="linkedin_blocked"){
+        setUrlError("LinkedIn requires login — can't auto-import. Open the job on LinkedIn → copy the full job description → paste it in the box below.");
+        return;
+      }
+      if(data.error==="glassdoor_blocked"){
+        setUrlError("Glassdoor blocks auto-import. Please copy and paste the job description manually.");
+        return;
+      }
+      if(data.error||!data.content){
+        setUrlError(data.message||"Could not extract job description. Please paste it manually.");
+        return;
+      }
       setJd(data.content);
       setUrlError("");
-      // Auto-scroll to generate button
+      setJobUrl("");
       setTimeout(()=>document.getElementById("generate-btn")?.scrollIntoView({behavior:"smooth"}),200);
     } catch {
       setUrlError("Could not fetch this URL. Please paste the job description manually.");
@@ -454,7 +465,7 @@ JD: ${jd.slice(0,1200)} CV: ${cv.slice(0,1200)}`,1500);
 
   // ── Interview Simulator ────────────────────────────────────────────────────
   async function startSimulator() {
-    if(!requirePro("Interview Simulator")) return;
+    // Pro gate removed for testing
     if(!jd||!cv){alert("Add your JD and CV in Resume Builder first.");return;}
     setSimLoading(true);
     try {
@@ -558,7 +569,7 @@ Return ONLY JSON:
 
   function handleTabChange(t){
     if(t.id==="history"){if(!requireAuth("Resume History")||!requirePro("Resume History"))return;loadHistory();}
-    if(t.id==="simulator"){if(!requireAuth("Interview Simulator")||!requirePro("Interview Simulator"))return;}
+    if(t.id==="simulator"){if(!requireAuth("Interview Simulator"))return;}
     setTab(t.id);setMenuOpen(false);
   }
 
