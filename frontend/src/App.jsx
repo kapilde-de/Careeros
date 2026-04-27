@@ -39,6 +39,7 @@ const JOB_PLATFORMS = [
 const TIERS = [
   { name:"Free", price:"£0", period:"forever", features:["3 resumes/month","Basic ATS score","5 searches/day","1 cover letter","Classic format only"], cta:"Get Started", highlight:false, color:"#6b7280", gumroad:null },
   { name:"Pro", price:"£9.99", period:"/month", badge:"Most Popular", features:["Unlimited resumes","ATS + Rejection Risk score","Salary intelligence + negotiation script","One-URL Apply","All 6 formats + preview","Unlimited searches","Interview prep AI","Interview Simulator","Resume history","Persistent tracker"], cta:"Start Pro — £9.99/mo", highlight:true, color:"#0d9488", gumroad:"https://gumroad.com/l/careeros-pro" },
+  { name:"Agent", price:"£99", period:"once · lifetime", badge:"🤖 ULTRA", features:["Everything in Pro","🤖 24/7 autonomous job hunter","Scans 50+ job boards every 4hrs","AI evaluates every job for you","Auto-tailored CV per match","Daily review queue at 8am","Autopilot mode after 7 days","Local dashboard at localhost:3939","Lifetime license — no subscription","30-day money-back guarantee"], cta:"Get the Agent — £99", highlight:false, color:"#dc2626", gumroad:"https://gumroad.com/l/careeros-agent", isAgent:true },
   { name:"Enterprise", price:"£29.99", period:"/month", features:["Everything in Pro","Team workspace","Bulk optimization","API access","Recruiter dashboard","White-label"], cta:"Start Enterprise", highlight:false, color:"#4f46e5", gumroad:"https://gumroad.com/l/careeros-enterprise" },
 ];
 
