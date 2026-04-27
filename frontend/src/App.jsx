@@ -8,16 +8,17 @@ const RESUME_FORMATS = [
   { id:"executive", name:"Executive", desc:"C-suite level", icon:"👔", accentColor:"#1e3a8a", fontFamily:"'Times New Roman', serif" },
   { id:"minimal", name:"Minimal", desc:"Clean whitespace", icon:"⬜", accentColor:"#374151", fontFamily:"'Garamond', serif" },
   { id:"ats", name:"ATS-Safe", desc:"Plain text, max parse", icon:"🤖", accentColor:"#0f766e", fontFamily:"'Courier New', monospace" },
-  { id:"creative", name:"Creative", desc:"Bold, for creative roles", icon:"🎨", accentColor:"#7c3aed", fontFamily:"'Helvetica Neue', sans-serif" },
+  { id:"creative", name:"Creative", desc:"Bold, creative roles", icon:"🎨", accentColor:"#7c3aed", fontFamily:"'Helvetica Neue', sans-serif" },
 ];
 
 const TABS = [
   { id:"builder", label:"Resume Builder" },
   { id:"jobs", label:"Job Search" },
   { id:"tracker", label:"Applications" },
-  { id:"history", label:"Resume History", pro: true },
+  { id:"history", label:"Resume History", pro:true },
   { id:"cover", label:"Cover Letter" },
-  { id:"interview", label:"Interview Prep", pro: true },
+  { id:"interview", label:"Interview Prep", pro:true },
+  { id:"simulator", label:"Interview Sim", pro:true },
   { id:"pricing", label:"Pricing" },
 ];
 
@@ -36,9 +37,9 @@ const JOB_PLATFORMS = [
 ];
 
 const TIERS = [
-  { name:"Free", price:"£0", period:"forever", features:["3 resumes/month","Basic ATS score","5 searches/day","1 cover letter/month","Classic format only"], cta:"Get Started", highlight:false, color:"#6b7280", gumroad:null },
-  { name:"Pro", price:"£9.99", period:"/month", badge:"Most Popular", features:["Unlimited resumes","ATS + Human scores","Salary intelligence","All 6 formats + preview","Unlimited searches","Unlimited cover letters","Interview prep AI","Resume history","Persistent tracker"], cta:"Start Pro — £9.99/mo", highlight:true, color:"#0d9488", gumroad:"https://gumroad.com/l/careeros-pro" },
-  { name:"Enterprise", price:"£29.99", period:"/month", features:["Everything in Pro","Team workspace","Bulk optimization","API access","Recruiter dashboard","White-label option"], cta:"Start Enterprise", highlight:false, color:"#4f46e5", gumroad:"https://gumroad.com/l/careeros-enterprise" },
+  { name:"Free", price:"£0", period:"forever", features:["3 resumes/month","Basic ATS score","5 searches/day","1 cover letter","Classic format only"], cta:"Get Started", highlight:false, color:"#6b7280", gumroad:null },
+  { name:"Pro", price:"£9.99", period:"/month", badge:"Most Popular", features:["Unlimited resumes","ATS + Rejection Risk score","Salary intelligence + negotiation script","One-URL Apply","All 6 formats + preview","Unlimited searches","Interview prep AI","Interview Simulator","Resume history","Persistent tracker"], cta:"Start Pro — £9.99/mo", highlight:true, color:"#0d9488", gumroad:"https://gumroad.com/l/careeros-pro" },
+  { name:"Enterprise", price:"£29.99", period:"/month", features:["Everything in Pro","Team workspace","Bulk optimization","API access","Recruiter dashboard","White-label"], cta:"Start Enterprise", highlight:false, color:"#4f46e5", gumroad:"https://gumroad.com/l/careeros-enterprise" },
 ];
 
 const STATUS_COLORS = {
@@ -52,9 +53,10 @@ const STATUS_COLORS = {
 const LOADING_PHASES = [
   { icon:"🔍", text:"Parsing job description..." },
   { icon:"🧠", text:"Matching your experience..." },
-  { icon:"📊", text:"Calculating ATS score..." },
+  { icon:"📊", text:"Calculating ATS + Rejection Risk..." },
   { icon:"✍️", text:"Writing tailored resume..." },
-  { icon:"✨", text:"Finalising..." },
+  { icon:"💰", text:"Running salary intelligence..." },
+  { icon:"✨", text:"Finalising all insights..." },
 ];
 
 const SAMPLE_CV = `Sarah Chen | sarah@email.com | +44 7700 900123 | London, UK
@@ -69,7 +71,7 @@ Product Manager — Consumer App (2019–2021)
 • Grew mobile app from MVP to 500k users
 • Improved onboarding conversion by 28% via A/B tests
 
-SKILLS: Product strategy, SQL, Figma, JIRA, Agile/Scrum, Python
+SKILLS: Product strategy, SQL, Figma, JIRA, Agile/Scrum
 
 EDUCATION: B.Sc Computer Science, University of Edinburgh, 2019`;
 
@@ -78,7 +80,7 @@ function generateResumeHTML(resume, format) {
   if (!resume) return `<html><body style="font-family:sans-serif;padding:40px;color:#9ca3af;text-align:center"><p style="margin-top:80px">Generate a resume first</p></body></html>`;
   const f = RESUME_FORMATS.find(x=>x.id===format)||RESUME_FORMATS[0];
   const s = { name:resume.name||"", contact:resume.contact||"", summary:resume.summary||"", skills:resume.skills||[], experience:resume.experience||[], education:resume.education||"" };
-  const expHTML = s.experience.map(e=>`<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between"><strong style="font-size:13px">${e.title}</strong><span style="font-size:11px;color:#888">${e.period}</span></div><div style="font-size:12px;color:#555;margin-bottom:3px">${e.company}</div>${e.bullets?.map(b=>`<div style="font-size:12px;color:#374151;padding-left:12px;position:relative;margin-bottom:2px"><span style="position:absolute;left:0;color:${f.accentColor}">•</span>${b}</div>`).join("")||""}</div>`).join("");
+  const expHTML = s.experience.map(e=>`<div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;margin-bottom:2px"><strong style="font-size:13px;color:#111">${e.title}</strong><span style="font-size:11px;color:#888">${e.period}</span></div><div style="font-size:12px;color:#555;margin-bottom:4px">${e.company}</div>${e.bullets?.map(b=>`<div style="font-size:12px;color:#374151;padding-left:14px;position:relative;margin-bottom:2px"><span style="position:absolute;left:0;color:${f.accentColor}">•</span>${b}</div>`).join("")||""}</div>`).join("");
   return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${s.name}</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:${f.fontFamily};color:#1a1a1a;background:#fff;max-width:750px;margin:32px auto;padding:44px}.st{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:${f.accentColor};margin:16px 0 7px;border-bottom:1px solid #e5e7eb;padding-bottom:3px}.sk{display:flex;flex-wrap:wrap;gap:5px}.s{padding:3px 9px;border:1px solid ${f.accentColor}30;border-radius:3px;font-size:11px}.ft{margin-top:24px;padding-top:8px;border-top:1px solid #e5e7eb;font-size:10px;color:#9ca3af;text-align:center}@media print{body{margin:0;padding:32px}}</style></head><body><h1 style="font-size:24px;font-weight:700;color:${f.accentColor};margin-bottom:3px">${s.name}</h1><div style="font-size:12px;color:#555;margin-bottom:18px;border-bottom:2px solid ${f.accentColor};padding-bottom:10px">${s.contact}</div><div class="st">Professional Summary</div><div style="font-size:13px;line-height:1.75;color:#374151;margin-bottom:8px">${s.summary}</div><div class="st">Core Skills</div><div class="sk" style="margin-bottom:8px">${s.skills.map(x=>`<span class="s">${x}</span>`).join("")}</div><div class="st">Experience</div>${expHTML}<div class="st">Education</div><div style="font-size:12px;color:#374151">${s.education}</div><div class="ft">Generated by CareerOS · careeros-rose.vercel.app</div></body></html>`;
 }
 
@@ -97,7 +99,7 @@ async function callClaude(prompt, maxTokens=2500) {
   const res = await fetch("/api/claude", {
     method:"POST", headers:{"Content-Type":"application/json"},
     body: JSON.stringify({ model:"claude-sonnet-4-5", max_tokens:maxTokens,
-      system:"You are an expert resume writer. Return only valid JSON. No markdown, no backticks.",
+      system:"You are an expert resume writer and career coach. Return only valid JSON. No markdown, no backticks.",
       messages:[{role:"user",content:prompt}] }),
   });
   const data = await res.json();
@@ -105,20 +107,32 @@ async function callClaude(prompt, maxTokens=2500) {
   return JSON.parse(text.replace(/```json|```/g,"").trim());
 }
 
+async function scrapeJobURL(url) {
+  const res = await fetch("/api/scrape", {
+    method:"POST", headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({ url }),
+  });
+  return res.json();
+}
+
 // ─── COMPONENTS ──────────────────────────────────────────────────────────────
-function ScoreRing({score,size=72,color}) {
+function ScoreRing({score,size=72,color,label}) {
   const r=(size-8)/2,circ=2*Math.PI*r,s=Math.max(0,Math.min(100,score||0));
   const c=color||(s>=80?"#16a34a":s>=65?"#d97706":s>0?"#dc2626":"#d1d5db");
   return (
-    <svg width={size} height={size} style={{transform:"rotate(-90deg)",flexShrink:0}}>
-      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="#f1f5f9" strokeWidth={5}/>
-      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={c} strokeWidth={5}
-        strokeDasharray={`${(s/100)*circ} ${circ}`} strokeLinecap="round"/>
-      <text x={size/2} y={size/2+5} textAnchor="middle" fill={c} fontSize={size*0.2} fontWeight="700"
-        style={{transform:`rotate(90deg)`,transformOrigin:`${size/2}px ${size/2}px`}}>
-        {s>0?`${s}%`:"—"}
-      </text>
-    </svg>
+    <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
+      <svg width={size} height={size} style={{transform:"rotate(-90deg)",flexShrink:0}}>
+        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="#f1f5f9" strokeWidth={5}/>
+        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={c} strokeWidth={5}
+          strokeDasharray={`${(s/100)*circ} ${circ}`} strokeLinecap="round"
+          style={{transition:"stroke-dasharray 1.2s ease"}}/>
+        <text x={size/2} y={size/2+5} textAnchor="middle" fill={c} fontSize={size*0.2} fontWeight="700"
+          style={{transform:`rotate(90deg)`,transformOrigin:`${size/2}px ${size/2}px`}}>
+          {s>0?`${s}%`:"—"}
+        </text>
+      </svg>
+      {label&&<div style={{fontSize:10,fontWeight:600,color:c,textAlign:"center"}}>{label}</div>}
+    </div>
   );
 }
 
@@ -144,6 +158,14 @@ function Card({children,style={}}) {
 
 function SLabel({children,color="#0d9488"}) {
   return <div style={{fontSize:10,fontWeight:700,letterSpacing:2,color,textTransform:"uppercase",marginBottom:12}}>{children}</div>;
+}
+
+function ProBadge() {
+  return <span style={{background:"linear-gradient(135deg,#0d9488,#0891b2)",color:"#fff",fontSize:8,fontWeight:700,padding:"2px 6px",borderRadius:8,letterSpacing:0.5,textTransform:"uppercase",marginLeft:5}}>PRO</span>;
+}
+
+function ViralBadge({text="🔥 VIRAL"}) {
+  return <span style={{background:"linear-gradient(135deg,#ef4444,#f97316)",color:"#fff",fontSize:8,fontWeight:700,padding:"2px 7px",borderRadius:8,letterSpacing:0.5,marginLeft:5}}>{text}</span>;
 }
 
 function FormatPicker({resume,selected,onSelect,onDownload}) {
@@ -180,7 +202,7 @@ function FormatPicker({resume,selected,onSelect,onDownload}) {
 }
 
 // ─── AUTH MODAL ───────────────────────────────────────────────────────────────
-function AuthModal({onClose, onSuccess, initialMode="login"}) {
+function AuthModal({onClose,onSuccess,initialMode="login"}) {
   const [mode,setMode]=useState(initialMode);
   const [email,setEmail]=useState("");
   const [password,setPassword]=useState("");
@@ -188,36 +210,29 @@ function AuthModal({onClose, onSuccess, initialMode="login"}) {
   const [loading,setLoading]=useState(false);
   const [error,setError]=useState("");
   const [success,setSuccess]=useState("");
-
   const inp={width:"100%",boxSizing:"border-box",background:"#f8fafc",border:"1.5px solid #e2e8f0",borderRadius:8,padding:"11px 14px",color:"#111827",fontSize:13,fontFamily:"inherit",outline:"none",marginBottom:10,display:"block"};
 
   async function handleSubmit() {
-    if (!email||!password) { setError("Please enter email and password"); return; }
-    setLoading(true); setError(""); setSuccess("");
+    if(!email||!password){setError("Please enter email and password");return;}
+    setLoading(true);setError("");setSuccess("");
     try {
-      if (mode==="signup") {
-        const {data,error:e} = await signUp(email,password,name||email.split("@")[0]);
-        if (e) { setError(e.message||"Signup failed"); return; }
-        if (data?.user) {
-          setSuccess("Account created! Signing you in...");
-          setTimeout(()=>{onSuccess(data.user);onClose();},1500);
-        } else {
-          setSuccess("Check your email to confirm your account, then sign in.");
-        }
+      if(mode==="signup"){
+        const {data,error:e}=await signUp(email,password,name||email.split("@")[0]);
+        if(e){setError(e.message||"Signup failed");return;}
+        if(data?.user){setSuccess("Account created!");setTimeout(()=>{onSuccess(data.user);onClose();},1000);}
+        else setSuccess("Check your email to confirm, then sign in.");
       } else {
-        const {data,error:e} = await signIn(email,password);
-        if (e) { setError(e.message||"Invalid email or password"); return; }
-        if (data?.user) { onSuccess(data.user); onClose(); }
+        const {data,error:e}=await signIn(email,password);
+        if(e){setError(e.message||"Invalid email or password");return;}
+        if(data?.user){onSuccess(data.user);onClose();}
       }
-    } catch(e) {
-      setError("Something went wrong. Please try again.");
-    } finally { setLoading(false); }
+    } catch {setError("Something went wrong. Try again.");}
+    finally{setLoading(false);}
   }
 
   return (
     <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.55)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center",padding:16}} onClick={onClose}>
       <div style={{background:"#fff",borderRadius:16,padding:28,width:"100%",maxWidth:400,boxShadow:"0 20px 60px rgba(0,0,0,0.2)"}} onClick={e=>e.stopPropagation()}>
-        {/* Header */}
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
           <div style={{display:"flex",alignItems:"center",gap:8}}>
             <div style={{width:30,height:30,borderRadius:8,background:"linear-gradient(135deg,#0d9488,#0891b2)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:15,color:"#fff"}}>C</div>
@@ -226,49 +241,35 @@ function AuthModal({onClose, onSuccess, initialMode="login"}) {
               <div style={{fontSize:11,color:"#9ca3af"}}>{mode==="login"?"Sign in to your account":"Free forever · No credit card"}</div>
             </div>
           </div>
-          <button onClick={onClose} style={{background:"#f1f5f9",border:"none",borderRadius:"50%",width:28,height:28,cursor:"pointer",fontSize:14,color:"#6b7280",display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button>
+          <button onClick={onClose} style={{background:"#f1f5f9",border:"none",borderRadius:"50%",width:28,height:28,cursor:"pointer",fontSize:14,color:"#6b7280"}}>✕</button>
         </div>
-
-        {/* Google */}
         <button onClick={async()=>{setLoading(true);await signInWithGoogle();setLoading(false);}}
           style={{width:"100%",padding:"10px",background:"#fff",border:"1.5px solid #e2e8f0",borderRadius:8,fontSize:13,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:10,marginBottom:14,fontWeight:500,color:"#374151"}}>
-          <svg width="18" height="18" viewBox="0 0 24 24">
-            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-          </svg>
+          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
           Continue with Google
         </button>
-
         <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
           <div style={{flex:1,height:1,background:"#e8ecf0"}}/><span style={{fontSize:11,color:"#9ca3af"}}>or</span><div style={{flex:1,height:1,background:"#e8ecf0"}}/>
         </div>
-
         {mode==="signup"&&<input style={inp} placeholder="Your name" value={name} onChange={e=>setName(e.target.value)}/>}
         <input style={inp} placeholder="Email address" type="email" value={email} onChange={e=>setEmail(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handleSubmit()}/>
         <input style={{...inp,marginBottom:14}} placeholder="Password (min 6 characters)" type="password" value={password} onChange={e=>setPassword(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handleSubmit()}/>
-
         {error&&<div style={{background:"#fef2f2",border:"1px solid #fecaca",borderRadius:7,padding:"9px 12px",color:"#dc2626",fontSize:12,marginBottom:12}}>⚠ {error}</div>}
         {success&&<div style={{background:"#f0fdf4",border:"1px solid #bbf7d0",borderRadius:7,padding:"9px 12px",color:"#16a34a",fontSize:12,marginBottom:12}}>✓ {success}</div>}
-
         <button onClick={handleSubmit} disabled={loading}
           style={{width:"100%",padding:"12px",background:"linear-gradient(135deg,#0d9488,#0891b2)",color:"#fff",border:"none",borderRadius:8,fontSize:14,fontWeight:700,cursor:loading?"not-allowed":"pointer",opacity:loading?0.7:1,marginBottom:14}}>
           {loading?"Please wait...":(mode==="login"?"Sign In →":"Create Free Account →")}
         </button>
-
         <div style={{textAlign:"center",fontSize:12,color:"#6b7280"}}>
           {mode==="login"
             ?<span>No account? <button onClick={()=>{setMode("signup");setError("");}} style={{background:"none",border:"none",color:"#0d9488",fontWeight:600,cursor:"pointer",fontSize:12}}>Sign up free</button></span>
-            :<span>Have an account? <button onClick={()=>{setMode("login");setError("");}} style={{background:"none",border:"none",color:"#0d9488",fontWeight:600,cursor:"pointer",fontSize:12}}>Sign in</button></span>
-          }
+            :<span>Have account? <button onClick={()=>{setMode("login");setError("");}} style={{background:"none",border:"none",color:"#0d9488",fontWeight:600,cursor:"pointer",fontSize:12}}>Sign in</button></span>}
         </div>
       </div>
     </div>
   );
 }
 
-// ─── UPGRADE MODAL ────────────────────────────────────────────────────────────
 function UpgradeModal({onClose,feature}) {
   return (
     <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.55)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center",padding:16}} onClick={onClose}>
@@ -276,10 +277,10 @@ function UpgradeModal({onClose,feature}) {
         <div style={{textAlign:"center",marginBottom:20}}>
           <div style={{fontSize:36,marginBottom:10}}>⚡</div>
           <div style={{fontSize:20,fontWeight:800,color:"#111827",marginBottom:6}}>Upgrade to Pro</div>
-          <div style={{fontSize:13,color:"#6b7280"}}><strong>{feature}</strong> is a Pro feature — unlock everything for £9.99/month.</div>
+          <div style={{fontSize:13,color:"#6b7280"}}><strong>{feature}</strong> is a Pro feature.</div>
         </div>
         <div style={{background:"#f0fdfa",border:"1px solid #99f6e4",borderRadius:10,padding:14,marginBottom:18}}>
-          {["Unlimited resume tailoring","All 6 resume formats + preview","ATS + Hiring Manager scores","Salary intelligence","Resume history","Persistent application tracker","Unlimited cover letters","Interview prep AI"].map(f=>(
+          {["One-URL Apply — paste any job URL","Rejection Risk Score — why you'll get rejected","Salary Negotiation Script — word-for-word","Interview Simulator — AI mock interviews","All 6 resume formats","Unlimited everything"].map(f=>(
             <div key={f} style={{display:"flex",gap:8,padding:"5px 0",fontSize:13,color:"#374151"}}><span style={{color:"#0d9488"}}>✓</span>{f}</div>
           ))}
         </div>
@@ -307,6 +308,9 @@ export default function App() {
   const [tab,setTab]=useState("builder");
   const [jd,setJd]=useState("");
   const [cv,setCv]=useState("");
+  const [jobUrl,setJobUrl]=useState("");
+  const [urlLoading,setUrlLoading]=useState(false);
+  const [urlError,setUrlError]=useState("");
   const [result,setResult]=useState(null);
   const [loading,setLoading]=useState(false);
   const [phase,setPhase]=useState(0);
@@ -315,6 +319,9 @@ export default function App() {
   const [coverLoading,setCoverLoading]=useState(false);
   const [intResult,setIntResult]=useState(null);
   const [intLoading,setIntLoading]=useState(false);
+  const [simState,setSimState]=useState(null); // interview simulator
+  const [simInput,setSimInput]=useState("");
+  const [simLoading,setSimLoading]=useState(false);
   const [jobs,setJobs]=useState([]);
   const [jobQ,setJobQ]=useState("");
   const [country,setCountry]=useState("uk");
@@ -328,6 +335,7 @@ export default function App() {
   const [resumeHistory,setResumeHistory]=useState([]);
   const [historyLoading,setHistoryLoading]=useState(false);
   const ref=useRef(null);
+  const simEndRef=useRef(null);
 
   const isPro = profile?.plan==="pro"||profile?.plan==="enterprise";
 
@@ -336,57 +344,87 @@ export default function App() {
       if(session?.user) loadUser(session.user);
       else setAuthLoading(false);
     });
-    const {data:{subscription}} = supabase.auth.onAuthStateChange((_,session)=>{
+    const {data:{subscription}}=supabase.auth.onAuthStateChange((_,session)=>{
       if(session?.user) loadUser(session.user);
-      else { setUser(null);setProfile(null);setAuthLoading(false); }
+      else{setUser(null);setProfile(null);setAuthLoading(false);}
     });
-    return ()=>subscription.unsubscribe();
+    return()=>subscription.unsubscribe();
   },[]);
 
   async function loadUser(u) {
     setUser(u);
-    const p = await getUserProfile(u.id);
+    const p=await getUserProfile(u.id);
     setProfile(p);
-    if(p) {
-      const userApps = await getUserApplications(u.id);
+    if(p){
+      const userApps=await getUserApplications(u.id);
       setApps(userApps.map(a=>({id:a.id,title:a.title,company:a.company,platform:a.platform,status:a.status,appliedDate:a.applied_date||"—",match:a.match_score||0})));
     }
     setAuthLoading(false);
   }
 
-  function requireAuth(feature) {
-    if(!user){setAuthMode("signup");setShowAuth(true);return false;}
-    return true;
-  }
+  function requireAuth(feature){if(!user){setAuthMode("signup");setShowAuth(true);return false;}return true;}
+  function requirePro(feature){if(!requireAuth(feature))return false;if(!isPro){setUpgradeFeature(feature);setShowUpgrade(true);return false;}return true;}
 
-  function requirePro(feature) {
-    if(!requireAuth(feature)) return false;
-    if(!isPro){setUpgradeFeature(feature);setShowUpgrade(true);return false;}
-    return true;
-  }
-
-  function startPhase() {
+  function startPhase(){
     setPhase(0);
     const iv=setInterval(()=>setPhase(p=>{if(p>=LOADING_PHASES.length-1){clearInterval(iv);return p;}return p+1;}),3500);
     return iv;
   }
 
+  // ── One-URL Apply ──────────────────────────────────────────────────────────
+  async function handleUrlImport() {
+    if(!jobUrl.trim()) return;
+    setUrlLoading(true);setUrlError("");
+    try {
+      const data = await scrapeJobURL(jobUrl.trim());
+      if(data.error){setUrlError(data.error);return;}
+      setJd(data.content);
+      setUrlError("");
+      // Auto-scroll to generate button
+      setTimeout(()=>document.getElementById("generate-btn")?.scrollIntoView({behavior:"smooth"}),200);
+    } catch {
+      setUrlError("Could not fetch this URL. Please paste the job description manually.");
+    } finally {setUrlLoading(false);}
+  }
+
+  // ── Generate Resume ────────────────────────────────────────────────────────
   async function generate() {
     if(!jd?.trim()||!cv?.trim()) return;
     setLoading(true);setResult(null);
     const iv=startPhase();
     try {
       const r=await callClaude(`Analyse JD and CV. Return ONLY JSON:
-{"jdAnalysis":{"role":"title","company":"name","mustHave":["r1","r2","r3","r4"],"niceToHave":["n1","n2","n3"],"keywords":["k1","k2","k3","k4","k5","k6","k7","k8"],"hiringIntent":"1 sentence"},"matchScore":75,"hiringManagerScore":70,"salaryIntelligence":{"marketMin":"£X","marketMax":"£Y","recommendedAsk":"£Z","insight":"1 sentence"},"gapAnalysis":{"strengths":["s1","s2","s3","s4"],"gaps":["g1","g2","g3"],"transferable":["t1","t2","t3"]},"resume":{"name":"NAME","contact":"email • phone • location","summary":"2-3 sentences. Unique hook. Quantified. No clichés.","skills":["sk1","sk2","sk3","sk4","sk5","sk6","sk7","sk8"],"experience":[{"title":"Title","company":"Co","period":"dates","bullets":["verb+initiative+metric","verb+initiative+metric","verb+initiative+metric"]}],"education":"Degree | certs"},"hiringManagerInsights":{"firstImpression":"10s","humanAppeal":"factor","redFlags":["r1"],"standoutFactors":["s1","s2"]},"improvements":["t1","t2","t3"]}
-Rules: every bullet verb+metric. Return ONLY JSON.
+{
+  "jdAnalysis":{"role":"title","company":"name","mustHave":["r1","r2","r3","r4"],"niceToHave":["n1","n2","n3"],"keywords":["k1","k2","k3","k4","k5","k6","k7","k8"],"hiringIntent":"1 sentence"},
+  "matchScore":75,
+  "hiringManagerScore":70,
+  "rejectionRisk":{
+    "score":35,
+    "topReasons":["reason why they will reject — be brutal and specific","reason 2","reason 3"],
+    "ghostingRisk":"HIGH/MEDIUM/LOW",
+    "cvScreenRisk":"HIGH/MEDIUM/LOW",
+    "interviewRisk":"HIGH/MEDIUM/LOW",
+    "howToFix":["specific fix 1","specific fix 2","specific fix 3"]
+  },
+  "salaryIntelligence":{
+    "marketMin":"£X","marketMax":"£Y","recommendedAsk":"£Z",
+    "insight":"1 sentence",
+    "negotiationScript":"Word-for-word script: 'When they offer [amount], say exactly: [script]' — be very specific"
+  },
+  "gapAnalysis":{"strengths":["s1","s2","s3","s4"],"gaps":["g1","g2","g3"],"transferable":["t1","t2","t3"]},
+  "resume":{"name":"NAME","contact":"email • phone • location","summary":"2-3 sentences. Unique hook. Quantified. No clichés.","skills":["sk1","sk2","sk3","sk4","sk5","sk6","sk7","sk8"],"experience":[{"title":"Title","company":"Co","period":"dates","bullets":["verb+initiative+metric","verb+initiative+metric","verb+initiative+metric"]}],"education":"Degree | certs"},
+  "hiringManagerInsights":{"firstImpression":"10s read","humanAppeal":"factor","redFlags":["r1"],"standoutFactors":["s1","s2"]},
+  "improvements":["t1","t2","t3"]
+}
+Rules: rejectionRisk.score = probability of rejection 0-100 (higher = more likely to be rejected). Be brutally honest. Every bullet verb+metric. Return ONLY JSON.
 JD: ${jd.slice(0,1800)}
-CV: ${cv.slice(0,1800)}`);
+CV: ${cv.slice(0,1800)}`, 3000);
       clearInterval(iv);setResult(r);
       if(user&&r.resume) saveResume(user.id,r,r.jdAnalysis?.role,r.jdAnalysis?.company,r.matchScore);
       setTimeout(()=>ref.current?.scrollIntoView({behavior:"smooth"}),100);
     } catch {
       clearInterval(iv);setResult({error:"Generation failed. Check inputs and retry."});
-    } finally { setLoading(false); }
+    } finally {setLoading(false);}
   }
 
   async function genCover() {
@@ -397,8 +435,8 @@ CV: ${cv.slice(0,1800)}`);
 {"subject":"Application for [Role] — [Name]","letter":"3 paragraphs. Hook about company. Best achievement with metric. Why this role + confident close. British English. 200 words max."}
 JD: ${jd.slice(0,1200)} CV: ${cv.slice(0,1200)}`,1000);
       setCoverResult(r);
-    } catch { setCoverResult({error:"Failed. Retry."}); }
-    finally { setCoverLoading(false); }
+    } catch{setCoverResult({error:"Failed. Retry."});}
+    finally{setCoverLoading(false);}
   }
 
   async function genInterview() {
@@ -410,8 +448,77 @@ JD: ${jd.slice(0,1200)} CV: ${cv.slice(0,1200)}`,1000);
 {"keyThemes":["t1","t2","t3"],"likelyQuestions":[{"question":"Q","tip":"tip"},{"question":"Q","tip":"tip"},{"question":"Q","tip":"tip"},{"question":"Q","tip":"tip"}],"starStories":[{"theme":"Leadership","situation":"brief","task":"brief","action":"brief","result":"metric"},{"theme":"Problem Solving","situation":"brief","task":"brief","action":"brief","result":"metric"}],"questionsToAsk":["q1","q2","q3"],"redFlags":["concern + how to address"]}
 JD: ${jd.slice(0,1200)} CV: ${cv.slice(0,1200)}`,1500);
       setIntResult(r);
-    } catch { setIntResult({error:"Failed. Retry."}); }
-    finally { setIntLoading(false); }
+    } catch{setIntResult({error:"Failed. Retry."});}
+    finally{setIntLoading(false);}
+  }
+
+  // ── Interview Simulator ────────────────────────────────────────────────────
+  async function startSimulator() {
+    if(!requirePro("Interview Simulator")) return;
+    if(!jd||!cv){alert("Add your JD and CV in Resume Builder first.");return;}
+    setSimLoading(true);
+    try {
+      const r=await callClaude(`You are a tough interviewer for: ${jd.slice(0,500)}
+Generate the first interview question. Return ONLY JSON:
+{"question":"Your first interview question","context":"What they are testing with this question","difficulty":"EASY/MEDIUM/HARD","tips":"What a great answer looks like"}`, 500);
+      setSimState({
+        messages:[{role:"interviewer",content:r.question,context:r.context,tips:r.tips,difficulty:r.difficulty}],
+        questionCount:1,
+        scores:[],
+        finished:false
+      });
+    } catch{alert("Failed to start. Try again.");}
+    finally{setSimLoading(false);}
+  }
+
+  async function submitSimAnswer() {
+    if(!simInput.trim()||!simState) return;
+    setSimLoading(true);
+    const currentQ = simState.messages[simState.messages.length-1];
+    const newMessages=[...simState.messages,{role:"candidate",content:simInput}];
+    setSimInput("");
+
+    try {
+      const isLastQuestion = simState.questionCount >= 4;
+      const r=await callClaude(`Interview context: ${jd.slice(0,400)}
+Question asked: ${currentQ.content}
+Candidate answer: ${simInput}
+
+${isLastQuestion ? 'This is the last question. Provide final feedback and overall score.' : 'Provide feedback and ask the next question.'}
+
+Return ONLY JSON:
+{
+  "feedback":"Specific feedback on this answer — what was good, what was weak",
+  "score":75,
+  "whatWasMissing":"What the ideal answer would have included",
+  ${isLastQuestion ? '"overallScore":72,"overallFeedback":"Overall interview performance summary","topStrength":"Best thing about their interview","topImprovement":"The one thing to improve most"' : '"nextQuestion":"Next interview question","context":"What this tests","difficulty":"EASY/MEDIUM/HARD","tips":"What a great answer looks like"'}
+}`, 600);
+
+      const feedbackMsg={role:"feedback",content:r.feedback,score:r.score,whatWasMissing:r.whatWasMissing};
+      
+      if(isLastQuestion||r.overallScore) {
+        setSimState({
+          ...simState,
+          messages:[...newMessages,feedbackMsg],
+          scores:[...simState.scores,r.score],
+          finished:true,
+          overallScore:r.overallScore||Math.round((simState.scores.reduce((a,b)=>a+b,0)+r.score)/(simState.scores.length+1)),
+          overallFeedback:r.overallFeedback,
+          topStrength:r.topStrength,
+          topImprovement:r.topImprovement,
+        });
+      } else {
+        const nextMsg={role:"interviewer",content:r.nextQuestion,context:r.context,tips:r.tips,difficulty:r.difficulty};
+        setSimState({
+          ...simState,
+          messages:[...newMessages,feedbackMsg,nextMsg],
+          scores:[...simState.scores,r.score],
+          questionCount:simState.questionCount+1,
+        });
+      }
+      setTimeout(()=>simEndRef.current?.scrollIntoView({behavior:"smooth"}),100);
+    } catch{alert("Error. Try again.");}
+    finally{setSimLoading(false);}
   }
 
   async function searchJobs() {
@@ -420,7 +527,7 @@ JD: ${jd.slice(0,1200)} CV: ${cv.slice(0,1200)}`,1500);
       const res=await fetch(`/api/jobs?query=${encodeURIComponent(jobQ||"product manager")}&country=${country}&source=both`);
       const data=await res.json();
       setJobs(data.jobs||[]);
-    } catch { setJobs([]); }
+    } catch{setJobs([]);}
     setJobLoading(false);
   }
 
@@ -437,29 +544,25 @@ JD: ${jd.slice(0,1200)} CV: ${cv.slice(0,1200)}`,1500);
   function saveJob(job,e) {
     e.stopPropagation();
     if(apps.find(a=>a.title===job.title&&a.company===job.company)) return;
-    const newApp={id:Date.now().toString(),title:job.title,company:job.company,platform:job.platform,status:"Saved",appliedDate:"—",match:job.match||0};
-    setApps(prev=>[...prev,newApp]);
+    setApps(prev=>[...prev,{id:Date.now().toString(),title:job.title,company:job.company,platform:job.platform,status:"Saved",appliedDate:"—",match:job.match||0}]);
     if(user) saveApplication(user.id,{title:job.title,company:job.company,platform:job.platform,status:"Saved",match_score:job.match||0,job_url:job.url||""});
   }
 
-  async function loadHistory() {
+  async function loadHistory(){
     if(!user) return;
     setHistoryLoading(true);
-    const data = await getUserResumes(user.id);
+    const data=await getUserResumes(user.id);
     setResumeHistory(data);
     setHistoryLoading(false);
   }
 
-  function handleTabChange(t) {
+  function handleTabChange(t){
     if(t.id==="history"){if(!requireAuth("Resume History")||!requirePro("Resume History"))return;loadHistory();}
-    if(t.id==="interview"){if(!jd||!cv){setTab(t.id);return;}}
+    if(t.id==="simulator"){if(!requireAuth("Interview Simulator")||!requirePro("Interview Simulator"))return;}
     setTab(t.id);setMenuOpen(false);
   }
 
-  async function handleSignOut() {
-    await signOut();
-    setUser(null);setProfile(null);setApps([]);setResumeHistory([]);
-  }
+  async function handleSignOut(){await signOut();setUser(null);setProfile(null);setApps([]);setResumeHistory([]);}
 
   const inp={width:"100%",boxSizing:"border-box",background:"#fff",border:"1.5px solid #e2e8f0",borderRadius:8,padding:"11px 14px",color:"#111827",fontSize:13,fontFamily:"inherit",outline:"none",lineHeight:1.6};
   const btn=(x={})=>({background:"#0d9488",color:"#fff",border:"none",borderRadius:8,padding:"10px 18px",fontSize:13,fontWeight:600,cursor:"pointer",display:"inline-flex",alignItems:"center",gap:6,...x});
@@ -469,7 +572,7 @@ JD: ${jd.slice(0,1200)} CV: ${cv.slice(0,1200)}`,1500);
     <div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",background:"#f0f4f8"}}>
       <div style={{textAlign:"center"}}>
         <div style={{width:32,height:32,border:"3px solid #99f6e4",borderTopColor:"#0d9488",borderRadius:"50%",animation:"spin 0.8s linear infinite",margin:"0 auto 12px"}}/>
-        <div style={{color:"#6b7280",fontSize:13}}>Loading...</div>
+        <div style={{color:"#6b7280",fontSize:13}}>Loading CareerOS...</div>
       </div>
     </div>
   );
@@ -480,10 +583,11 @@ JD: ${jd.slice(0,1200)} CV: ${cv.slice(0,1200)}`,1500);
         @keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
         @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
         @keyframes pulse{0%,100%{opacity:0.85}50%{opacity:1}}
+        @keyframes slideIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
         input:focus,textarea:focus{border-color:#0d9488 !important;box-shadow:0 0 0 3px rgba(13,148,136,0.1) !important;outline:none}
         .jcard:hover{border-color:#99f6e4 !important;box-shadow:0 2px 8px rgba(13,148,136,0.08) !important}
-        @media(max-width:768px){.desktop-nav{display:none!important}.mobile-menu-btn{display:flex!important}}
-        @media(min-width:769px){.mobile-menu-btn{display:none!important}.mobile-menu{display:none!important}}
+        @media(max-width:768px){.desktop-nav{display:none!important}.mob-btn{display:flex!important}}
+        @media(min-width:769px){.mob-btn{display:none!important}.mobile-menu{display:none!important}}
       `}</style>
 
       {showAuth&&<AuthModal onClose={()=>setShowAuth(false)} onSuccess={u=>loadUser(u)} initialMode={authMode}/>}
@@ -491,27 +595,24 @@ JD: ${jd.slice(0,1200)} CV: ${cv.slice(0,1200)}`,1500);
 
       {/* ── HEADER ── */}
       <div style={{background:"#fff",borderBottom:"1px solid #e8ecf0",position:"sticky",top:0,zIndex:100,boxShadow:"0 1px 4px rgba(0,0,0,0.06)"}}>
-        <div style={{maxWidth:1200,margin:"0 auto",padding:"0 20px",display:"flex",alignItems:"center",justifyContent:"space-between",height:60}}>
-          {/* Logo */}
+        <div style={{maxWidth:1280,margin:"0 auto",padding:"0 20px",display:"flex",alignItems:"center",justifyContent:"space-between",height:60}}>
           <div style={{display:"flex",alignItems:"center",gap:9,cursor:"pointer",flexShrink:0}} onClick={()=>setTab("builder")}>
             <div style={{width:34,height:34,borderRadius:9,background:"linear-gradient(135deg,#0d9488,#0891b2)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:16,color:"#fff"}}>C</div>
             <div>
               <div style={{fontSize:16,fontWeight:800,color:"#111827",letterSpacing:-0.4}}>CareerOS</div>
-              <div style={{fontSize:8,color:"#9ca3af",letterSpacing:1.5,textTransform:"uppercase",lineHeight:1}}>AI Career Platform</div>
+              <div style={{fontSize:8,color:"#9ca3af",letterSpacing:1.5,textTransform:"uppercase"}}>AI Career Platform</div>
             </div>
           </div>
 
-          {/* Desktop Nav */}
-          <nav className="desktop-nav" style={{display:"flex",gap:0,flex:1,justifyContent:"center"}}>
+          <nav className="desktop-nav" style={{display:"flex",gap:0,flex:1,justifyContent:"center",overflowX:"auto"}}>
             {TABS.map(t=>(
-              <button key={t.id} onClick={()=>handleTabChange(t)} style={{background:"transparent",border:"none",borderBottom:`2px solid ${tab===t.id?"#0d9488":"transparent"}`,color:tab===t.id?"#0d9488":"#6b7280",padding:"0 12px",height:60,fontSize:12,cursor:"pointer",fontWeight:tab===t.id?600:400,transition:"all 0.15s",whiteSpace:"nowrap",display:"flex",alignItems:"center",gap:4}}>
+              <button key={t.id} onClick={()=>handleTabChange(t)} style={{background:"transparent",border:"none",borderBottom:`2px solid ${tab===t.id?"#0d9488":"transparent"}`,color:tab===t.id?"#0d9488":"#6b7280",padding:"0 12px",height:60,fontSize:12,cursor:"pointer",fontWeight:tab===t.id?600:400,transition:"all 0.15s",whiteSpace:"nowrap",display:"flex",alignItems:"center",gap:3}}>
                 {t.label}
-                {t.pro&&<span style={{background:"#0d9488",color:"#fff",fontSize:8,fontWeight:700,padding:"1px 5px",borderRadius:8,letterSpacing:0.5}}>PRO</span>}
+                {t.pro&&<ProBadge/>}
               </button>
             ))}
           </nav>
 
-          {/* Desktop Auth */}
           <div className="desktop-nav" style={{display:"flex",gap:8,alignItems:"center",flexShrink:0}}>
             {user?(
               <>
@@ -534,35 +635,32 @@ JD: ${jd.slice(0,1200)} CV: ${cv.slice(0,1200)}`,1500);
             )}
           </div>
 
-          {/* Mobile hamburger */}
-          <button className="mobile-menu-btn" onClick={()=>setMenuOpen(!menuOpen)}
-            style={{background:"#f8fafc",border:"1px solid #e8ecf0",borderRadius:8,padding:"7px 10px",cursor:"pointer",display:"flex",flexDirection:"column",gap:4}}>
+          <button className="mob-btn" onClick={()=>setMenuOpen(!menuOpen)}
+            style={{background:"#f8fafc",border:"1px solid #e8ecf0",borderRadius:8,padding:"7px 10px",cursor:"pointer",display:"none",flexDirection:"column",gap:4}}>
             <span style={{width:18,height:2,background:"#374151",borderRadius:1,display:"block"}}/>
             <span style={{width:18,height:2,background:"#374151",borderRadius:1,display:"block"}}/>
             <span style={{width:18,height:2,background:"#374151",borderRadius:1,display:"block"}}/>
           </button>
         </div>
 
-        {/* Mobile menu */}
         {menuOpen&&(
           <div className="mobile-menu" style={{background:"#fff",borderTop:"1px solid #e8ecf0",padding:"8px 0"}}>
             {TABS.map(t=>(
               <button key={t.id} onClick={()=>handleTabChange(t)}
-                style={{width:"100%",background:tab===t.id?"#f0fdfa":"transparent",border:"none",borderLeft:`3px solid ${tab===t.id?"#0d9488":"transparent"}`,color:tab===t.id?"#0d9488":"#374151",padding:"12px 20px",fontSize:14,cursor:"pointer",fontWeight:tab===t.id?600:400,textAlign:"left",display:"flex",alignItems:"center",gap:8}}>
-                {t.label}
-                {t.pro&&<span style={{background:"#0d9488",color:"#fff",fontSize:8,fontWeight:700,padding:"1px 5px",borderRadius:8}}>PRO</span>}
+                style={{width:"100%",background:tab===t.id?"#f0fdfa":"transparent",border:"none",borderLeft:`3px solid ${tab===t.id?"#0d9488":"transparent"}`,color:tab===t.id?"#0d9488":"#374151",padding:"12px 20px",fontSize:14,cursor:"pointer",fontWeight:tab===t.id?600:400,textAlign:"left",display:"flex",alignItems:"center",gap:6}}>
+                {t.label}{t.pro&&<ProBadge/>}
               </button>
             ))}
             <div style={{padding:"12px 20px",borderTop:"1px solid #e8ecf0",display:"flex",gap:8}}>
               {user?(
                 <>
-                  {!isPro&&<button onClick={()=>{setTab("pricing");setMenuOpen(false);}} style={btn({fontSize:12,flex:1,justifyContent:"center",background:"linear-gradient(135deg,#0d9488,#0891b2)"})}>Upgrade Pro ✦</button>}
-                  <button onClick={()=>{handleSignOut();setMenuOpen(false);}} style={ghost({fontSize:12,flex:1,textAlign:"center",justifyContent:"center"})}>Sign out</button>
+                  {!isPro&&<button onClick={()=>{setTab("pricing");setMenuOpen(false);}} style={btn({fontSize:12,flex:1,justifyContent:"center"})}>Upgrade Pro ✦</button>}
+                  <button onClick={()=>{handleSignOut();setMenuOpen(false);}} style={ghost({fontSize:12,flex:1,textAlign:"center"})}>Sign out</button>
                 </>
               ):(
                 <>
                   <button onClick={()=>{setAuthMode("login");setShowAuth(true);setMenuOpen(false);}} style={ghost({fontSize:12,flex:1,textAlign:"center"})}>Sign in</button>
-                  <button onClick={()=>{setAuthMode("signup");setShowAuth(true);setMenuOpen(false);}} style={btn({fontSize:12,flex:1,justifyContent:"center",background:"linear-gradient(135deg,#0d9488,#0891b2)"})}>Get Started →</button>
+                  <button onClick={()=>{setAuthMode("signup");setShowAuth(true);setMenuOpen(false);}} style={btn({fontSize:12,flex:1,justifyContent:"center"})}>Get Started →</button>
                 </>
               )}
             </div>
@@ -570,28 +668,50 @@ JD: ${jd.slice(0,1200)} CV: ${cv.slice(0,1200)}`,1500);
         )}
       </div>
 
-      {/* ── MAIN CONTENT ── */}
-      <div style={{maxWidth:1200,margin:"0 auto",padding:"24px 16px 80px"}}>
+      <div style={{maxWidth:1280,margin:"0 auto",padding:"24px 16px 80px"}}>
 
-        {/* ════ BUILDER ════ */}
+        {/* ════ RESUME BUILDER ════ */}
         {tab==="builder"&&(
           <div style={{animation:"fadeIn 0.3s ease"}}>
             {/* Hero */}
             <div style={{textAlign:"center",padding:"40px 16px 32px",background:"#fff",borderRadius:16,marginBottom:20,border:"1px solid #e8ecf0",boxShadow:"0 1px 4px rgba(0,0,0,0.04)"}}>
               <div style={{display:"inline-flex",alignItems:"center",gap:6,padding:"5px 14px",borderRadius:20,background:"#f0fdfa",border:"1px solid #99f6e4",color:"#0d9488",fontSize:11,fontWeight:600,letterSpacing:1,textTransform:"uppercase",marginBottom:16}}>
-                AI Resume Builder · ATS & Hiring Manager Scoring · Salary Intelligence
+                AI Resume Builder · ATS & Rejection Risk Score · Salary Intelligence
               </div>
-              <h1 style={{fontSize:"clamp(32px,6vw,52px)",fontWeight:900,color:"#0f172a",lineHeight:1.1,marginBottom:10,letterSpacing:-1.5}}>
+              <h1 style={{fontSize:"clamp(28px,6vw,52px)",fontWeight:900,color:"#0f172a",lineHeight:1.1,marginBottom:10,letterSpacing:-1.5}}>
                 Land more interviews.<br/><span style={{color:"#0d9488"}}>Faster.</span>
               </h1>
-              <p style={{color:"#6b7280",fontSize:15,maxWidth:480,margin:"0 auto 20px"}}>
-                Paste a job description and your CV — get a tailored resume, ATS score, salary intelligence, and interview coaching in under 60 seconds.
+              <p style={{color:"#6b7280",fontSize:15,maxWidth:500,margin:"0 auto 20px"}}>
+                Paste a job URL or description — get a tailored resume, ATS score, rejection risk analysis, salary negotiation script, and interview coaching in under 60 seconds.
               </p>
-              {!user&&(
-                <button onClick={()=>{setAuthMode("signup");setShowAuth(true);}} style={{...btn({padding:"12px 28px",fontSize:15,background:"linear-gradient(135deg,#0d9488,#0891b2)",borderRadius:10})}}>
-                  Create Free Account →
+              {!user&&<button onClick={()=>{setAuthMode("signup");setShowAuth(true);}} style={{...btn({padding:"12px 28px",fontSize:15,background:"linear-gradient(135deg,#0d9488,#0891b2)",borderRadius:10})}}>Create Free Account →</button>}
+            </div>
+
+            {/* ── VIRAL FEATURE 1: One-URL Apply ── */}
+            <div style={{background:"linear-gradient(135deg,#042f2e,#0d9488)",borderRadius:14,padding:20,marginBottom:20,position:"relative",overflow:"hidden"}}>
+              <div style={{position:"absolute",top:-20,right:-20,width:120,height:120,background:"rgba(255,255,255,0.05)",borderRadius:"50%"}}/>
+              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+                <span style={{fontSize:20}}>⚡</span>
+                <div>
+                  <div style={{fontSize:14,fontWeight:800,color:"#fff"}}>One-URL Apply</div>
+                  <div style={{fontSize:11,color:"#99f6e4"}}>Paste any job URL — we extract the JD automatically</div>
+                </div>
+                <ViralBadge text="🔥 NEW"/>
+              </div>
+              <div style={{display:"flex",gap:8}}>
+                <input
+                  style={{flex:1,background:"rgba(255,255,255,0.15)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:8,padding:"10px 14px",color:"#fff",fontSize:13,fontFamily:"inherit",outline:"none"}}
+                  placeholder="Paste LinkedIn, Reed, Indeed, or any job URL..."
+                  value={jobUrl} onChange={e=>setJobUrl(e.target.value)}
+                  onKeyDown={e=>e.key==="Enter"&&handleUrlImport()}
+                />
+                <button onClick={handleUrlImport} disabled={urlLoading||!jobUrl}
+                  style={{background:"rgba(255,255,255,0.2)",color:"#fff",border:"1px solid rgba(255,255,255,0.4)",borderRadius:8,padding:"10px 18px",fontSize:13,fontWeight:600,cursor:"pointer",flexShrink:0,whiteSpace:"nowrap"}}>
+                  {urlLoading?"Fetching...":"Import JD →"}
                 </button>
-              )}
+              </div>
+              {urlError&&<div style={{marginTop:8,fontSize:12,color:"#fca5a5"}}>{urlError}</div>}
+              {jd&&!urlError&&jobUrl&&<div style={{marginTop:8,fontSize:12,color:"#99f6e4"}}>✓ Job description imported — ready to generate!</div>}
             </div>
 
             {/* Format picker */}
@@ -613,7 +733,7 @@ JD: ${jd.slice(0,1200)} CV: ${cv.slice(0,1200)}`,1500);
             <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:14,marginBottom:14}}>
               <div>
                 <label style={{display:"block",fontSize:11,fontWeight:700,color:"#374151",marginBottom:6,textTransform:"uppercase",letterSpacing:0.5}}>Job Description</label>
-                <textarea style={{...inp,height:200,resize:"vertical"}} placeholder="Paste any job description here..." value={jd} onChange={e=>setJd(e.target.value)}/>
+                <textarea style={{...inp,height:200,resize:"vertical"}} placeholder="Paste job description here (or use One-URL Apply above)..." value={jd} onChange={e=>setJd(e.target.value)}/>
               </div>
               <div>
                 <label style={{display:"block",fontSize:11,fontWeight:700,color:"#374151",marginBottom:6,textTransform:"uppercase",letterSpacing:0.5}}>Your CV / Background</label>
@@ -632,17 +752,19 @@ JD: ${jd.slice(0,1200)} CV: ${cv.slice(0,1200)}`,1500);
                       <div style={{height:4,background:"linear-gradient(90deg,#0d9488,#0891b2)",borderRadius:2,width:`${((phase+1)/LOADING_PHASES.length)*100}%`,transition:"width 0.5s ease"}}/>
                     </div>
                   </div>
+                  <div style={{fontSize:11,color:"#5eead4",fontWeight:600}}>{Math.round(((phase+1)/LOADING_PHASES.length)*100)}%</div>
                 </div>
               </div>
             )}
 
             <div style={{display:"flex",gap:10,marginBottom:24,flexWrap:"wrap"}}>
-              <button onClick={generate} disabled={loading||!jd||!cv} style={{...btn({background:"linear-gradient(135deg,#0d9488,#0891b2)",padding:"12px 24px",fontSize:14}),opacity:loading||!jd||!cv?0.5:1}}>
+              <button id="generate-btn" onClick={generate} disabled={loading||!jd||!cv} style={{...btn({background:"linear-gradient(135deg,#0d9488,#0891b2)",padding:"12px 24px",fontSize:14}),opacity:loading||!jd||!cv?0.5:1}}>
                 {loading?"Generating...":"✦ Generate Tailored Resume"}
               </button>
               {result&&!result.error&&(<>
                 <button onClick={()=>{setTab("cover");genCover();}} style={ghost({color:"#7c3aed",borderColor:"#ddd6fe"})}>✉ Cover Letter</button>
                 <button onClick={()=>{setTab("interview");genInterview();}} style={ghost({color:"#0891b2",borderColor:"#bae6fd"})}>◆ Interview Prep</button>
+                <button onClick={()=>handleTabChange({id:"simulator",pro:true})} style={ghost({color:"#ef4444",borderColor:"#fecaca"})}>🎭 Interview Sim</button>
                 <button onClick={()=>{navigator.clipboard.writeText([result.resume?.name,result.resume?.contact,"",result.resume?.summary].join("\n"));setCopied(true);setTimeout(()=>setCopied(false),1500);}} style={ghost({color:copied?"#16a34a":"#6b7280"})}>
                   {copied?"✓ Copied":"Copy Text"}
                 </button>
@@ -651,19 +773,26 @@ JD: ${jd.slice(0,1200)} CV: ${cv.slice(0,1200)}`,1500);
 
             {result&&!result.error&&(
               <div ref={ref}>
-                {/* Score cards */}
-                <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",gap:12,marginBottom:14}}>
-                  <Card style={{display:"flex",flexDirection:"column",alignItems:"center",gap:8}}>
+                {/* ── Score Cards Row ── */}
+                <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))",gap:12,marginBottom:14}}>
+                  <Card style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6}}>
                     <SLabel>ATS Score</SLabel>
                     <ScoreRing score={result.matchScore} size={70}/>
-                    <div style={{fontSize:11,fontWeight:600,color:result.matchScore>=80?"#16a34a":result.matchScore>=65?"#d97706":"#dc2626"}}>
+                    <div style={{fontSize:10,fontWeight:600,color:result.matchScore>=80?"#16a34a":result.matchScore>=65?"#d97706":"#dc2626"}}>
                       {result.matchScore>=80?"Strong":result.matchScore>=65?"Good":"Needs Work"}
                     </div>
                   </Card>
-                  <Card style={{display:"flex",flexDirection:"column",alignItems:"center",gap:8}}>
+                  <Card style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6}}>
                     <SLabel color="#7c3aed">Human Appeal</SLabel>
                     <ScoreRing score={result.hiringManagerScore} size={70} color="#7c3aed"/>
-                    <div style={{fontSize:11,fontWeight:600,color:"#7c3aed"}}>HM View</div>
+                    <div style={{fontSize:10,fontWeight:600,color:"#7c3aed"}}>HM View</div>
+                  </Card>
+                  <Card style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6}}>
+                    <SLabel color="#dc2626">Rejection Risk</SLabel>
+                    <ScoreRing score={result.rejectionRisk?.score} size={70} color={result.rejectionRisk?.score>60?"#dc2626":result.rejectionRisk?.score>35?"#d97706":"#16a34a"}/>
+                    <div style={{fontSize:10,fontWeight:600,color:result.rejectionRisk?.score>60?"#dc2626":result.rejectionRisk?.score>35?"#d97706":"#16a34a"}}>
+                      {result.rejectionRisk?.score>60?"High Risk":result.rejectionRisk?.score>35?"Medium Risk":"Low Risk"}
+                    </div>
                   </Card>
                   <Card>
                     <SLabel color="#059669">💰 Salary Intel</SLabel>
@@ -675,6 +804,77 @@ JD: ${jd.slice(0,1200)} CV: ${cv.slice(0,1200)}`,1500);
                   </Card>
                 </div>
 
+                {/* ── VIRAL FEATURE 2: Rejection Risk ── */}
+                {result.rejectionRisk&&(
+                  <div style={{background:"linear-gradient(135deg,#fef2f2,#fff5f5)",border:"2px solid #fecaca",borderRadius:12,padding:20,marginBottom:14}}>
+                    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
+                      <span style={{fontSize:20}}>💀</span>
+                      <div>
+                        <div style={{fontSize:14,fontWeight:800,color:"#dc2626",display:"flex",alignItems:"center",gap:8}}>
+                          Why You'll Get Rejected
+                          <ViralBadge text="🔥 BRUTAL HONESTY"/>
+                        </div>
+                        <div style={{fontSize:11,color:"#9ca3af"}}>The real reasons hiring managers will pass on your application</div>
+                      </div>
+                    </div>
+
+                    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))",gap:10,marginBottom:14}}>
+                      {[
+                        {label:"CV Screen Risk",value:result.rejectionRisk.cvScreenRisk},
+                        {label:"Ghosting Risk",value:result.rejectionRisk.ghostingRisk},
+                        {label:"Interview Risk",value:result.rejectionRisk.interviewRisk},
+                      ].map(r=>(
+                        <div key={r.label} style={{textAlign:"center",padding:10,background:"#fff",borderRadius:8,border:"1px solid #fecaca"}}>
+                          <div style={{fontSize:10,color:"#9ca3af",fontWeight:600,marginBottom:4}}>{r.label}</div>
+                          <div style={{fontSize:14,fontWeight:800,color:r.value==="HIGH"?"#dc2626":r.value==="MEDIUM"?"#d97706":"#16a34a"}}>{r.value||"—"}</div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div style={{marginBottom:12}}>
+                      <div style={{fontSize:11,fontWeight:700,color:"#dc2626",marginBottom:8}}>TOP REJECTION REASONS:</div>
+                      {result.rejectionRisk.topReasons?.map((r,i)=>(
+                        <div key={i} style={{display:"flex",gap:8,padding:"7px 10px",background:"#fff",borderRadius:7,border:"1px solid #fecaca",marginBottom:6}}>
+                          <span style={{color:"#dc2626",fontWeight:800,flexShrink:0}}>{i+1}.</span>
+                          <span style={{fontSize:12,color:"#374151",lineHeight:1.5}}>{r}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div>
+                      <div style={{fontSize:11,fontWeight:700,color:"#16a34a",marginBottom:8}}>HOW TO FIX IT:</div>
+                      {result.rejectionRisk.howToFix?.map((fix,i)=>(
+                        <div key={i} style={{display:"flex",gap:8,padding:"6px 0",borderBottom:"1px solid #fee2e2"}}>
+                          <span style={{color:"#16a34a",flexShrink:0}}>✓</span>
+                          <span style={{fontSize:12,color:"#374151",lineHeight:1.5}}>{fix}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* ── VIRAL FEATURE 3: Salary Negotiation Script ── */}
+                {result.salaryIntelligence?.negotiationScript&&(
+                  <div style={{background:"linear-gradient(135deg,#f0fdf4,#ecfdf5)",border:"2px solid #bbf7d0",borderRadius:12,padding:20,marginBottom:14}}>
+                    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
+                      <span style={{fontSize:20}}>💰</span>
+                      <div>
+                        <div style={{fontSize:14,fontWeight:800,color:"#16a34a",display:"flex",alignItems:"center",gap:8}}>
+                          Salary Negotiation Script
+                          <ViralBadge text="🔥 WORD-FOR-WORD"/>
+                        </div>
+                        <div style={{fontSize:11,color:"#9ca3af"}}>Exactly what to say when they make you an offer</div>
+                      </div>
+                    </div>
+                    <div style={{background:"#fff",borderRadius:8,border:"1px solid #bbf7d0",padding:16,fontSize:13,color:"#374151",lineHeight:1.8,fontStyle:"italic",position:"relative"}}>
+                      <div style={{position:"absolute",top:-10,left:16,background:"#16a34a",color:"#fff",fontSize:10,fontWeight:700,padding:"2px 8px",borderRadius:10}}>Script</div>
+                      {result.salaryIntelligence.negotiationScript}
+                    </div>
+                    <div style={{marginTop:10,fontSize:11,color:"#6b7280"}}>💡 Tip: Say this confidently, then stay silent. The first person to speak after making a salary ask usually loses.</div>
+                  </div>
+                )}
+
+                {/* JD Analysis */}
                 <Card>
                   <SLabel>JD Analysis — {result.jdAnalysis?.role} at {result.jdAnalysis?.company}</SLabel>
                   <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))",gap:12}}>
@@ -682,7 +882,7 @@ JD: ${jd.slice(0,1200)} CV: ${cv.slice(0,1200)}`,1500);
                     <div><div style={{fontSize:10,color:"#9ca3af",fontWeight:600,marginBottom:5,letterSpacing:1}}>NICE TO HAVE</div>{result.jdAnalysis?.niceToHave?.map(s=><Chip key={s} text={s} color="#d97706" bg="#fffbeb"/>)}</div>
                     <div><div style={{fontSize:10,color:"#9ca3af",fontWeight:600,marginBottom:5,letterSpacing:1}}>KEYWORDS</div>{result.jdAnalysis?.keywords?.map(k=><Chip key={k} text={k} color="#7c3aed" bg="#f5f3ff"/>)}</div>
                   </div>
-                  {result.jdAnalysis?.hiringIntent&&<div style={{marginTop:10,padding:10,background:"#f0fdfa",borderRadius:7,borderLeft:"3px solid #0d9488",marginTop:12}}><div style={{fontSize:10,fontWeight:700,color:"#0d9488",marginBottom:3}}>HIRING INTENT</div><div style={{fontSize:12,color:"#374151",lineHeight:1.6}}>{result.jdAnalysis.hiringIntent}</div></div>}
+                  {result.jdAnalysis?.hiringIntent&&<div style={{marginTop:10,padding:10,background:"#f0fdfa",borderRadius:7,borderLeft:"3px solid #0d9488"}}><div style={{fontSize:10,fontWeight:700,color:"#0d9488",marginBottom:3}}>HIRING INTENT</div><div style={{fontSize:12,color:"#374151",lineHeight:1.6}}>{result.jdAnalysis.hiringIntent}</div></div>}
                 </Card>
 
                 {result.hiringManagerInsights&&(
@@ -740,7 +940,7 @@ JD: ${jd.slice(0,1200)} CV: ${cv.slice(0,1200)}`,1500);
               <button onClick={searchJobs} disabled={jobLoading} style={btn({flexShrink:0})}>{jobLoading?"...":"Search"}</button>
             </div>
             {jobLoading&&<div style={{textAlign:"center",padding:40}}><div style={{width:24,height:24,border:"3px solid #ccfbf1",borderTopColor:"#0d9488",borderRadius:"50%",animation:"spin 0.8s linear infinite",margin:"0 auto 10px"}}/><div style={{color:"#6b7280",fontSize:13}}>Searching...</div></div>}
-            {!jobLoading&&jobs.length===0&&<div style={{textAlign:"center",padding:48,color:"#9ca3af"}}><div style={{fontSize:36,marginBottom:10}}>🔍</div><div style={{fontSize:15,fontWeight:600,color:"#374151",marginBottom:4}}>Search for jobs above</div><div style={{fontSize:13}}>Try "product manager", "software engineer"</div></div>}
+            {!jobLoading&&jobs.length===0&&<div style={{textAlign:"center",padding:48,color:"#9ca3af"}}><div style={{fontSize:36,marginBottom:10}}>🔍</div><div style={{fontSize:15,fontWeight:600,color:"#374151",marginBottom:4}}>Search for jobs above</div></div>}
             {jobs.map(job=>(
               <div key={job.id} className="jcard" style={{background:"#fff",border:"1.5px solid #e8ecf0",borderRadius:12,padding:16,marginBottom:10,boxShadow:"0 1px 3px rgba(0,0,0,0.04)"}}>
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:10}}>
@@ -761,7 +961,7 @@ JD: ${jd.slice(0,1200)} CV: ${cv.slice(0,1200)}`,1500);
                         {applying===job.id?"...":applied===job.id?"✓ Applied":"Apply →"}
                       </button>
                       <button onClick={e=>{e.stopPropagation();setJd((job.description||job.title)+"\n\nRole: "+job.title+"\nCompany: "+job.company);setTab("builder");}} style={ghost({fontSize:11,padding:"7px 12px",color:"#0d9488",borderColor:"#99f6e4"})}>✦ Tailor</button>
-                      <button onClick={e=>saveJob(job,e)} style={ghost({fontSize:11,padding:"7px 12px",color:apps.find(a=>a.title===job.title)?"#16a34a":"#6b7280"})}>
+                      <button onClick={e=>saveJob(job,e)} style={ghost({fontSize:11,padding:"7px 12px",color:apps.find(a=>a.title===job.title&&a.company===job.company)?"#16a34a":"#6b7280"})}>
                         {apps.find(a=>a.title===job.title&&a.company===job.company)?"✓":"☆"}
                       </button>
                       {result?.resume&&<button onClick={e=>{e.stopPropagation();setJobFmt(jobFmt===job.id?null:job.id);}} style={ghost({fontSize:11,padding:"7px 12px",color:"#7c3aed",borderColor:"#ddd6fe"})}>📄</button>}
@@ -780,7 +980,7 @@ JD: ${jd.slice(0,1200)} CV: ${cv.slice(0,1200)}`,1500);
         {tab==="tracker"&&(
           <div style={{animation:"fadeIn 0.3s ease"}}>
             <div style={{marginBottom:16}}><h2 style={{fontSize:24,fontWeight:800,color:"#111827",marginBottom:4,letterSpacing:-0.5}}>Application Tracker</h2><p style={{color:"#6b7280",fontSize:14}}>{user?"Saved to your account.":"Sign in to save permanently."}</p></div>
-            {!user&&<div style={{background:"#fffbeb",border:"1px solid #fde68a",borderRadius:8,padding:12,marginBottom:14,display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:8}}><span style={{fontSize:13,color:"#92400e"}}>Sign in to save applications across devices</span><button onClick={()=>{setAuthMode("signup");setShowAuth(true);}} style={btn({fontSize:12,padding:"7px 14px"})}>Sign in →</button></div>}
+            {!user&&<div style={{background:"#fffbeb",border:"1px solid #fde68a",borderRadius:8,padding:12,marginBottom:14,display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:8}}><span style={{fontSize:13,color:"#92400e"}}>Sign in to save applications permanently</span><button onClick={()=>{setAuthMode("signup");setShowAuth(true);}} style={btn({fontSize:12,padding:"7px 14px"})}>Sign in →</button></div>}
             {apps.length===0?(
               <div style={{textAlign:"center",padding:48,color:"#9ca3af"}}><div style={{fontSize:36,marginBottom:10}}>📋</div><div style={{fontSize:15,fontWeight:600,color:"#374151",marginBottom:4}}>No applications yet</div><div style={{fontSize:13}}>Apply or save jobs from Job Search</div></div>
             ):(<>
@@ -816,7 +1016,7 @@ JD: ${jd.slice(0,1200)} CV: ${cv.slice(0,1200)}`,1500);
         {/* ════ RESUME HISTORY ════ */}
         {tab==="history"&&(
           <div style={{animation:"fadeIn 0.3s ease"}}>
-            <div style={{marginBottom:16}}><h2 style={{fontSize:24,fontWeight:800,color:"#111827",marginBottom:4,letterSpacing:-0.5}}>Resume History</h2><p style={{color:"#6b7280",fontSize:14}}>Every resume you've generated, saved automatically.</p></div>
+            <div style={{marginBottom:16}}><h2 style={{fontSize:24,fontWeight:800,color:"#111827",marginBottom:4,letterSpacing:-0.5}}>Resume History</h2><p style={{color:"#6b7280",fontSize:14}}>Every resume saved automatically with the job it was tailored for.</p></div>
             {historyLoading&&<div style={{textAlign:"center",padding:40}}><div style={{width:24,height:24,border:"3px solid #ccfbf1",borderTopColor:"#0d9488",borderRadius:"50%",animation:"spin 0.8s linear infinite",margin:"0 auto"}}/></div>}
             {!historyLoading&&resumeHistory.length===0&&<div style={{textAlign:"center",padding:48,color:"#9ca3af"}}><div style={{fontSize:36,marginBottom:10}}>📂</div><div style={{fontSize:15,fontWeight:600,color:"#374151",marginBottom:4}}>No history yet</div><div style={{fontSize:13}}>Generate resumes and they'll appear here</div></div>}
             {resumeHistory.map(r=>(
@@ -907,6 +1107,133 @@ JD: ${jd.slice(0,1200)} CV: ${cv.slice(0,1200)}`,1500);
           </div>
         )}
 
+        {/* ════ INTERVIEW SIMULATOR ════ */}
+        {tab==="simulator"&&(
+          <div style={{animation:"fadeIn 0.3s ease"}}>
+            <div style={{marginBottom:16}}>
+              <h2 style={{fontSize:24,fontWeight:800,color:"#111827",marginBottom:4,letterSpacing:-0.5}}>
+                Interview Simulator 🎭
+                <ViralBadge text="🔥 UNIQUE"/>
+              </h2>
+              <p style={{color:"#6b7280",fontSize:14}}>Real-time AI mock interview. Answer questions, get scored, improve before the real thing.</p>
+            </div>
+
+            {(!jd||!cv)&&<div style={{background:"#fffbeb",border:"1px solid #fde68a",borderRadius:8,padding:12,marginBottom:14,color:"#92400e",fontSize:13}}>⚡ Add your JD and CV in Resume Builder first.</div>}
+
+            {!simState&&(
+              <div style={{background:"#fff",border:"1px solid #e8ecf0",borderRadius:14,padding:28,textAlign:"center"}}>
+                <div style={{fontSize:48,marginBottom:14}}>🎭</div>
+                <div style={{fontSize:18,fontWeight:800,color:"#111827",marginBottom:8}}>AI Mock Interview</div>
+                <div style={{fontSize:13,color:"#6b7280",maxWidth:400,margin:"0 auto 20px",lineHeight:1.7}}>
+                  Our AI plays the role of a tough interviewer for your specific job. Answer 4 questions, get scored on each answer, and receive an overall readiness score.
+                </div>
+                <div style={{display:"flex",gap:12,justifyContent:"center",marginBottom:24,flexWrap:"wrap"}}>
+                  {["4 tailored questions","Scored answers","STAR coaching","Overall readiness score"].map(f=>(
+                    <div key={f} style={{padding:"5px 12px",background:"#f0fdfa",border:"1px solid #99f6e4",borderRadius:20,fontSize:12,color:"#0d9488",fontWeight:500}}>{f}</div>
+                  ))}
+                </div>
+                <button onClick={startSimulator} disabled={simLoading||!jd||!cv}
+                  style={{...btn({padding:"14px 32px",fontSize:15,background:"linear-gradient(135deg,#0d9488,#0891b2)",borderRadius:10}),opacity:simLoading||!jd||!cv?0.5:1}}>
+                  {simLoading?"Starting...":"🎭 Start Mock Interview"}
+                </button>
+              </div>
+            )}
+
+            {simState&&(
+              <div>
+                {/* Progress bar */}
+                <div style={{background:"#fff",border:"1px solid #e8ecf0",borderRadius:10,padding:"12px 16px",marginBottom:16,display:"flex",alignItems:"center",gap:12}}>
+                  <div style={{flex:1}}>
+                    <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
+                      <span style={{fontSize:12,fontWeight:600,color:"#374151"}}>Interview Progress</span>
+                      <span style={{fontSize:12,color:"#6b7280"}}>{simState.questionCount}/4 questions</span>
+                    </div>
+                    <div style={{height:6,background:"#f1f5f9",borderRadius:3}}>
+                      <div style={{height:6,background:"linear-gradient(90deg,#0d9488,#0891b2)",borderRadius:3,width:`${(simState.questionCount/4)*100}%`,transition:"width 0.5s"}}/>
+                    </div>
+                  </div>
+                  {simState.scores.length>0&&<div style={{fontSize:13,fontWeight:700,color:"#0d9488"}}>Avg: {Math.round(simState.scores.reduce((a,b)=>a+b,0)/simState.scores.length)}%</div>}
+                </div>
+
+                {/* Chat messages */}
+                <div style={{background:"#fff",border:"1px solid #e8ecf0",borderRadius:12,padding:16,marginBottom:14,maxHeight:500,overflowY:"auto"}}>
+                  {simState.messages.map((msg,i)=>(
+                    <div key={i} style={{marginBottom:14,animation:"slideIn 0.3s ease"}}>
+                      {msg.role==="interviewer"&&(
+                        <div>
+                          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+                            <div style={{width:28,height:28,borderRadius:"50%",background:"linear-gradient(135deg,#0d9488,#0891b2)",display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontSize:12,fontWeight:700,flexShrink:0}}>AI</div>
+                            <div style={{fontSize:11,fontWeight:600,color:"#0d9488"}}>Interviewer</div>
+                            {msg.difficulty&&<span style={{fontSize:9,padding:"2px 6px",borderRadius:8,background:msg.difficulty==="HARD"?"#fef2f2":msg.difficulty==="MEDIUM"?"#fffbeb":"#f0fdf4",color:msg.difficulty==="HARD"?"#dc2626":msg.difficulty==="MEDIUM"?"#d97706":"#16a34a",fontWeight:700}}>{msg.difficulty}</span>}
+                          </div>
+                          <div style={{background:"#f0fdfa",border:"1px solid #99f6e4",borderRadius:"0 12px 12px 12px",padding:"12px 14px",marginLeft:36}}>
+                            <div style={{fontSize:14,fontWeight:600,color:"#111827",marginBottom:6}}>{msg.content}</div>
+                            {msg.context&&<div style={{fontSize:11,color:"#6b7280",fontStyle:"italic",marginBottom:4}}>Testing: {msg.context}</div>}
+                            {msg.tips&&<div style={{fontSize:11,color:"#0d9488",borderTop:"1px solid #ccfbf1",paddingTop:6,marginTop:6}}>💡 {msg.tips}</div>}
+                          </div>
+                        </div>
+                      )}
+                      {msg.role==="candidate"&&(
+                        <div style={{display:"flex",justifyContent:"flex-end"}}>
+                          <div style={{background:"linear-gradient(135deg,#0d9488,#0891b2)",borderRadius:"12px 0 12px 12px",padding:"12px 14px",maxWidth:"75%"}}>
+                            <div style={{fontSize:13,color:"#fff",lineHeight:1.6}}>{msg.content}</div>
+                          </div>
+                        </div>
+                      )}
+                      {msg.role==="feedback"&&(
+                        <div style={{background:msg.score>=75?"#f0fdf4":msg.score>=55?"#fffbeb":"#fef2f2",border:`1px solid ${msg.score>=75?"#bbf7d0":msg.score>=55?"#fde68a":"#fecaca"}`,borderRadius:8,padding:12,marginLeft:36}}>
+                          <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}>
+                            <div style={{fontSize:11,fontWeight:700,color:msg.score>=75?"#16a34a":msg.score>=55?"#d97706":"#dc2626"}}>Answer Score</div>
+                            <div style={{fontSize:16,fontWeight:800,color:msg.score>=75?"#16a34a":msg.score>=55?"#d97706":"#dc2626"}}>{msg.score}%</div>
+                          </div>
+                          <div style={{fontSize:12,color:"#374151",marginBottom:6,lineHeight:1.6}}>{msg.content}</div>
+                          {msg.whatWasMissing&&<div style={{fontSize:11,color:"#6b7280",borderTop:"1px solid rgba(0,0,0,0.08)",paddingTop:6,marginTop:6}}>Missing: {msg.whatWasMissing}</div>}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                  <div ref={simEndRef}/>
+                </div>
+
+                {/* Final results */}
+                {simState.finished&&(
+                  <Card style={{background:"linear-gradient(135deg,#f0fdfa,#ecfdf5)",border:"2px solid #0d9488"}}>
+                    <div style={{textAlign:"center",marginBottom:16}}>
+                      <div style={{fontSize:32,marginBottom:8}}>🎯</div>
+                      <div style={{fontSize:20,fontWeight:800,color:"#111827",marginBottom:4}}>Interview Complete!</div>
+                      <div style={{fontSize:40,fontWeight:900,color:simState.overallScore>=75?"#16a34a":simState.overallScore>=55?"#d97706":"#dc2626"}}>{simState.overallScore}%</div>
+                      <div style={{fontSize:13,color:"#6b7280"}}>Overall Interview Score</div>
+                    </div>
+                    {simState.overallFeedback&&<div style={{background:"#fff",borderRadius:8,padding:14,marginBottom:12,fontSize:13,color:"#374151",lineHeight:1.7}}>{simState.overallFeedback}</div>}
+                    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:14}}>
+                      {simState.topStrength&&<div style={{padding:12,background:"#f0fdf4",borderRadius:8,border:"1px solid #bbf7d0"}}><div style={{fontSize:10,fontWeight:700,color:"#16a34a",marginBottom:4}}>TOP STRENGTH</div><div style={{fontSize:12,color:"#374151"}}>{simState.topStrength}</div></div>}
+                      {simState.topImprovement&&<div style={{padding:12,background:"#fef2f2",borderRadius:8,border:"1px solid #fecaca"}}><div style={{fontSize:10,fontWeight:700,color:"#dc2626",marginBottom:4}}>TOP IMPROVEMENT</div><div style={{fontSize:12,color:"#374151"}}>{simState.topImprovement}</div></div>}
+                    </div>
+                    <button onClick={()=>setSimState(null)} style={{...btn({width:"100%",justifyContent:"center",padding:"12px"})}}>🎭 Start New Interview</button>
+                  </Card>
+                )}
+
+                {/* Answer input */}
+                {!simState.finished&&(
+                  <div style={{display:"flex",gap:10}}>
+                    <textarea
+                      style={{...inp,flex:1,height:80,resize:"none"}}
+                      placeholder="Type your answer here... (Press Ctrl+Enter to submit)"
+                      value={simInput}
+                      onChange={e=>setSimInput(e.target.value)}
+                      onKeyDown={e=>{if(e.key==="Enter"&&e.ctrlKey){e.preventDefault();submitSimAnswer();}}}
+                    />
+                    <button onClick={submitSimAnswer} disabled={simLoading||!simInput.trim()}
+                      style={{...btn({flexShrink:0,padding:"0 20px",background:simLoading?"#6b7280":"linear-gradient(135deg,#0d9488,#0891b2)"}),opacity:simLoading||!simInput.trim()?0.5:1}}>
+                      {simLoading?"...":"Submit"}
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* ════ PRICING ════ */}
         {tab==="pricing"&&(
           <div style={{animation:"fadeIn 0.3s ease"}}>
@@ -933,12 +1260,36 @@ JD: ${jd.slice(0,1200)} CV: ${cv.slice(0,1200)}`,1500);
                 </div>
               ))}
             </div>
+
+            {/* Viral features showcase */}
+            <Card>
+              <SLabel>🔥 Features Nobody Else Has</SLabel>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:12}}>
+                {[
+                  {i:"⚡",t:"One-URL Apply",d:"Paste any job URL — we extract the JD instantly. No more copy-pasting.",badge:"NEW"},
+                  {i:"💀",t:"Rejection Risk Score",d:"Brutally honest analysis of why you'll get rejected — and exactly how to fix it.",badge:"VIRAL"},
+                  {i:"💰",t:"Salary Negotiation Script",d:"Word-for-word script to negotiate your salary. Never leave money on the table.",badge:"VIRAL"},
+                  {i:"🎭",t:"Interview Simulator",d:"AI mock interviews with scoring. Practice until you're ready for the real thing.",badge:"UNIQUE"},
+                  {i:"🎯",t:"Dual Scoring",d:"ATS score AND Hiring Manager psychology — only platform that does both.",badge:""},
+                  {i:"🌍",t:"Global Jobs",d:"Real jobs from Adzuna, JSearch, Reed across UK, US and India.",badge:""},
+                ].map(item=>(
+                  <div key={item.t} style={{padding:14,background:"#f8fafc",borderRadius:10,border:"1px solid #e8ecf0"}}>
+                    <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:6}}>
+                      <span style={{fontSize:20}}>{item.i}</span>
+                      {item.badge&&<ViralBadge text={item.badge==="NEW"?"🆕 NEW":item.badge==="UNIQUE"?"⭐ UNIQUE":"🔥 VIRAL"}/>}
+                    </div>
+                    <div style={{fontSize:13,fontWeight:700,color:"#111827",marginBottom:4}}>{item.t}</div>
+                    <div style={{fontSize:12,color:"#6b7280",lineHeight:1.5}}>{item.d}</div>
+                  </div>
+                ))}
+              </div>
+            </Card>
           </div>
         )}
       </div>
 
       <div style={{borderTop:"1px solid #e8ecf0",padding:"14px 20px",textAlign:"center",color:"#d1d5db",fontSize:11,background:"#fff"}}>
-        <span style={{color:"#0d9488",fontWeight:700}}>CareerOS</span> · AI Career Platform · Resume · Jobs · Cover Letter · Interview Prep · Tracker
+        <span style={{color:"#0d9488",fontWeight:700}}>CareerOS</span> · AI Career Platform · Resume · Jobs · Cover Letter · Interview Prep · Interview Simulator
       </div>
     </div>
   );
