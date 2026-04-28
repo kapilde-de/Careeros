@@ -162,7 +162,7 @@ function SLabel({children,color="#0d9488"}) {
 }
 
 function ProBadge() {
-  return <span style={{background:"linear-gradient(135deg,#0d9488,#0891b2)",color:"#fff",fontSize:8,fontWeight:700,padding:"2px 6px",borderRadius:8,letterSpacing:0.5,textTransform:"uppercase",marginLeft:5}}>PRO</span>;
+  return <span style={{background:"#e0fdf4",color:"#0d9488",fontSize:9,fontWeight:700,padding:"1px 5px",borderRadius:4,letterSpacing:0.3,textTransform:"uppercase",marginLeft:4,lineHeight:"14px",display:"inline-block"}}>PRO</span>;
 }
 
 function ViralBadge({text="🔥 VIRAL"}) {
@@ -630,7 +630,7 @@ Return ONLY JSON:
           <div className="desktop-nav" style={{display:"flex",gap:8,alignItems:"center",flexShrink:0}}>
             {user?(
               <>
-                {!isPro&&<button onClick={()=>setTab("pricing")} style={btn({padding:"7px 14px",fontSize:12,background:"linear-gradient(135deg,#0d9488,#0891b2)"})}>Upgrade Pro ✦</button>}
+                {!isPro&&<button onClick={()=>setTab("pricing")} style={btn({padding:"7px 16px",fontSize:12,background:"linear-gradient(135deg,#0d9488,#0891b2)"})}>Upgrade</button>}
                 <div style={{display:"flex",alignItems:"center",gap:7,padding:"5px 10px",background:"#f8fafc",borderRadius:8,border:"1px solid #e8ecf0",cursor:"pointer"}} onClick={handleSignOut}>
                   <div style={{width:26,height:26,borderRadius:"50%",background:"linear-gradient(135deg,#0d9488,#0891b2)",display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:700,fontSize:12}}>
                     {(user.user_metadata?.full_name||user.email||"U")[0].toUpperCase()}
@@ -1301,17 +1301,17 @@ Return ONLY JSON:
             </div>
             <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(230px,1fr))",gap:16,marginBottom:32,alignItems:"stretch"}}>
               {TIERS.map(t=>(
-                <div key={t.name} style={{background:"#fff",border:`2px solid ${t.highlight?"#0d9488":"#e8ecf0"}`,borderRadius:14,padding:26,position:"relative",boxShadow:t.highlight?"0 8px 32px rgba(13,148,136,0.15)":"0 1px 4px rgba(0,0,0,0.04)",display:"flex",flexDirection:"column"}}>
-                  {t.badge&&<div style={{position:"absolute",top:-13,left:"50%",transform:"translateX(-50%)",background:t.isAgent?"linear-gradient(135deg,#7c3aed,#6d28d9)":"linear-gradient(135deg,#0d9488,#0891b2)",color:"#fff",fontSize:10,fontWeight:700,padding:"4px 16px",borderRadius:20,letterSpacing:1,textTransform:"uppercase",whiteSpace:"nowrap"}}>{t.badge}</div>}
-                  <div style={{fontSize:14,fontWeight:700,color:t.color,marginBottom:8,textTransform:"uppercase",letterSpacing:0.5}}>{t.name}</div>
+                <div key={t.name} style={{background:"#fff",border:`2px solid ${t.highlight?"#0d9488":"#e8ecf0"}`,borderRadius:14,padding:26,position:"relative",boxShadow:t.highlight?"0 8px 32px rgba(13,148,136,0.12)":"0 1px 4px rgba(0,0,0,0.04)",display:"flex",flexDirection:"column"}}>
+                  {t.badge&&<div style={{position:"absolute",top:-13,left:"50%",transform:"translateX(-50%)",background:t.highlight?"linear-gradient(135deg,#0d9488,#0891b2)":"#111827",color:"#fff",fontSize:10,fontWeight:700,padding:"4px 16px",borderRadius:20,letterSpacing:1,textTransform:"uppercase",whiteSpace:"nowrap"}}>{t.badge}</div>}
+                  <div style={{fontSize:12,fontWeight:700,color:"#9ca3af",marginBottom:6,textTransform:"uppercase",letterSpacing:1}}>{t.name}</div>
                   <div style={{marginBottom:4}}><span style={{fontSize:36,fontWeight:900,color:"#0f172a",letterSpacing:-1}}>{t.price}</span><span style={{fontSize:13,color:"#6b7280",marginLeft:4}}>{t.period}</span></div>
-                  <div style={{fontSize:12,color:"#9ca3af",marginBottom:18}}>{t.isAgent?"One-time payment · No recurring":"Cancel anytime"}</div>
-                  <div style={{flex:1,marginBottom:22}}>{t.features.map(f=><div key={f} style={{display:"flex",gap:8,padding:"7px 0",borderBottom:"1px solid #f9fafb",fontSize:13,color:"#374151",lineHeight:1.4}}><span style={{color:t.color,flexShrink:0,marginTop:1}}>✓</span><span>{f}</span></div>)}</div>
+                  <div style={{fontSize:12,color:"#9ca3af",marginBottom:20}}>{t.isAgent?"One-time · Lifetime license":"Cancel anytime"}</div>
+                  <div style={{flex:1,marginBottom:24}}>{t.features.map(f=><div key={f} style={{display:"flex",gap:8,padding:"7px 0",borderBottom:"1px solid #f3f4f6",fontSize:13,color:"#374151",lineHeight:1.4,alignItems:"flex-start"}}><span style={{color:"#0d9488",flexShrink:0,marginTop:1,fontWeight:700}}>✓</span><span>{f}</span></div>)}</div>
                   <button onClick={()=>{
                     if(!t.gumroad){if(!user){setAuthMode("signup");setShowAuth(true);}}
                     else{if(!user){setAuthMode("signup");setShowAuth(true);}else window.open(t.gumroad,"_blank");}
                   }}
-                    style={{width:"100%",padding:13,background:t.highlight?"linear-gradient(135deg,#0d9488,#0891b2)":t.isAgent?"linear-gradient(135deg,#7c3aed,#6d28d9)":"#fff",border:t.highlight||t.isAgent?"none":`2px solid ${t.color}`,color:t.highlight||t.isAgent?"#fff":t.color,borderRadius:9,fontSize:14,fontWeight:700,cursor:"pointer",marginTop:"auto"}}>
+                    style={{width:"100%",padding:13,background:t.highlight?"linear-gradient(135deg,#0d9488,#0891b2)":"#fff",border:t.highlight?"none":"2px solid #e2e8f0",color:t.highlight?"#fff":"#111827",borderRadius:9,fontSize:14,fontWeight:600,cursor:"pointer",marginTop:"auto"}}>
                     {t.cta}
                   </button>
                 </div>
