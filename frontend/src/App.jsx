@@ -203,6 +203,14 @@ function FormatPicker({resume,selected,onSelect,onDownload}) {
 }
 
 // ─── AUTH MODAL ───────────────────────────────────────────────────────────────
+// ─── VALIDATORS ──────────────────────────────────────────────────────────────
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+function validateEmail(v){ return EMAIL_RE.test(v.trim()) ? "" : "Enter a valid email address"; }
+function validatePassword(v,mode){ if(!v) return "Password is required"; if(mode==="signup"&&v.length<8) return "Password must be at least 8 characters"; return ""; }
+function validateName(v){ return v.trim().length>=2 ? "" : "Name must be at least 2 characters"; }
+function validateJD(v){ if(!v?.trim()) return "Paste a job description first"; if(v.trim().length<80) return "Job description seems too short — paste the full text"; return ""; }
+function validateCV(v){ if(!v?.trim()) return "Add your CV or background"; if(v.trim().length<50) return "CV seems too short — add more detail"; return ""; }
+
 function AuthModal({onClose,onSuccess,initialMode="login"}) {
   const [mode,setMode]=useState(initialMode);
   const [email,setEmail]=useState("");
@@ -211,25 +219,45 @@ function AuthModal({onClose,onSuccess,initialMode="login"}) {
   const [loading,setLoading]=useState(false);
   const [error,setError]=useState("");
   const [success,setSuccess]=useState("");
-  const inp={width:"100%",boxSizing:"border-box",background:"#f8fafc",border:"1.5px solid #e2e8f0",borderRadius:8,padding:"11px 14px",color:"#111827",fontSize:13,fontFamily:"inherit",outline:"none",marginBottom:10,display:"block"};
+  const [touched,setTouched]=useState({});
+  const [pwVisible,setPwVisible]=useState(false);
+
+  const emailErr = touched.email ? validateEmail(email) : "";
+  const pwErr = touched.password ? validatePassword(password, mode) : "";
+  const nameErr = touched.name && mode==="signup" ? validateName(name) : "";
+
+  function fieldInp(err) {
+    return {width:"100%",boxSizing:"border-box",background:"#f8fafc",border:`1.5px solid ${err?"#fca5a5":"#e2e8f0"}`,borderRadius:8,padding:"11px 14px",color:"#111827",fontSize:13,fontFamily:"inherit",outline:"none",marginBottom:2,display:"block"};
+  }
+
+  function touch(field){ setTouched(p=>({...p,[field]:true})); }
 
   async function handleSubmit() {
-    if(!email||!password){setError("Please enter email and password");return;}
+    // Touch all fields to show errors
+    const allTouched = mode==="signup" ? {email:true,password:true,name:true} : {email:true,password:true};
+    setTouched(allTouched);
+    const eErr=validateEmail(email), pErr=validatePassword(password,mode);
+    const nErr=mode==="signup"?validateName(name):"";
+    if(eErr||pErr||nErr){ setError(eErr||pErr||nErr); return; }
     setLoading(true);setError("");setSuccess("");
     try {
       if(mode==="signup"){
-        const {data,error:e}=await signUp(email,password,name||email.split("@")[0]);
+        const {data,error:e}=await signUp(email.trim(),password,name.trim()||email.split("@")[0]);
         if(e){setError(e.message||"Signup failed");return;}
         if(data?.user){setSuccess("Account created!");setTimeout(()=>{onSuccess(data.user);onClose();},1000);}
         else setSuccess("Check your email to confirm, then sign in.");
       } else {
-        const {data,error:e}=await signIn(email,password);
-        if(e){setError(e.message||"Invalid email or password");return;}
+        const {data,error:e}=await signIn(email.trim(),password);
+        if(e){setError("Incorrect email or password. Try again.");return;}
         if(data?.user){onSuccess(data.user);onClose();}
       }
-    } catch {setError("Something went wrong. Try again.");}
+    } catch(ex){console.error("Auth error:",ex);setError("Something went wrong. Try again.");}
     finally{setLoading(false);}
   }
+
+  const pwStrength = password.length===0?0:password.length<6?1:password.length<8?2:(/[A-Z]/.test(password)&&/[0-9]/.test(password))?4:3;
+  const pwColors=["#e2e8f0","#ef4444","#f97316","#d97706","#16a34a"];
+  const pwLabels=["","Weak","Fair","Good","Strong"];
 
   return (
     <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.55)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center",padding:16}} onClick={onClose}>
@@ -252,19 +280,38 @@ function AuthModal({onClose,onSuccess,initialMode="login"}) {
         <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
           <div style={{flex:1,height:1,background:"#e8ecf0"}}/><span style={{fontSize:11,color:"#9ca3af"}}>or</span><div style={{flex:1,height:1,background:"#e8ecf0"}}/>
         </div>
-        {mode==="signup"&&<input style={inp} placeholder="Your name" value={name} onChange={e=>setName(e.target.value)}/>}
-        <input style={inp} placeholder="Email address" type="email" value={email} onChange={e=>setEmail(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handleSubmit()}/>
-        <input style={{...inp,marginBottom:14}} placeholder="Password (min 6 characters)" type="password" value={password} onChange={e=>setPassword(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handleSubmit()}/>
+        {mode==="signup"&&(<>
+          <input style={fieldInp(nameErr)} placeholder="Your full name" value={name}
+            onChange={e=>setName(e.target.value)} onBlur={()=>touch("name")}/>
+          {nameErr&&<div style={{fontSize:11,color:"#dc2626",marginBottom:8}}>⚠ {nameErr}</div>}
+        </>)}
+        <input style={fieldInp(emailErr)} placeholder="Email address" type="email" value={email}
+          onChange={e=>setEmail(e.target.value)} onBlur={()=>touch("email")} onKeyDown={e=>e.key==="Enter"&&handleSubmit()}/>
+        {emailErr&&<div style={{fontSize:11,color:"#dc2626",marginBottom:8}}>⚠ {emailErr}</div>}
+        <div style={{position:"relative",marginBottom:4}}>
+          <input style={{...fieldInp(pwErr),paddingRight:44,marginBottom:0}} placeholder="Password (min 8 characters)" type={pwVisible?"text":"password"} value={password}
+            onChange={e=>setPassword(e.target.value)} onBlur={()=>touch("password")} onKeyDown={e=>e.key==="Enter"&&handleSubmit()}/>
+          <button onClick={()=>setPwVisible(v=>!v)} type="button" style={{position:"absolute",right:12,top:"50%",transform:"translateY(-50%)",background:"none",border:"none",cursor:"pointer",fontSize:13,color:"#9ca3af",padding:0}}>{pwVisible?"🙈":"👁"}</button>
+        </div>
+        {pwErr&&<div style={{fontSize:11,color:"#dc2626",marginBottom:6}}>⚠ {pwErr}</div>}
+        {mode==="signup"&&password.length>0&&(
+          <div style={{marginBottom:12}}>
+            <div style={{display:"flex",gap:3,marginBottom:3}}>
+              {[1,2,3,4].map(i=><div key={i} style={{flex:1,height:3,borderRadius:2,background:i<=pwStrength?pwColors[pwStrength]:"#e2e8f0",transition:"background 0.2s"}}/>)}
+            </div>
+            <div style={{fontSize:10,color:pwColors[pwStrength],fontWeight:600}}>{pwLabels[pwStrength]}</div>
+          </div>
+        )}
         {error&&<div style={{background:"#fef2f2",border:"1px solid #fecaca",borderRadius:7,padding:"9px 12px",color:"#dc2626",fontSize:12,marginBottom:12}}>⚠ {error}</div>}
         {success&&<div style={{background:"#f0fdf4",border:"1px solid #bbf7d0",borderRadius:7,padding:"9px 12px",color:"#16a34a",fontSize:12,marginBottom:12}}>✓ {success}</div>}
         <button onClick={handleSubmit} disabled={loading}
-          style={{width:"100%",padding:"12px",background:"linear-gradient(135deg,#0d9488,#0891b2)",color:"#fff",border:"none",borderRadius:8,fontSize:14,fontWeight:700,cursor:loading?"not-allowed":"pointer",opacity:loading?0.7:1,marginBottom:14}}>
+          style={{width:"100%",padding:"12px",background:"linear-gradient(135deg,#0d9488,#0891b2)",color:"#fff",border:"none",borderRadius:8,fontSize:14,fontWeight:700,cursor:loading?"not-allowed":"pointer",opacity:loading?0.7:1,marginBottom:14,marginTop:8}}>
           {loading?"Please wait...":(mode==="login"?"Sign In →":"Create Free Account →")}
         </button>
         <div style={{textAlign:"center",fontSize:12,color:"#6b7280"}}>
           {mode==="login"
-            ?<span>No account? <button onClick={()=>{setMode("signup");setError("");}} style={{background:"none",border:"none",color:"#0d9488",fontWeight:600,cursor:"pointer",fontSize:12}}>Sign up free</button></span>
-            :<span>Have account? <button onClick={()=>{setMode("login");setError("");}} style={{background:"none",border:"none",color:"#0d9488",fontWeight:600,cursor:"pointer",fontSize:12}}>Sign in</button></span>}
+            ?<span>No account? <button onClick={()=>{setMode("signup");setError("");setTouched({});}} style={{background:"none",border:"none",color:"#0d9488",fontWeight:600,cursor:"pointer",fontSize:12}}>Sign up free</button></span>
+            :<span>Have account? <button onClick={()=>{setMode("login");setError("");setTouched({});}} style={{background:"none",border:"none",color:"#0d9488",fontWeight:600,cursor:"pointer",fontSize:12}}>Sign in</button></span>}
         </div>
       </div>
     </div>
@@ -503,7 +550,8 @@ export default function App() {
 
   // ── Generate Resume ────────────────────────────────────────────────────────
   async function generate() {
-    if(!jd?.trim()||!cv?.trim()) return;
+    const jdErr=validateJD(jd), cvErr=validateCV(cv);
+    if(jdErr||cvErr){ showToast(jdErr||cvErr,"warning"); return; }
 
     // ── Usage limit check ──
     if(user) {
@@ -990,11 +1038,22 @@ Return ONLY JSON:
             {/* Inputs */}
             <div className="input-grid" style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:14,marginBottom:14}}>
               <div>
-                <label style={{display:"block",fontSize:11,fontWeight:700,color:"#374151",marginBottom:6,textTransform:"uppercase",letterSpacing:0.5}}>Job Description</label>
-                <textarea style={{...inp,height:200,resize:"vertical"}} placeholder="Paste job description here (or use One-URL Apply above)..." value={jd} onChange={e=>setJd(e.target.value)}/>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+                  <label style={{fontSize:11,fontWeight:700,color:"#374151",textTransform:"uppercase",letterSpacing:0.5}}>Job Description</label>
+                  <span style={{fontSize:10,color:jd.length<80&&jd.length>0?"#f97316":jd.length>=80?"#16a34a":"#9ca3af",fontWeight:600}}>
+                    {jd.length>0?`${jd.length} chars${jd.length<80?" (need more)":"✓"}`:""}
+                  </span>
+                </div>
+                <textarea style={{...inp,height:200,resize:"vertical",borderColor:jd.length>0&&jd.length<80?"#fca5a5":undefined}} placeholder="Paste job description here (or use One-URL Apply above)..." value={jd} onChange={e=>setJd(e.target.value)}/>
+                {jd.length>0&&jd.length<80&&<div style={{fontSize:11,color:"#f97316",marginTop:4}}>⚠ Paste the full job description for best results</div>}
               </div>
               <div>
-                <label style={{display:"block",fontSize:11,fontWeight:700,color:"#374151",marginBottom:6,textTransform:"uppercase",letterSpacing:0.5}}>Your CV / Background</label>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+                  <label style={{fontSize:11,fontWeight:700,color:"#374151",textTransform:"uppercase",letterSpacing:0.5}}>Your CV / Background</label>
+                  <span style={{fontSize:10,color:cv.length<50&&cv.length>0?"#f97316":cv.length>=50?"#16a34a":"#9ca3af",fontWeight:600}}>
+                    {cv.length>0?`${cv.length} chars${cv.length<50?" (need more)":"✓"}`:""}
+                  </span>
+                </div>
                 {/* File upload drop zone */}
                 <div
                   onDrop={e=>{e.preventDefault();const f=e.dataTransfer.files[0];if(f)handleCvFile(f);}}
@@ -1030,7 +1089,7 @@ Return ONLY JSON:
             )}
 
             <div className="action-btns" style={{display:"flex",gap:10,marginBottom:24,flexWrap:"wrap"}}>
-              <button id="generate-btn" onClick={generate} disabled={loading||!jd||!cv} style={{...btn({background:"linear-gradient(135deg,#0d9488,#0891b2)",padding:"12px 24px",fontSize:14}),opacity:loading||!jd||!cv?0.5:1}}>
+              <button id="generate-btn" onClick={generate} disabled={loading} style={{...btn({background:"linear-gradient(135deg,#0d9488,#0891b2)",padding:"12px 24px",fontSize:14}),opacity:loading||!jd||!cv?0.5:1}}>
                 {loading?"Generating...":"✦ Generate Tailored Resume"}
               </button>
               {result&&!result.error&&(<>
