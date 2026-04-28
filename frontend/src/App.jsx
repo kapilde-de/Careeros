@@ -39,8 +39,8 @@ const JOB_PLATFORMS = [
 const TIERS = [
   { name:"Free", price:"£0", period:"forever", features:["3 resumes/month","Basic ATS score","5 searches/day","1 cover letter","Classic format only"], cta:"Get Started", highlight:false, color:"#6b7280", gumroad:null },
   { name:"Pro", price:"£9.99", period:"/month", badge:"Most Popular", features:["Unlimited resumes","ATS + Rejection Risk score","Salary intelligence + negotiation script","One-URL Apply","All 6 formats + preview","Unlimited searches","Interview prep AI","Interview Simulator","Resume history","Persistent tracker"], cta:"Start Pro — £9.99/mo", highlight:true, color:"#0d9488", gumroad:"https://gumroad.com/l/careeros-pro" },
-  { name:"Agent", price:"£99", period:"once · lifetime", badge:"🤖 ULTRA", features:["Everything in Pro","🤖 24/7 autonomous job hunter","Scans 50+ job boards every 4hrs","AI evaluates every job for you","Auto-tailored CV per match","Daily review queue at 8am","Autopilot mode after 7 days","Local dashboard at localhost:3939","Lifetime license — no subscription","30-day money-back guarantee"], cta:"Get the Agent — £99", highlight:false, color:"#dc2626", gumroad:"https://gumroad.com/l/careeros-agent", isAgent:true },
   { name:"Enterprise", price:"£29.99", period:"/month", features:["Everything in Pro","Team workspace","Bulk optimization","API access","Recruiter dashboard","White-label"], cta:"Start Enterprise", highlight:false, color:"#4f46e5", gumroad:"https://gumroad.com/l/careeros-enterprise" },
+  { name:"Agent", price:"£99", period:"once · lifetime", badge:"🤖 ULTRA", features:["Everything in Pro","🤖 24/7 autonomous job hunter","Scans 50+ job boards every 4hrs","AI evaluates every job for you","Auto-tailored CV per match","Daily review queue at 8am","Autopilot mode after 7 days","Local dashboard at localhost:3939","Lifetime license — no subscription","30-day money-back guarantee"], cta:"Get the Agent — £99", highlight:false, color:"#dc2626", gumroad:"https://gumroad.com/l/careeros-agent", isAgent:true },
 ];
 
 const STATUS_COLORS = {
@@ -138,7 +138,7 @@ function ScoreRing({score,size=72,color,label}) {
 }
 
 function Chip({text,color="#6b7280",bg="#f1f5f9"}) {
-  return <span style={{display:"inline-block",padding:"3px 10px",borderRadius:5,background:bg,color,fontSize:11,fontWeight:500,margin:"2px 3px 2px 0"}}>{text}</span>;
+  return <span style={{display:"inline-block",padding:"4px 11px",borderRadius:5,background:bg,color,fontSize:12,fontWeight:500,margin:"3px 4px 3px 0",lineHeight:1.4,whiteSpace:"nowrap"}}>{text}</span>;
 }
 
 function PBadge({platform}) {
@@ -158,7 +158,7 @@ function Card({children,style={}}) {
 }
 
 function SLabel({children,color="#0d9488"}) {
-  return <div style={{fontSize:10,fontWeight:700,letterSpacing:2,color,textTransform:"uppercase",marginBottom:12}}>{children}</div>;
+  return <div style={{fontSize:11,fontWeight:700,letterSpacing:1.5,color,textTransform:"uppercase",marginBottom:12}}>{children}</div>;
 }
 
 function ProBadge() {
@@ -576,7 +576,7 @@ Return ONLY JSON:
 
   async function handleSignOut(){await signOut();setUser(null);setProfile(null);setApps([]);setResumeHistory([]);}
 
-  const inp={width:"100%",boxSizing:"border-box",background:"#fff",border:"1.5px solid #e2e8f0",borderRadius:8,padding:"11px 14px",color:"#111827",fontSize:13,fontFamily:"inherit",outline:"none",lineHeight:1.6};
+  const inp={width:"100%",boxSizing:"border-box",background:"#fff",border:"1.5px solid #e2e8f0",borderRadius:8,padding:"11px 14px",color:"#111827",fontSize:14,fontFamily:"inherit",outline:"none",lineHeight:1.6};
   const btn=(x={})=>({background:"#0d9488",color:"#fff",border:"none",borderRadius:8,padding:"10px 18px",fontSize:13,fontWeight:600,cursor:"pointer",display:"inline-flex",alignItems:"center",gap:6,...x});
   const ghost=(x={})=>({background:"#fff",border:"1.5px solid #e2e8f0",color:"#374151",borderRadius:8,padding:"9px 16px",fontSize:13,cursor:"pointer",...x});
 
@@ -590,7 +590,7 @@ Return ONLY JSON:
   );
 
   return (
-    <div style={{minHeight:"100vh",background:"#f0f4f8",color:"#111827",fontFamily:"'Inter','Segoe UI',system-ui,sans-serif"}}>
+    <div style={{minHeight:"100vh",background:"#f0f4f8",color:"#111827",fontFamily:"'Inter','Segoe UI',system-ui,sans-serif",fontSize:"15px"}}>
       <style>{`
         @keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
         @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
@@ -616,9 +616,9 @@ Return ONLY JSON:
             </div>
           </div>
 
-          <nav className="desktop-nav" style={{display:"flex",gap:0,flex:1,justifyContent:"center",overflowX:"auto"}}>
+          <nav className="desktop-nav" style={{display:"flex",gap:0,flex:1,justifyContent:"center",overflowX:"auto",alignItems:"stretch"}}>
             {TABS.map(t=>(
-              <button key={t.id} onClick={()=>handleTabChange(t)} style={{background:"transparent",border:"none",borderBottom:`2px solid ${tab===t.id?"#0d9488":"transparent"}`,color:tab===t.id?"#0d9488":"#6b7280",padding:"0 12px",height:60,fontSize:12,cursor:"pointer",fontWeight:tab===t.id?600:400,transition:"all 0.15s",whiteSpace:"nowrap",display:"flex",alignItems:"center",gap:3}}>
+              <button key={t.id} onClick={()=>handleTabChange(t)} style={{background:"transparent",border:"none",borderBottom:`2.5px solid ${tab===t.id?"#0d9488":"transparent"}`,color:tab===t.id?"#0d9488":"#6b7280",padding:"0 14px",height:60,fontSize:13,cursor:"pointer",fontWeight:tab===t.id?700:400,transition:"all 0.15s",whiteSpace:"nowrap",display:"flex",alignItems:"center",justifyContent:"center",gap:4,lineHeight:1,flexShrink:0}}>
                 {t.label}
                 {t.pro&&<ProBadge/>}
               </button>
@@ -693,7 +693,7 @@ Return ONLY JSON:
               <h1 style={{fontSize:"clamp(28px,6vw,52px)",fontWeight:900,color:"#0f172a",lineHeight:1.1,marginBottom:10,letterSpacing:-1.5}}>
                 Land more interviews.<br/><span style={{color:"#0d9488"}}>Faster.</span>
               </h1>
-              <p style={{color:"#6b7280",fontSize:15,maxWidth:500,margin:"0 auto 20px"}}>
+              <p style={{color:"#6b7280",fontSize:16,maxWidth:520,margin:"0 auto 20px",lineHeight:1.65}}>
                 Paste a job URL or description — get a tailored resume, ATS score, rejection risk analysis, salary negotiation script, and interview coaching in under 60 seconds.
               </p>
               {!user&&<button onClick={()=>{setAuthMode("signup");setShowAuth(true);}} style={{...btn({padding:"12px 28px",fontSize:15,background:"linear-gradient(135deg,#0d9488,#0891b2)",borderRadius:10})}}>Create Free Account →</button>}
@@ -951,9 +951,9 @@ Return ONLY JSON:
 
                 <Card>
                   <SLabel>Gap Analysis</SLabel>
-                  <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",gap:12}}>
+                  <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:14}}>
                     {[["✓ Strengths","strengths","#16a34a"],["✗ Gaps","gaps","#dc2626"],["⇄ Transferable","transferable","#d97706"]].map(([label,key,color])=>(
-                      <div key={key}><div style={{fontSize:11,fontWeight:700,color,marginBottom:7}}>{label}</div>{result.gapAnalysis?.[key]?.map((s,i)=><div key={i} style={{fontSize:12,color:"#6b7280",padding:"3px 0",borderBottom:"1px solid #f9fafb"}}>• {s}</div>)}</div>
+                      <div key={key}><div style={{fontSize:12,fontWeight:700,color,marginBottom:8}}>{label}</div>{result.gapAnalysis?.[key]?.map((s,i)=><div key={i} style={{fontSize:13,color:"#6b7280",padding:"5px 0",borderBottom:"1px solid #f9fafb",lineHeight:1.5}}>• {s}</div>)}</div>
                     ))}
                   </div>
                 </Card>
@@ -968,7 +968,7 @@ Return ONLY JSON:
                   {result.improvements?.map((tip,i)=>(
                     <div key={i} style={{display:"flex",gap:12,padding:"10px 0",borderBottom:i<result.improvements.length-1?"1px solid #f9fafb":"none"}}>
                       <div style={{width:22,height:22,borderRadius:"50%",background:"#f0fdfa",border:"1px solid #99f6e4",color:"#0d9488",fontSize:10,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{i+1}</div>
-                      <div style={{fontSize:12,color:"#6b7280",lineHeight:1.7}}>{tip}</div>
+                      <div style={{fontSize:13,color:"#6b7280",lineHeight:1.7}}>{tip}</div>
                     </div>
                   ))}
                 </Card>
@@ -1003,11 +1003,11 @@ Return ONLY JSON:
                       {job.visaSponsorship&&<span style={{fontSize:10,fontWeight:700,color:"#16a34a",background:"#f0fdf4",border:"1px solid #bbf7d0",padding:"1px 7px",borderRadius:10}}>🛂 Visa</span>}
                     </div>
                     <div style={{display:"flex",gap:10,marginBottom:5,flexWrap:"wrap"}}>
-                      <span style={{fontSize:12,color:"#6b7280"}}>🏢 {job.company}</span>
-                      <span style={{fontSize:12,color:"#9ca3af"}}>📍 {job.location}</span>
-                      {job.salary&&job.salary!=="Competitive"&&<span style={{fontSize:12,color:"#9ca3af"}}>💰 {job.salary}</span>}
+                      <span style={{fontSize:13,color:"#6b7280"}}>🏢 {job.company}</span>
+                      <span style={{fontSize:13,color:"#9ca3af"}}>📍 {job.location}</span>
+                      {job.salary&&job.salary!=="Competitive"&&<span style={{fontSize:13,color:"#9ca3af"}}>💰 {job.salary}</span>}
                     </div>
-                    {job.description&&<p style={{fontSize:11,color:"#9ca3af",lineHeight:1.5,marginBottom:10}}>{job.description}</p>}
+                    {job.description&&<p style={{fontSize:12,color:"#9ca3af",lineHeight:1.6,marginBottom:10}}>{job.description}</p>}
                     <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
                       <button onClick={e=>applyJob(job,e)} disabled={applying===job.id} style={btn({fontSize:11,padding:"7px 14px",background:applied===job.id?"#16a34a":"#0d9488"})}>
                         {applying===job.id?"...":applied===job.id?"✓ Applied":"Apply →"}
@@ -1291,22 +1291,25 @@ Return ONLY JSON:
           <div style={{animation:"fadeIn 0.3s ease"}}>
             <div style={{textAlign:"center",marginBottom:28}}>
               <h2 style={{fontSize:"clamp(24px,5vw,34px)",fontWeight:900,color:"#0f172a",marginBottom:8,letterSpacing:-0.8}}>Simple, transparent pricing</h2>
-              <p style={{color:"#6b7280",fontSize:15}}>Start free. Upgrade when ready.</p>
+              <p style={{color:"#6b7280",fontSize:16}}>Start free. Upgrade when ready.</p>
               <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,marginTop:10}}>
                 <span style={{color:"#f59e0b",fontSize:16}}>★★★★★</span>
                 <span style={{fontSize:13,color:"#6b7280"}}>4.9/5 · 12,000+ users</span>
               </div>
             </div>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:16,marginBottom:32}}>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(230px,1fr))",gap:16,marginBottom:32,alignItems:"stretch"}}>
               {TIERS.map(t=>(
-                <div key={t.name} style={{background:"#fff",border:`2px solid ${t.highlight?"#0d9488":"#e8ecf0"}`,borderRadius:14,padding:26,position:"relative",boxShadow:t.highlight?"0 8px 32px rgba(13,148,136,0.15)":"0 1px 4px rgba(0,0,0,0.04)"}}>
-                  {t.badge&&<div style={{position:"absolute",top:-12,left:"50%",transform:"translateX(-50%)",background:"linear-gradient(135deg,#0d9488,#0891b2)",color:"#fff",fontSize:10,fontWeight:700,padding:"3px 14px",borderRadius:20,letterSpacing:1,textTransform:"uppercase",whiteSpace:"nowrap"}}>{t.badge}</div>}
-                  <div style={{fontSize:13,fontWeight:700,color:t.color,marginBottom:8,textTransform:"uppercase"}}>{t.name}</div>
-                  <div style={{marginBottom:6}}><span style={{fontSize:36,fontWeight:900,color:"#0f172a",letterSpacing:-1}}>{t.price}</span><span style={{fontSize:13,color:"#6b7280"}}>{t.period}</span></div>
-                  <div style={{fontSize:11,color:"#9ca3af",marginBottom:18}}>Cancel anytime</div>
-                  <div style={{marginBottom:22}}>{t.features.map(f=><div key={f} style={{display:"flex",gap:8,padding:"6px 0",borderBottom:"1px solid #f9fafb",fontSize:12,color:"#374151"}}><span style={{color:t.color,flexShrink:0}}>✓</span>{f}</div>)}</div>
-                  <button onClick={()=>{if(!t.gumroad){if(!user){setAuthMode("signup");setShowAuth(true);}}else{if(!user){setAuthMode("signup");setShowAuth(true);}else window.open(t.gumroad,"_blank");}}}
-                    style={{width:"100%",padding:12,background:t.highlight?"linear-gradient(135deg,#0d9488,#0891b2)":"#fff",border:t.highlight?"none":`2px solid ${t.color}`,color:t.highlight?"#fff":t.color,borderRadius:9,fontSize:13,fontWeight:700,cursor:"pointer"}}>
+                <div key={t.name} style={{background:"#fff",border:`2px solid ${t.highlight?"#0d9488":t.isAgent?"#dc2626":"#e8ecf0"}`,borderRadius:14,padding:26,position:"relative",boxShadow:t.highlight?"0 8px 32px rgba(13,148,136,0.15)":t.isAgent?"0 4px 20px rgba(220,38,38,0.12)":"0 1px 4px rgba(0,0,0,0.04)",display:"flex",flexDirection:"column"}}>
+                  {t.badge&&<div style={{position:"absolute",top:-13,left:"50%",transform:"translateX(-50%)",background:t.isAgent?"linear-gradient(135deg,#dc2626,#b91c1c)":"linear-gradient(135deg,#0d9488,#0891b2)",color:"#fff",fontSize:10,fontWeight:700,padding:"4px 16px",borderRadius:20,letterSpacing:1,textTransform:"uppercase",whiteSpace:"nowrap"}}>{t.badge}</div>}
+                  <div style={{fontSize:14,fontWeight:700,color:t.color,marginBottom:8,textTransform:"uppercase",letterSpacing:0.5}}>{t.name}</div>
+                  <div style={{marginBottom:4}}><span style={{fontSize:36,fontWeight:900,color:"#0f172a",letterSpacing:-1}}>{t.price}</span><span style={{fontSize:13,color:"#6b7280",marginLeft:4}}>{t.period}</span></div>
+                  <div style={{fontSize:12,color:"#9ca3af",marginBottom:18}}>{t.isAgent?"One-time payment · No recurring":"Cancel anytime"}</div>
+                  <div style={{flex:1,marginBottom:22}}>{t.features.map(f=><div key={f} style={{display:"flex",gap:8,padding:"7px 0",borderBottom:"1px solid #f9fafb",fontSize:13,color:"#374151",lineHeight:1.4}}><span style={{color:t.color,flexShrink:0,marginTop:1}}>✓</span><span>{f}</span></div>)}</div>
+                  <button onClick={()=>{
+                    if(!t.gumroad){if(!user){setAuthMode("signup");setShowAuth(true);}}
+                    else{if(!user){setAuthMode("signup");setShowAuth(true);}else window.open(t.gumroad,"_blank");}
+                  }}
+                    style={{width:"100%",padding:13,background:t.highlight?"linear-gradient(135deg,#0d9488,#0891b2)":t.isAgent?"linear-gradient(135deg,#dc2626,#b91c1c)":"#fff",border:t.highlight||t.isAgent?"none":`2px solid ${t.color}`,color:t.highlight||t.isAgent?"#fff":t.color,borderRadius:9,fontSize:14,fontWeight:700,cursor:"pointer",marginTop:"auto"}}>
                     {t.cta}
                   </button>
                 </div>

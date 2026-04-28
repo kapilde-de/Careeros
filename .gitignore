@@ -1,2 +1,6 @@
-frontend/.env 
-.env 
+frontend/.env
+careeros-agent/careeros-agent/.env
+.env
+node_modules
+dist
+*.zip
