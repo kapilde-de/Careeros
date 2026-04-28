@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { supabase, signUp, signIn, signInWithGoogle, signOut, getUserProfile, saveResume, getUserResumes, saveApplication, getUserApplications, updateApplicationStatus } from "./supabase";
+import { supabase, signUp, signIn, signInWithGoogle, signOut, getUserProfile, saveResume, getUserResumes, getMonthlyUsage, saveApplication, getUserApplications, updateApplicationStatus } from "./supabase";
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
 const RESUME_FORMATS = [
@@ -39,8 +39,8 @@ const JOB_PLATFORMS = [
 
 const TIERS = [
   { name:"Free", price:"£0", period:"forever", features:["3 resumes/month","Basic ATS score","5 searches/day","1 cover letter","Classic format only"], cta:"Get Started", highlight:false, color:"#6b7280", gumroad:null },
-  { name:"Pro", price:"£9.99", period:"/month", badge:"Most Popular", features:["Unlimited resumes","ATS + Rejection Risk score","Salary intelligence + negotiation script","One-URL Apply","All 6 formats + preview","Unlimited searches","Interview prep AI","Interview Simulator","Resume history","Persistent tracker"], cta:"Start Pro — £9.99/mo", highlight:true, color:"#0d9488", gumroad:"https://gumroad.com/l/careeros-pro" },
-  { name:"Enterprise", price:"£29.99", period:"/month", features:["Everything in Pro","Team workspace","Bulk optimization","API access","Recruiter dashboard","White-label"], cta:"Start Enterprise", highlight:false, color:"#4f46e5", gumroad:"https://gumroad.com/l/careeros-enterprise" },
+  { name:"Pro", price:"£9", period:"/month", badge:"Most Popular", features:["Unlimited resumes","ATS + Rejection Risk score","Salary intelligence + negotiation script","One-URL Apply","All 6 formats + preview","Unlimited searches","Interview prep AI","Interview Simulator","Resume history","Persistent tracker"], cta:"Start Pro — £9/mo", highlight:true, color:"#0d9488", gumroad:"https://gumroad.com/l/careeros-pro" },
+  { name:"Enterprise", price:"£29", period:"/month", features:["Everything in Pro","Team workspace","Bulk optimization","API access","Recruiter dashboard","White-label"], cta:"Start Enterprise — £29/mo", highlight:false, color:"#4f46e5", gumroad:"https://gumroad.com/l/careeros-enterprise" },
   { name:"Agent", price:"£99", period:"once · lifetime", badge:"🤖 ULTRA", features:["Everything in Pro","🤖 24/7 autonomous job hunter","Scans 50+ job boards every 4hrs","AI evaluates every job for you","Auto-tailored CV per match","Daily review queue at 8am","Autopilot mode after 7 days","Local dashboard at localhost:3939","Lifetime license — no subscription","30-day money-back guarantee"], cta:"Get the Agent — £99", highlight:false, color:"#dc2626", gumroad:"https://kapilicious44.gumroad.com/l/ywajrb", isAgent:true },
 ];
 
@@ -287,7 +287,7 @@ function UpgradeModal({onClose,feature}) {
         </div>
         <button onClick={()=>window.open("https://gumroad.com/l/careeros-pro","_blank")}
           style={{width:"100%",padding:12,background:"linear-gradient(135deg,#0d9488,#0891b2)",color:"#fff",border:"none",borderRadius:9,fontSize:15,fontWeight:700,cursor:"pointer",marginBottom:8}}>
-          Start Pro — £9.99/month →
+          Start Pro — £9/month →
         </button>
         <button onClick={onClose} style={{width:"100%",padding:9,background:"transparent",border:"none",color:"#9ca3af",fontSize:13,cursor:"pointer"}}>Maybe later</button>
       </div>
@@ -343,6 +343,48 @@ function PrivacyModal({onClose}) {
   );
 }
 
+// ─── TOAST ───────────────────────────────────────────────────────────────────
+function Toast({toasts}) {
+  return (
+    <div style={{position:"fixed",bottom:24,right:16,zIndex:2000,display:"flex",flexDirection:"column",gap:8,maxWidth:340}}>
+      {toasts.map(t=>(
+        <div key={t.id} style={{
+          background:t.type==="error"?"#dc2626":t.type==="warning"?"#d97706":t.type==="success"?"#16a34a":"#111827",
+          color:"#fff",borderRadius:10,padding:"12px 16px",fontSize:13,fontWeight:500,
+          boxShadow:"0 4px 16px rgba(0,0,0,0.2)",animation:"fadeIn 0.2s ease",
+          display:"flex",alignItems:"flex-start",gap:8,lineHeight:1.5
+        }}>
+          <span style={{flexShrink:0,fontSize:15}}>{t.type==="error"?"⚠":t.type==="warning"?"⚡":t.type==="success"?"✓":"ℹ"}</span>
+          <span>{t.message}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ─── ANONYMOUS USAGE ─────────────────────────────────────────────────────────
+const ANON_KEY = "careeros_anon_usage";
+function getAnonUsage() {
+  try {
+    const raw = localStorage.getItem(ANON_KEY);
+    if (!raw) return { count: 0, month: new Date().getMonth() };
+    return JSON.parse(raw);
+  } catch { return { count: 0, month: new Date().getMonth() }; }
+}
+function incrementAnonUsage() {
+  const cur = getAnonUsage();
+  const thisMonth = new Date().getMonth();
+  const count = cur.month === thisMonth ? cur.count + 1 : 1;
+  try { localStorage.setItem(ANON_KEY, JSON.stringify({ count, month: thisMonth })); } catch {}
+  return count;
+}
+function checkAnonLimit() {
+  const cur = getAnonUsage();
+  const thisMonth = new Date().getMonth();
+  if (cur.month !== thisMonth) return 0;
+  return cur.count;
+}
+
 // ─── MAIN APP ────────────────────────────────────────────────────────────────
 export default function App() {
   const [user,setUser]=useState(null);
@@ -354,6 +396,13 @@ export default function App() {
   const [upgradeFeature,setUpgradeFeature]=useState("");
   const [showPrivacy,setShowPrivacy]=useState(false);
   const [menuOpen,setMenuOpen]=useState(false);
+  const [toasts,setToasts]=useState([]);
+
+  function showToast(message, type="info", duration=4000) {
+    const id = Date.now();
+    setToasts(prev=>[...prev, {id, message, type}]);
+    setTimeout(()=>setToasts(prev=>prev.filter(t=>t.id!==id)), duration);
+  }
 
   const [tab,setTab]=useState("builder");
   const [jd,setJd]=useState("");
@@ -365,6 +414,9 @@ export default function App() {
   const [loading,setLoading]=useState(false);
   const [phase,setPhase]=useState(0);
   const [fmt,setFmt]=useState("classic");
+  const [originalCv,setOriginalCv]=useState("");
+  const [showBefore,setShowBefore]=useState(false);
+  const [fileUploading,setFileUploading]=useState(false);
   const [coverResult,setCoverResult]=useState(null);
   const [coverLoading,setCoverLoading]=useState(false);
   const [intResult,setIntResult]=useState(null);
@@ -443,7 +495,8 @@ export default function App() {
       setUrlError("");
       setJobUrl("");
       setTimeout(()=>document.getElementById("generate-btn")?.scrollIntoView({behavior:"smooth"}),200);
-    } catch {
+    } catch(e) {
+      console.error("URL import error:",e);
       setUrlError("Could not fetch this URL. Please paste the job description manually.");
     } finally {setUrlLoading(false);}
   }
@@ -451,7 +504,31 @@ export default function App() {
   // ── Generate Resume ────────────────────────────────────────────────────────
   async function generate() {
     if(!jd?.trim()||!cv?.trim()) return;
+
+    // ── Usage limit check ──
+    if(user) {
+      if(!isPro) {
+        const used = await getMonthlyUsage(user.id);
+        if(used >= 3) {
+          setUpgradeFeature("More than 3 resumes/month");
+          setShowUpgrade(true);
+          showToast("Free plan: 3 resumes/month. Upgrade to Pro for unlimited.", "warning");
+          return;
+        }
+      }
+    } else {
+      // Anonymous user
+      const anonUsed = checkAnonLimit();
+      if(anonUsed >= 1) {
+        setAuthMode("signup");
+        setShowAuth(true);
+        showToast("Create a free account to generate more resumes.", "info");
+        return;
+      }
+    }
+
     setLoading(true);setResult(null);
+    setOriginalCv(cv);setShowBefore(false);
     const iv=startPhase();
     try {
       const r=await callClaude(`Analyse JD and CV. Return ONLY JSON:
@@ -482,9 +559,13 @@ JD: ${jd.slice(0,1800)}
 CV: ${cv.slice(0,1800)}`, 3000);
       clearInterval(iv);setResult(r);
       if(user&&r.resume) saveResume(user.id,r,r.jdAnalysis?.role,r.jdAnalysis?.company,r.matchScore);
+      else if(!user) incrementAnonUsage();
+      showToast("Resume generated! Scroll down for your results.", "success");
       setTimeout(()=>ref.current?.scrollIntoView({behavior:"smooth"}),100);
-    } catch {
-      clearInterval(iv);setResult({error:"Generation failed. Check inputs and retry."});
+    } catch(e) {
+      console.error("Generate error:", e);
+      clearInterval(iv);setResult({error:"Generation failed. Check your inputs and retry."});
+      showToast("Generation failed. Please try again.", "error");
     } finally {setLoading(false);}
   }
 
@@ -496,7 +577,8 @@ CV: ${cv.slice(0,1800)}`, 3000);
 {"subject":"Application for [Role] — [Name]","letter":"3 paragraphs. Hook about company. Best achievement with metric. Why this role + confident close. British English. 200 words max."}
 JD: ${jd.slice(0,1200)} CV: ${cv.slice(0,1200)}`,1000);
       setCoverResult(r);
-    } catch{setCoverResult({error:"Failed. Retry."});}
+      showToast("Cover letter ready!", "success");
+    } catch(e){console.error("genCover error:",e);setCoverResult({error:"Failed. Retry."});showToast("Cover letter failed. Try again.","error");}
     finally{setCoverLoading(false);}
   }
 
@@ -509,7 +591,8 @@ JD: ${jd.slice(0,1200)} CV: ${cv.slice(0,1200)}`,1000);
 {"keyThemes":["t1","t2","t3"],"likelyQuestions":[{"question":"Q","tip":"tip"},{"question":"Q","tip":"tip"},{"question":"Q","tip":"tip"},{"question":"Q","tip":"tip"}],"starStories":[{"theme":"Leadership","situation":"brief","task":"brief","action":"brief","result":"metric"},{"theme":"Problem Solving","situation":"brief","task":"brief","action":"brief","result":"metric"}],"questionsToAsk":["q1","q2","q3"],"redFlags":["concern + how to address"]}
 JD: ${jd.slice(0,1200)} CV: ${cv.slice(0,1200)}`,1500);
       setIntResult(r);
-    } catch{setIntResult({error:"Failed. Retry."});}
+      showToast("Interview prep ready!", "success");
+    } catch(e){console.error("genInterview error:",e);setIntResult({error:"Failed. Retry."});showToast("Interview prep failed. Try again.","error");}
     finally{setIntLoading(false);}
   }
 
@@ -588,7 +671,7 @@ Return ONLY JSON:
       const res=await fetch(`/api/jobs?query=${encodeURIComponent(jobQ||"product manager")}&country=${country}&source=both`);
       const data=await res.json();
       setJobs(data.jobs||[]);
-    } catch{setJobs([]);}
+    } catch(e){console.error("searchJobs error:",e);setJobs([]);showToast("Job search failed. Try again.","error");}
     setJobLoading(false);
   }
 
@@ -626,6 +709,42 @@ Return ONLY JSON:
 
   async function handleSignOut(){await signOut();setUser(null);setProfile(null);setApps([]);setResumeHistory([]);}
 
+  // ── CV File Upload ─────────────────────────────────────────────────────────
+  async function handleCvFile(file) {
+    if(!file) return;
+    const name = file.name.toLowerCase();
+    setFileUploading(true);
+    try {
+      if(name.endsWith(".txt")||name.endsWith(".md")) {
+        const text = await file.text();
+        setCv(text);
+        showToast(`Loaded ${file.name}`, "success");
+      } else if(name.endsWith(".pdf")) {
+        // Use PDF.js if available
+        if(window.pdfjsLib) {
+          const buf = await file.arrayBuffer();
+          const pdf = await window.pdfjsLib.getDocument({data:buf}).promise;
+          let fullText = "";
+          for(let i=1;i<=pdf.numPages;i++) {
+            const page = await pdf.getPage(i);
+            const content = await page.getTextContent();
+            fullText += content.items.map(s=>s.str).join(" ") + "\n";
+          }
+          setCv(fullText.trim());
+          showToast(`PDF loaded (${pdf.numPages} pages)`, "success");
+        } else {
+          showToast("PDF support loading — please try again in a moment.", "warning");
+        }
+      } else {
+        showToast("Supported formats: PDF, TXT, MD", "warning");
+      }
+    } catch(e) {
+      console.error("File upload error:", e);
+      showToast("Could not read file. Please paste your CV manually.", "error");
+    }
+    setFileUploading(false);
+  }
+
   const inp={width:"100%",boxSizing:"border-box",background:"#fff",border:"1.5px solid #e2e8f0",borderRadius:8,padding:"11px 14px",color:"#111827",fontSize:14,fontFamily:"inherit",outline:"none",lineHeight:1.6};
   const btn=(x={})=>({background:"#0d9488",color:"#fff",border:"none",borderRadius:8,padding:"10px 18px",fontSize:13,fontWeight:600,cursor:"pointer",display:"inline-flex",alignItems:"center",gap:6,...x});
   const ghost=(x={})=>({background:"#fff",border:"1.5px solid #e2e8f0",color:"#374151",borderRadius:8,padding:"9px 16px",fontSize:13,cursor:"pointer",...x});
@@ -660,6 +779,8 @@ Return ONLY JSON:
           .input-grid{grid-template-columns:1fr!important}
           .action-btns{flex-direction:column!important}
           .action-btns button{width:100%!important;justify-content:center!important}
+          .header-logo{order:2!important}
+          .mob-btn{order:1!important}
         }
         @media(min-width:769px){.mob-btn{display:none!important}.mobile-menu{display:none!important}}
         @media(max-width:480px){
@@ -671,11 +792,12 @@ Return ONLY JSON:
       {showAuth&&<AuthModal onClose={()=>setShowAuth(false)} onSuccess={u=>loadUser(u)} initialMode={authMode}/>}
       {showUpgrade&&<UpgradeModal onClose={()=>setShowUpgrade(false)} feature={upgradeFeature}/>}
       {showPrivacy&&<PrivacyModal onClose={()=>setShowPrivacy(false)}/>}
+      <Toast toasts={toasts}/>
 
       {/* ── HEADER ── */}
       <div style={{background:"#fff",borderBottom:"1px solid #e8ecf0",position:"sticky",top:0,zIndex:100,boxShadow:"0 1px 4px rgba(0,0,0,0.06)"}}>
         <div style={{maxWidth:1280,margin:"0 auto",padding:"0 20px",display:"flex",alignItems:"center",justifyContent:"space-between",height:60}}>
-          <div style={{display:"flex",alignItems:"center",gap:9,cursor:"pointer",flexShrink:0}} onClick={()=>setTab("builder")}>
+          <div className="header-logo" style={{display:"flex",alignItems:"center",gap:9,cursor:"pointer",flexShrink:0}} onClick={()=>setTab("builder")}>
             <LogoIcon size={36}/>
             <div>
               <div style={{fontSize:16,fontWeight:800,color:"#111827",letterSpacing:-0.4}}>CareerOS</div>
@@ -715,31 +837,48 @@ Return ONLY JSON:
           </div>
 
           <button className="mob-btn" onClick={()=>setMenuOpen(!menuOpen)}
-            style={{background:"#f8fafc",border:"1px solid #e8ecf0",borderRadius:8,padding:"7px 10px",cursor:"pointer",display:"none",flexDirection:"column",gap:4}}>
-            <span style={{width:18,height:2,background:"#374151",borderRadius:1,display:"block"}}/>
-            <span style={{width:18,height:2,background:"#374151",borderRadius:1,display:"block"}}/>
-            <span style={{width:18,height:2,background:"#374151",borderRadius:1,display:"block"}}/>
+            style={{background:menuOpen?"#0d9488":"#f8fafc",border:`1px solid ${menuOpen?"#0d9488":"#e8ecf0"}`,borderRadius:10,padding:"10px 12px",cursor:"pointer",display:"none",flexDirection:"column",gap:5,transition:"all 0.2s"}}>
+            <span style={{width:20,height:2,background:menuOpen?"#fff":"#374151",borderRadius:1,display:"block",transition:"all 0.2s"}}/>
+            <span style={{width:20,height:2,background:menuOpen?"#fff":"#374151",borderRadius:1,display:"block",transition:"all 0.2s"}}/>
+            <span style={{width:20,height:2,background:menuOpen?"#fff":"#374151",borderRadius:1,display:"block",transition:"all 0.2s"}}/>
           </button>
         </div>
 
         {menuOpen&&(
-          <div className="mobile-menu" style={{background:"#fff",borderTop:"1px solid #e8ecf0",padding:"8px 0"}}>
-            {TABS.map(t=>(
-              <button key={t.id} onClick={()=>handleTabChange(t)}
-                style={{width:"100%",background:tab===t.id?"#f0fdfa":"transparent",border:"none",borderLeft:`3px solid ${tab===t.id?"#0d9488":"transparent"}`,color:tab===t.id?"#0d9488":"#374151",padding:"12px 20px",fontSize:14,cursor:"pointer",fontWeight:tab===t.id?600:400,textAlign:"left",display:"flex",alignItems:"center",gap:6}}>
-                {t.label}{t.pro&&<ProBadge/>}
-              </button>
-            ))}
-            <div style={{padding:"12px 20px",borderTop:"1px solid #e8ecf0",display:"flex",gap:8}}>
+          <div className="mobile-menu" style={{background:"#fff",borderTop:"1px solid #e8ecf0",boxShadow:"0 8px 24px rgba(0,0,0,0.08)"}}>
+            {/* User info strip */}
+            {user&&(
+              <div style={{display:"flex",alignItems:"center",gap:10,padding:"14px 20px",background:"#f0fdfa",borderBottom:"1px solid #e8ecf0"}}>
+                <div style={{width:36,height:36,borderRadius:"50%",background:"linear-gradient(135deg,#0d9488,#0891b2)",display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:700,fontSize:14,flexShrink:0}}>
+                  {(user.user_metadata?.full_name||user.email||"U")[0].toUpperCase()}
+                </div>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{fontSize:13,fontWeight:600,color:"#111827",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{user.user_metadata?.full_name||user.email}</div>
+                  <div style={{fontSize:11,color:isPro?"#0d9488":"#9ca3af",fontWeight:600,textTransform:"uppercase",letterSpacing:0.5}}>{isPro?"Pro Plan":"Free Plan"}</div>
+                </div>
+              </div>
+            )}
+            {/* Nav items */}
+            <div style={{padding:"8px 0"}}>
+              {TABS.map(t=>(
+                <button key={t.id} onClick={()=>handleTabChange(t)}
+                  style={{width:"100%",background:tab===t.id?"#f0fdfa":"transparent",border:"none",borderLeft:`4px solid ${tab===t.id?"#0d9488":"transparent"}`,color:tab===t.id?"#0d9488":"#374151",padding:"15px 20px",fontSize:15,cursor:"pointer",fontWeight:tab===t.id?700:400,textAlign:"left",display:"flex",alignItems:"center",justifyContent:"space-between",boxSizing:"border-box"}}>
+                  <span style={{display:"flex",alignItems:"center",gap:8}}>{t.label}{t.pro&&<ProBadge/>}</span>
+                  {tab===t.id&&<span style={{color:"#0d9488",fontSize:12}}>●</span>}
+                </button>
+              ))}
+            </div>
+            {/* Bottom actions */}
+            <div style={{padding:"14px 20px",borderTop:"1px solid #e8ecf0",display:"flex",flexDirection:"column",gap:10}}>
               {user?(
                 <>
-                  {!isPro&&<button onClick={()=>{setTab("pricing");setMenuOpen(false);}} style={btn({fontSize:12,flex:1,justifyContent:"center"})}>Upgrade Pro ✦</button>}
-                  <button onClick={()=>{handleSignOut();setMenuOpen(false);}} style={ghost({fontSize:12,flex:1,textAlign:"center"})}>Sign out</button>
+                  {!isPro&&<button onClick={()=>{setTab("pricing");setMenuOpen(false);}} style={btn({fontSize:14,justifyContent:"center",padding:"13px",background:"linear-gradient(135deg,#0d9488,#0891b2)"})}>⚡ Upgrade to Pro</button>}
+                  <button onClick={()=>{handleSignOut();setMenuOpen(false);}} style={ghost({fontSize:14,textAlign:"center",padding:"12px"})}>Sign out</button>
                 </>
               ):(
                 <>
-                  <button onClick={()=>{setAuthMode("login");setShowAuth(true);setMenuOpen(false);}} style={ghost({fontSize:12,flex:1,textAlign:"center"})}>Sign in</button>
-                  <button onClick={()=>{setAuthMode("signup");setShowAuth(true);setMenuOpen(false);}} style={btn({fontSize:12,flex:1,justifyContent:"center"})}>Get Started →</button>
+                  <button onClick={()=>{setAuthMode("signup");setShowAuth(true);setMenuOpen(false);}} style={btn({fontSize:14,justifyContent:"center",padding:"13px",background:"linear-gradient(135deg,#0d9488,#0891b2)"})}>Get Started Free →</button>
+                  <button onClick={()=>{setAuthMode("login");setShowAuth(true);setMenuOpen(false);}} style={ghost({fontSize:14,textAlign:"center",padding:"12px"})}>Sign in</button>
                 </>
               )}
             </div>
@@ -856,7 +995,21 @@ Return ONLY JSON:
               </div>
               <div>
                 <label style={{display:"block",fontSize:11,fontWeight:700,color:"#374151",marginBottom:6,textTransform:"uppercase",letterSpacing:0.5}}>Your CV / Background</label>
-                <textarea style={{...inp,height:200,resize:"vertical"}} placeholder="Paste your CV or describe your experience..." value={cv} onChange={e=>setCv(e.target.value)}/>
+                {/* File upload drop zone */}
+                <div
+                  onDrop={e=>{e.preventDefault();const f=e.dataTransfer.files[0];if(f)handleCvFile(f);}}
+                  onDragOver={e=>e.preventDefault()}
+                  style={{border:"1.5px dashed #99f6e4",borderRadius:8,padding:"10px 14px",marginBottom:8,background:"#f0fdfa",display:"flex",alignItems:"center",gap:10,cursor:"pointer"}}
+                  onClick={()=>document.getElementById("cv-file-input").click()}>
+                  <span style={{fontSize:18}}>{fileUploading?"⏳":"📎"}</span>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{fontSize:12,fontWeight:600,color:"#0d9488"}}>{fileUploading?"Reading file...":"Upload CV file"}</div>
+                    <div style={{fontSize:10,color:"#6b7280"}}>Drag & drop or click · PDF, TXT, MD supported</div>
+                  </div>
+                  <input id="cv-file-input" type="file" accept=".pdf,.txt,.md" style={{display:"none"}}
+                    onChange={e=>{const f=e.target.files[0];if(f){handleCvFile(f);e.target.value="";}}}/>
+                </div>
+                <textarea style={{...inp,height:180,resize:"vertical"}} placeholder="Or paste your CV / describe your experience here..." value={cv} onChange={e=>setCv(e.target.value)}/>
                 {!cv&&<button onClick={()=>setCv(SAMPLE_CV)} style={{...ghost(),marginTop:8,fontSize:11,padding:"5px 12px"}}>Use sample CV →</button>}
               </div>
             </div>
@@ -1026,8 +1179,23 @@ Return ONLY JSON:
                 </Card>
 
                 <Card>
-                  <SLabel>✦ Your Tailored Resume</SLabel>
-                  <FormatPicker resume={result.resume} selected={fmt} onSelect={setFmt} onDownload={f=>downloadResume(result.resume,f)}/>
+                  <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12,flexWrap:"wrap",gap:8}}>
+                    <SLabel style={{margin:0}}>✦ Your Tailored Resume</SLabel>
+                    {originalCv&&(
+                      <div style={{display:"flex",background:"#f1f5f9",borderRadius:8,padding:2,gap:2}}>
+                        <button onClick={()=>setShowBefore(false)} style={{padding:"5px 14px",borderRadius:6,border:"none",fontSize:11,fontWeight:600,cursor:"pointer",background:!showBefore?"#0d9488":"transparent",color:!showBefore?"#fff":"#6b7280",transition:"all 0.15s"}}>After ✦</button>
+                        <button onClick={()=>setShowBefore(true)} style={{padding:"5px 14px",borderRadius:6,border:"none",fontSize:11,fontWeight:600,cursor:"pointer",background:showBefore?"#7c3aed":"transparent",color:showBefore?"#fff":"#6b7280",transition:"all 0.15s"}}>Before</button>
+                      </div>
+                    )}
+                  </div>
+                  {showBefore ? (
+                    <div style={{background:"#fafbfc",border:"1px solid #e8ecf0",borderRadius:8,padding:16,maxHeight:400,overflowY:"auto"}}>
+                      <div style={{fontSize:11,fontWeight:700,color:"#7c3aed",letterSpacing:1,marginBottom:8,textTransform:"uppercase"}}>Your Original CV</div>
+                      <pre style={{fontSize:12,color:"#374151",lineHeight:1.7,whiteSpace:"pre-wrap",fontFamily:"inherit",margin:0}}>{originalCv}</pre>
+                    </div>
+                  ) : (
+                    <FormatPicker resume={result.resume} selected={fmt} onSelect={setFmt} onDownload={f=>downloadResume(result.resume,f)}/>
+                  )}
                 </Card>
 
                 <Card>

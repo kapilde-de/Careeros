@@ -47,7 +47,7 @@ export async function getUserProfile(userId) {
 
 export async function saveResume(userId, content, jobTitle, company, atsScore) {
   try {
-    await supabase.from('resumes').insert({
+    const { error } = await supabase.from('resumes').insert({
       user_id: userId,
       job_title: jobTitle || 'Role',
       company: company || 'Company',
@@ -55,33 +55,53 @@ export async function saveResume(userId, content, jobTitle, company, atsScore) {
       content,
       created_at: new Date().toISOString()
     })
-  } catch {}
+    if (error) console.error('saveResume error:', error.message)
+  } catch(e) { console.error('saveResume exception:', e.message) }
 }
 
 export async function getUserResumes(userId) {
   try {
-    const { data } = await supabase.from('resumes').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(20)
+    const { data, error } = await supabase.from('resumes').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(20)
+    if (error) console.error('getUserResumes error:', error.message)
     return data || []
-  } catch { return [] }
+  } catch(e) { console.error('getUserResumes exception:', e.message); return [] }
+}
+
+export async function getMonthlyUsage(userId) {
+  try {
+    const startOfMonth = new Date()
+    startOfMonth.setDate(1)
+    startOfMonth.setHours(0, 0, 0, 0)
+    const { count, error } = await supabase
+      .from('resumes')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', userId)
+      .gte('created_at', startOfMonth.toISOString())
+    if (error) console.error('getMonthlyUsage error:', error.message)
+    return count || 0
+  } catch(e) { console.error('getMonthlyUsage exception:', e.message); return 0 }
 }
 
 export async function saveApplication(userId, app) {
   try {
-    await supabase.from('applications').insert({
+    const { error } = await supabase.from('applications').insert({
       user_id: userId, ...app, created_at: new Date().toISOString()
     })
-  } catch {}
+    if (error) console.error('saveApplication error:', error.message)
+  } catch(e) { console.error('saveApplication exception:', e.message) }
 }
 
 export async function getUserApplications(userId) {
   try {
-    const { data } = await supabase.from('applications').select('*').eq('user_id', userId).order('created_at', { ascending: false })
+    const { data, error } = await supabase.from('applications').select('*').eq('user_id', userId).order('created_at', { ascending: false })
+    if (error) console.error('getUserApplications error:', error.message)
     return data || []
-  } catch { return [] }
+  } catch(e) { console.error('getUserApplications exception:', e.message); return [] }
 }
 
 export async function updateApplicationStatus(appId, status) {
   try {
-    await supabase.from('applications').update({ status, updated_at: new Date().toISOString() }).eq('id', appId)
-  } catch {}
+    const { error } = await supabase.from('applications').update({ status, updated_at: new Date().toISOString() }).eq('id', appId)
+    if (error) console.error('updateApplicationStatus error:', error.message)
+  } catch(e) { console.error('updateApplicationStatus exception:', e.message) }
 }
