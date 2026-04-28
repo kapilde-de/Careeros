@@ -20,6 +20,7 @@ const TABS = [
   { id:"cover", label:"Cover Letter" },
   { id:"interview", label:"Interview", pro:true },
   { id:"simulator", label:"Simulator", pro:true },
+  { id:"agent", label:"🤖 Agent", agent:true },
   { id:"pricing", label:"Pricing" },
 ];
 
@@ -842,6 +843,15 @@ Return ONLY JSON:
       {showPrivacy&&<PrivacyModal onClose={()=>setShowPrivacy(false)}/>}
       <Toast toasts={toasts}/>
 
+      {/* ── AGENT ANNOUNCEMENT BAR ── */}
+      <div style={{background:"linear-gradient(90deg,#4c1d95,#7c3aed,#dc2626)",padding:"7px 16px",textAlign:"center",cursor:"pointer"}} onClick={()=>setTab("agent")}>
+        <div style={{display:"inline-flex",alignItems:"center",gap:8,flexWrap:"wrap",justifyContent:"center"}}>
+          <span style={{fontSize:13}}>🤖</span>
+          <span style={{fontSize:12,fontWeight:700,color:"#fff",letterSpacing:0.2}}>CareerOS Agent — 24/7 autonomous job hunter. Scans 50+ boards, tailors your CV, delivers matches daily.</span>
+          <span style={{background:"rgba(255,255,255,0.2)",color:"#fff",fontSize:10,fontWeight:700,padding:"2px 10px",borderRadius:10,border:"1px solid rgba(255,255,255,0.4)",whiteSpace:"nowrap"}}>See how it works →</span>
+        </div>
+      </div>
+
       {/* ── HEADER ── */}
       <div style={{background:"#fff",borderBottom:"1px solid #e8ecf0",position:"sticky",top:0,zIndex:100,boxShadow:"0 1px 4px rgba(0,0,0,0.06)"}}>
         <div style={{maxWidth:1280,margin:"0 auto",padding:"0 20px",display:"flex",alignItems:"center",justifyContent:"space-between",height:60}}>
@@ -855,7 +865,22 @@ Return ONLY JSON:
 
           <nav className="desktop-nav tab-nav" style={{display:"flex",flex:1,minWidth:0,overflowX:"auto",overflowY:"visible",alignItems:"stretch"}}>
             {TABS.map(t=>(
-              <button key={t.id} onClick={()=>handleTabChange(t)} style={{background:"transparent",border:"none",borderBottom:`2.5px solid ${tab===t.id?"#0d9488":"transparent"}`,borderTop:"2.5px solid transparent",color:tab===t.id?"#0d9488":"#6b7280",padding:"0 13px",height:60,fontSize:13,cursor:"pointer",fontWeight:tab===t.id?700:500,transition:"color 0.15s,border-color 0.15s",whiteSpace:"nowrap",display:"inline-flex",alignItems:"center",gap:4,flexShrink:0,minWidth:"max-content",lineHeight:"60px"}}>
+              <button key={t.id} onClick={()=>handleTabChange(t)}
+                style={{
+                  background:t.agent?(tab===t.id?"linear-gradient(135deg,#7c3aed,#dc2626)":"linear-gradient(135deg,#7c3aed22,#dc262622)"):"transparent",
+                  border:"none",
+                  borderBottom:`2.5px solid ${t.agent?(tab===t.id?"#dc2626":"transparent"):(tab===t.id?"#0d9488":"transparent")}`,
+                  borderTop:"2.5px solid transparent",
+                  color:t.agent?(tab===t.id?"#fff":"#7c3aed"):(tab===t.id?"#0d9488":"#6b7280"),
+                  padding:t.agent?"0 14px":"0 13px",
+                  height:60,fontSize:13,cursor:"pointer",
+                  fontWeight:tab===t.id?700:500,
+                  transition:"all 0.15s",whiteSpace:"nowrap",
+                  display:"inline-flex",alignItems:"center",gap:4,
+                  flexShrink:0,minWidth:"max-content",lineHeight:"60px",
+                  borderRadius:t.agent?"0":"0",
+                  margin:t.agent?"0 4px":"0",
+                }}>
                 {t.label}
                 {t.pro&&<ProBadge/>}
               </button>
@@ -910,9 +935,9 @@ Return ONLY JSON:
             <div style={{padding:"8px 0"}}>
               {TABS.map(t=>(
                 <button key={t.id} onClick={()=>handleTabChange(t)}
-                  style={{width:"100%",background:tab===t.id?"#f0fdfa":"transparent",border:"none",borderLeft:`4px solid ${tab===t.id?"#0d9488":"transparent"}`,color:tab===t.id?"#0d9488":"#374151",padding:"15px 20px",fontSize:15,cursor:"pointer",fontWeight:tab===t.id?700:400,textAlign:"left",display:"flex",alignItems:"center",justifyContent:"space-between",boxSizing:"border-box"}}>
+                  style={{width:"100%",background:t.agent?(tab===t.id?"linear-gradient(135deg,#4c1d95,#7c2d12)":"linear-gradient(135deg,#1e1b4b11,#7c2d1211)"):(tab===t.id?"#f0fdfa":"transparent"),border:"none",borderLeft:`4px solid ${t.agent?"#7c3aed":(tab===t.id?"#0d9488":"transparent")}`,color:t.agent?"#a78bfa":(tab===t.id?"#0d9488":"#374151"),padding:"15px 20px",fontSize:15,cursor:"pointer",fontWeight:t.agent?700:(tab===t.id?700:400),textAlign:"left",display:"flex",alignItems:"center",justifyContent:"space-between",boxSizing:"border-box"}}>
                   <span style={{display:"flex",alignItems:"center",gap:8}}>{t.label}{t.pro&&<ProBadge/>}</span>
-                  {tab===t.id&&<span style={{color:"#0d9488",fontSize:12}}>●</span>}
+                  {tab===t.id&&<span style={{color:t.agent?"#a78bfa":"#0d9488",fontSize:12}}>●</span>}
                 </button>
               ))}
             </div>
@@ -951,6 +976,49 @@ Return ONLY JSON:
                 Paste a job URL or description — get a tailored resume, ATS score, rejection risk analysis, salary negotiation script, and interview coaching in under 60 seconds.
               </p>
               {!user&&<button onClick={()=>{setAuthMode("signup");setShowAuth(true);}} style={{...btn({padding:"12px 28px",fontSize:15,background:"linear-gradient(135deg,#0d9488,#0891b2)",borderRadius:10})}}>Create Free Account →</button>}
+            </div>
+
+            {/* ── AGENT USP TILE ── */}
+            <div onClick={()=>setTab("agent")} style={{cursor:"pointer",background:"linear-gradient(135deg,#1e1b4b 0%,#4c1d95 50%,#7c2d12 100%)",borderRadius:16,padding:"22px 24px",marginBottom:20,position:"relative",overflow:"hidden",border:"1px solid rgba(139,92,246,0.3)"}}>
+              {/* Background orbs */}
+              <div style={{position:"absolute",top:-40,right:-40,width:180,height:180,background:"rgba(139,92,246,0.15)",borderRadius:"50%",pointerEvents:"none"}}/>
+              <div style={{position:"absolute",bottom:-30,left:80,width:120,height:120,background:"rgba(220,38,38,0.1)",borderRadius:"50%",pointerEvents:"none"}}/>
+              <div style={{position:"relative"}}>
+                <div style={{display:"flex",alignItems:"flex-start",gap:14,marginBottom:16,flexWrap:"wrap"}}>
+                  <div style={{width:48,height:48,background:"linear-gradient(135deg,#7c3aed,#dc2626)",borderRadius:14,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,flexShrink:0}}>🤖</div>
+                  <div style={{flex:1,minWidth:200}}>
+                    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4,flexWrap:"wrap"}}>
+                      <div style={{fontSize:18,fontWeight:900,color:"#fff",letterSpacing:-0.5}}>CareerOS Agent</div>
+                      <span style={{background:"linear-gradient(90deg,#f59e0b,#ef4444)",color:"#fff",fontSize:9,fontWeight:800,padding:"2px 8px",borderRadius:8,letterSpacing:1,textTransform:"uppercase"}}>ULTRA · £99 once</span>
+                    </div>
+                    <div style={{fontSize:13,color:"rgba(196,181,253,0.9)",lineHeight:1.5}}>Your personal AI recruiter that runs <strong style={{color:"#c4b5fd"}}>24/7</strong> — hunting, evaluating and tailoring applications <strong style={{color:"#c4b5fd"}}>while you sleep.</strong></div>
+                  </div>
+                </div>
+                <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(170px,1fr))",gap:10,marginBottom:16}}>
+                  {[
+                    {icon:"🔍",title:"Scans 50+ job boards",sub:"Every 4 hours, automatically"},
+                    {icon:"🧠",title:"AI scores every job",sub:"Match % before you even see it"},
+                    {icon:"📄",title:"Auto-tailored CV",sub:"Unique resume per application"},
+                    {icon:"⏰",title:"Daily 8am digest",sub:"Your shortlist, delivered fresh"},
+                  ].map(f=>(
+                    <div key={f.title} style={{background:"rgba(255,255,255,0.07)",borderRadius:10,padding:"10px 12px",border:"1px solid rgba(255,255,255,0.1)"}}>
+                      <div style={{fontSize:16,marginBottom:4}}>{f.icon}</div>
+                      <div style={{fontSize:12,fontWeight:700,color:"#fff",marginBottom:2}}>{f.title}</div>
+                      <div style={{fontSize:10,color:"rgba(196,181,253,0.8)"}}>{f.sub}</div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:10}}>
+                  <div style={{display:"flex",gap:12,flexWrap:"wrap"}}>
+                    {["Lifetime licence","30-day guarantee","No subscription","Local dashboard"].map(t=>(
+                      <span key={t} style={{fontSize:11,color:"rgba(196,181,253,0.8)",display:"flex",alignItems:"center",gap:4}}><span style={{color:"#4ade80"}}>✓</span>{t}</span>
+                    ))}
+                  </div>
+                  <div style={{display:"flex",alignItems:"center",gap:6,background:"rgba(255,255,255,0.12)",borderRadius:10,padding:"8px 16px",border:"1px solid rgba(255,255,255,0.2)"}}>
+                    <span style={{fontSize:12,fontWeight:700,color:"#fff"}}>Learn more →</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* ── VIRAL FEATURE 1: Smart Job Import ── */}
@@ -1675,6 +1743,167 @@ Return ONLY JSON:
                 )}
               </div>
             )}
+          </div>
+        )}
+
+        {/* ════ AGENT PAGE ════ */}
+        {tab==="agent"&&(
+          <div style={{animation:"fadeIn 0.3s ease",maxWidth:900,margin:"0 auto"}}>
+
+            {/* Hero */}
+            <div style={{background:"linear-gradient(135deg,#1e1b4b 0%,#4c1d95 55%,#7c2d12 100%)",borderRadius:20,padding:"48px 32px",marginBottom:24,textAlign:"center",position:"relative",overflow:"hidden"}}>
+              <div style={{position:"absolute",top:-60,left:-60,width:240,height:240,background:"rgba(139,92,246,0.15)",borderRadius:"50%"}}/>
+              <div style={{position:"absolute",bottom:-40,right:-40,width:200,height:200,background:"rgba(220,38,38,0.12)",borderRadius:"50%"}}/>
+              <div style={{position:"relative"}}>
+                <div style={{display:"inline-flex",alignItems:"center",gap:8,background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:20,padding:"5px 16px",marginBottom:20}}>
+                  <span style={{fontSize:14}}>🤖</span>
+                  <span style={{fontSize:11,fontWeight:700,color:"rgba(196,181,253,0.9)",letterSpacing:1.5,textTransform:"uppercase"}}>CareerOS Agent · Autonomous Job Hunter</span>
+                </div>
+                <h1 style={{fontSize:"clamp(30px,6vw,54px)",fontWeight:900,color:"#fff",lineHeight:1.1,marginBottom:14,letterSpacing:-1}}>
+                  Your AI recruiter.<br/><span style={{background:"linear-gradient(90deg,#a78bfa,#f87171)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>Working while you sleep.</span>
+                </h1>
+                <p style={{fontSize:16,color:"rgba(196,181,253,0.85)",maxWidth:560,margin:"0 auto 28px",lineHeight:1.7}}>
+                  Stop manually searching 50 job boards. The CareerOS Agent runs 24/7 on your computer — scanning, scoring, tailoring CVs, and delivering your perfect shortlist every morning at 8am.
+                </p>
+                <div style={{display:"flex",gap:12,justifyContent:"center",flexWrap:"wrap"}}>
+                  <button onClick={()=>window.open("https://kapilicious44.gumroad.com/l/ywajrb","_blank")}
+                    style={{background:"linear-gradient(135deg,#7c3aed,#dc2626)",color:"#fff",border:"none",borderRadius:12,padding:"14px 32px",fontSize:15,fontWeight:800,cursor:"pointer",boxShadow:"0 4px 20px rgba(124,58,237,0.4)"}}>
+                    Get the Agent — £99 once →
+                  </button>
+                  <div style={{display:"flex",alignItems:"center",gap:6,color:"rgba(196,181,253,0.7)",fontSize:12}}>
+                    <span style={{color:"#4ade80"}}>✓</span> Lifetime licence &nbsp;
+                    <span style={{color:"#4ade80"}}>✓</span> 30-day guarantee &nbsp;
+                    <span style={{color:"#4ade80"}}>✓</span> No subscription
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* What it does — step by step */}
+            <div style={{background:"#fff",borderRadius:16,border:"1px solid #e8ecf0",padding:"28px 24px",marginBottom:20}}>
+              <div style={{fontSize:11,fontWeight:700,color:"#7c3aed",letterSpacing:1.5,textTransform:"uppercase",marginBottom:20}}>How It Works — 24/7 Cycle</div>
+              <div style={{display:"flex",flexDirection:"column",gap:0}}>
+                {[
+                  {step:"01",icon:"🔍",title:"Scans 50+ job boards every 4 hours",body:"The Agent monitors Reed, Adzuna, TotalJobs, Indeed, LinkedIn, Glassdoor, and 40+ niche boards simultaneously. It never misses a new posting, even at 3am.",color:"#7c3aed"},
+                  {step:"02",icon:"🧠",title:"AI evaluates every job for you",body:"Each listing is scored against your CV and preferences — ATS match %, rejection risk, salary fit, and role quality. You only see jobs worth your time.",color:"#0891b2"},
+                  {step:"03",icon:"📄",title:"Auto-tailors your CV per job",body:"For every strong match, the Agent generates a unique, ATS-optimised resume tailored specifically to that job description. One-click apply ready.",color:"#0d9488"},
+                  {step:"04",icon:"⏰",title:"Delivers your shortlist at 8am daily",body:"Wake up to a curated digest of the best matches overnight — each with its tailored CV, match score, and apply link. Review in 5 minutes.",color:"#d97706"},
+                  {step:"05",icon:"🚀",title:"Autopilot mode after 7 days",body:"Once the Agent learns your preferences from your review feedback, it activates autopilot — prioritising jobs you'd swipe right on automatically.",color:"#dc2626"},
+                  {step:"06",icon:"📊",title:"Local dashboard at localhost:3939",body:"All activity, matched jobs, generated CVs, and analytics live in a clean local dashboard. Your data stays on your machine — no cloud required.",color:"#7c3aed"},
+                ].map((s,i,arr)=>(
+                  <div key={s.step} style={{display:"flex",gap:16,paddingBottom:i<arr.length-1?24:0,position:"relative"}}>
+                    {i<arr.length-1&&<div style={{position:"absolute",left:19,top:44,width:2,height:"calc(100% - 20px)",background:"linear-gradient(180deg,"+s.color+"40,transparent)"}}/>}
+                    <div style={{width:40,height:40,borderRadius:12,background:s.color+"15",border:`2px solid ${s.color}30`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0}}>{s.icon}</div>
+                    <div style={{flex:1,paddingTop:4}}>
+                      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4}}>
+                        <span style={{fontSize:10,fontWeight:800,color:s.color,letterSpacing:1}}>STEP {s.step}</span>
+                      </div>
+                      <div style={{fontSize:15,fontWeight:700,color:"#111827",marginBottom:5}}>{s.title}</div>
+                      <div style={{fontSize:13,color:"#6b7280",lineHeight:1.7}}>{s.body}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Stats bar */}
+            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))",gap:12,marginBottom:20}}>
+              {[
+                {num:"50+",label:"Job boards monitored",color:"#7c3aed"},
+                {num:"4hrs",label:"Scan frequency",color:"#0d9488"},
+                {num:"8am",label:"Daily digest time",color:"#d97706"},
+                {num:"24/7",label:"Always running",color:"#dc2626"},
+              ].map(s=>(
+                <div key={s.num} style={{background:"#fff",border:"1px solid #e8ecf0",borderRadius:12,padding:"16px 14px",textAlign:"center"}}>
+                  <div style={{fontSize:28,fontWeight:900,color:s.color,marginBottom:4}}>{s.num}</div>
+                  <div style={{fontSize:11,color:"#6b7280",fontWeight:500}}>{s.label}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Who it's for + What you get */}
+            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:16,marginBottom:20}}>
+              <div style={{background:"#fff",border:"1px solid #e8ecf0",borderRadius:16,padding:"22px 20px"}}>
+                <div style={{fontSize:11,fontWeight:700,color:"#7c3aed",letterSpacing:1.5,textTransform:"uppercase",marginBottom:14}}>Who It's For</div>
+                {[
+                  "Actively job hunting but short on time",
+                  "Applying to 10+ roles per week",
+                  "Tired of missing good roles before they close",
+                  "Want AI to do the boring part of job search",
+                  "Serious about landing your next role fast",
+                ].map(t=>(
+                  <div key={t} style={{display:"flex",gap:8,padding:"7px 0",borderBottom:"1px solid #f9fafb",fontSize:13,color:"#374151"}}>
+                    <span style={{color:"#7c3aed",flexShrink:0}}>✓</span>{t}
+                  </div>
+                ))}
+              </div>
+              <div style={{background:"#fff",border:"1px solid #e8ecf0",borderRadius:16,padding:"22px 20px"}}>
+                <div style={{fontSize:11,fontWeight:700,color:"#dc2626",letterSpacing:1.5,textTransform:"uppercase",marginBottom:14}}>What You Get</div>
+                {[
+                  "Downloadable desktop agent (Windows/Mac/Linux)",
+                  "Full source code — customise anything",
+                  "Local dashboard at localhost:3939",
+                  "Auto-generated tailored CVs saved locally",
+                  "One-time payment, lifetime updates",
+                  "Setup guide + 30-day email support",
+                  "30-day money-back guarantee",
+                ].map(t=>(
+                  <div key={t} style={{display:"flex",gap:8,padding:"7px 0",borderBottom:"1px solid #f9fafb",fontSize:13,color:"#374151"}}>
+                    <span style={{color:"#dc2626",flexShrink:0}}>★</span>{t}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* vs Manual search */}
+            <div style={{background:"#fff",border:"1px solid #e8ecf0",borderRadius:16,padding:"24px 20px",marginBottom:20}}>
+              <div style={{fontSize:11,fontWeight:700,color:"#374151",letterSpacing:1.5,textTransform:"uppercase",marginBottom:16}}>Agent vs Manual Job Search</div>
+              <div style={{overflowX:"auto"}}>
+                <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}>
+                  <thead>
+                    <tr>
+                      <th style={{textAlign:"left",padding:"8px 12px",color:"#9ca3af",fontWeight:600,fontSize:11,borderBottom:"1px solid #f1f5f9"}}></th>
+                      <th style={{textAlign:"center",padding:"8px 12px",color:"#6b7280",fontWeight:700,fontSize:12,borderBottom:"1px solid #f1f5f9"}}>Manual</th>
+                      <th style={{textAlign:"center",padding:"8px 12px",color:"#7c3aed",fontWeight:700,fontSize:12,borderBottom:"1px solid #f1f5f9",background:"#faf5ff",borderRadius:"8px 8px 0 0"}}>🤖 Agent</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      ["Time per day checking boards","1–3 hours","0 minutes"],
+                      ["Jobs boards monitored","2–3","50+"],
+                      ["CV tailored per application","Rarely","Always"],
+                      ["Miss overnight postings","Often","Never"],
+                      ["ATS score before applying","No","Yes"],
+                      ["Daily shortlist delivered","No","Yes, 8am"],
+                      ["Learns your preferences","No","Yes, autopilot"],
+                    ].map(([label,manual,agent])=>(
+                      <tr key={label}>
+                        <td style={{padding:"10px 12px",color:"#374151",fontSize:12,borderBottom:"1px solid #f9fafb"}}>{label}</td>
+                        <td style={{padding:"10px 12px",textAlign:"center",color:"#9ca3af",fontSize:12,borderBottom:"1px solid #f9fafb"}}>✗ {manual}</td>
+                        <td style={{padding:"10px 12px",textAlign:"center",color:"#7c3aed",fontSize:12,fontWeight:600,borderBottom:"1px solid #f9fafb",background:"#faf5ff"}}>✓ {agent}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* CTA */}
+            <div style={{background:"linear-gradient(135deg,#1e1b4b,#4c1d95,#7c2d12)",borderRadius:16,padding:"32px 24px",textAlign:"center"}}>
+              <div style={{fontSize:11,fontWeight:700,color:"rgba(196,181,253,0.8)",letterSpacing:1.5,textTransform:"uppercase",marginBottom:10}}>One-time purchase · No subscription</div>
+              <div style={{fontSize:28,fontWeight:900,color:"#fff",marginBottom:6}}>Get the CareerOS Agent</div>
+              <div style={{fontSize:15,color:"rgba(196,181,253,0.8)",marginBottom:24}}>£99 once · Lifetime licence · Instant download after purchase</div>
+              <button onClick={()=>window.open("https://kapilicious44.gumroad.com/l/ywajrb","_blank")}
+                style={{background:"linear-gradient(135deg,#7c3aed,#dc2626)",color:"#fff",border:"none",borderRadius:12,padding:"15px 40px",fontSize:16,fontWeight:800,cursor:"pointer",boxShadow:"0 6px 24px rgba(124,58,237,0.5)",marginBottom:14}}>
+                Buy Now — £99 →
+              </button>
+              <div style={{display:"flex",gap:16,justifyContent:"center",flexWrap:"wrap"}}>
+                {["Lifetime updates","30-day money-back","Runs locally — your data stays private","Full source code included"].map(t=>(
+                  <span key={t} style={{fontSize:11,color:"rgba(196,181,253,0.7)",display:"flex",alignItems:"center",gap:4}}><span style={{color:"#4ade80"}}>✓</span>{t}</span>
+                ))}
+              </div>
+            </div>
+
           </div>
         )}
 
