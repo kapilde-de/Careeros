@@ -40,7 +40,7 @@ const TIERS = [
   { name:"Free", price:"£0", period:"forever", features:["3 resumes/month","Basic ATS score","5 searches/day","1 cover letter","Classic format only"], cta:"Get Started", highlight:false, color:"#6b7280", gumroad:null },
   { name:"Pro", price:"£9.99", period:"/month", badge:"Most Popular", features:["Unlimited resumes","ATS + Rejection Risk score","Salary intelligence + negotiation script","One-URL Apply","All 6 formats + preview","Unlimited searches","Interview prep AI","Interview Simulator","Resume history","Persistent tracker"], cta:"Start Pro — £9.99/mo", highlight:true, color:"#0d9488", gumroad:"https://gumroad.com/l/careeros-pro" },
   { name:"Enterprise", price:"£29.99", period:"/month", features:["Everything in Pro","Team workspace","Bulk optimization","API access","Recruiter dashboard","White-label"], cta:"Start Enterprise", highlight:false, color:"#4f46e5", gumroad:"https://gumroad.com/l/careeros-enterprise" },
-  { name:"Agent", price:"£99", period:"once · lifetime", badge:"🤖 ULTRA", features:["Everything in Pro","🤖 24/7 autonomous job hunter","Scans 50+ job boards every 4hrs","AI evaluates every job for you","Auto-tailored CV per match","Daily review queue at 8am","Autopilot mode after 7 days","Local dashboard at localhost:3939","Lifetime license — no subscription","30-day money-back guarantee"], cta:"Get the Agent — £99", highlight:false, color:"#dc2626", gumroad:"https://gumroad.com/l/careeros-agent", isAgent:true },
+  { name:"Agent", price:"£99", period:"once · lifetime", badge:"🤖 ULTRA", features:["Everything in Pro","🤖 24/7 autonomous job hunter","Scans 50+ job boards every 4hrs","AI evaluates every job for you","Auto-tailored CV per match","Daily review queue at 8am","Autopilot mode after 7 days","Local dashboard at localhost:3939","Lifetime license — no subscription","30-day money-back guarantee"], cta:"Get the Agent — £99", highlight:false, color:"#dc2626", gumroad:"https://kapilicious44.gumroad.com/l/ywajrb", isAgent:true },
 ];
 
 const STATUS_COLORS = {
@@ -598,6 +598,8 @@ Return ONLY JSON:
         @keyframes slideIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
         input:focus,textarea:focus{border-color:#0d9488 !important;box-shadow:0 0 0 3px rgba(13,148,136,0.1) !important;outline:none}
         .jcard:hover{border-color:#99f6e4 !important;box-shadow:0 2px 8px rgba(13,148,136,0.08) !important}
+        .tab-nav::-webkit-scrollbar{display:none}
+        .tab-nav{-ms-overflow-style:none;scrollbar-width:none}
         @media(max-width:768px){.desktop-nav{display:none!important}.mob-btn{display:flex!important}}
         @media(min-width:769px){.mob-btn{display:none!important}.mobile-menu{display:none!important}}
       `}</style>
@@ -616,9 +618,9 @@ Return ONLY JSON:
             </div>
           </div>
 
-          <nav className="desktop-nav" style={{display:"flex",gap:0,flex:1,justifyContent:"center",overflowX:"auto",alignItems:"stretch"}}>
+          <nav className="desktop-nav tab-nav" style={{display:"flex",flex:1,minWidth:0,overflowX:"auto",overflowY:"visible",alignItems:"stretch"}}>
             {TABS.map(t=>(
-              <button key={t.id} onClick={()=>handleTabChange(t)} style={{background:"transparent",border:"none",borderBottom:`2.5px solid ${tab===t.id?"#0d9488":"transparent"}`,color:tab===t.id?"#0d9488":"#6b7280",padding:"0 14px",height:60,fontSize:13,cursor:"pointer",fontWeight:tab===t.id?700:400,transition:"all 0.15s",whiteSpace:"nowrap",display:"flex",alignItems:"center",justifyContent:"center",gap:4,lineHeight:1,flexShrink:0}}>
+              <button key={t.id} onClick={()=>handleTabChange(t)} style={{background:"transparent",border:"none",borderBottom:`2.5px solid ${tab===t.id?"#0d9488":"transparent"}`,borderTop:"2.5px solid transparent",color:tab===t.id?"#0d9488":"#6b7280",padding:"0 13px",height:60,fontSize:13,cursor:"pointer",fontWeight:tab===t.id?700:500,transition:"color 0.15s,border-color 0.15s",whiteSpace:"nowrap",display:"inline-flex",alignItems:"center",gap:4,flexShrink:0,minWidth:"max-content",lineHeight:"60px"}}>
                 {t.label}
                 {t.pro&&<ProBadge/>}
               </button>
@@ -1299,8 +1301,8 @@ Return ONLY JSON:
             </div>
             <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(230px,1fr))",gap:16,marginBottom:32,alignItems:"stretch"}}>
               {TIERS.map(t=>(
-                <div key={t.name} style={{background:"#fff",border:`2px solid ${t.highlight?"#0d9488":t.isAgent?"#dc2626":"#e8ecf0"}`,borderRadius:14,padding:26,position:"relative",boxShadow:t.highlight?"0 8px 32px rgba(13,148,136,0.15)":t.isAgent?"0 4px 20px rgba(220,38,38,0.12)":"0 1px 4px rgba(0,0,0,0.04)",display:"flex",flexDirection:"column"}}>
-                  {t.badge&&<div style={{position:"absolute",top:-13,left:"50%",transform:"translateX(-50%)",background:t.isAgent?"linear-gradient(135deg,#dc2626,#b91c1c)":"linear-gradient(135deg,#0d9488,#0891b2)",color:"#fff",fontSize:10,fontWeight:700,padding:"4px 16px",borderRadius:20,letterSpacing:1,textTransform:"uppercase",whiteSpace:"nowrap"}}>{t.badge}</div>}
+                <div key={t.name} style={{background:"#fff",border:`2px solid ${t.highlight?"#0d9488":"#e8ecf0"}`,borderRadius:14,padding:26,position:"relative",boxShadow:t.highlight?"0 8px 32px rgba(13,148,136,0.15)":"0 1px 4px rgba(0,0,0,0.04)",display:"flex",flexDirection:"column"}}>
+                  {t.badge&&<div style={{position:"absolute",top:-13,left:"50%",transform:"translateX(-50%)",background:t.isAgent?"linear-gradient(135deg,#7c3aed,#6d28d9)":"linear-gradient(135deg,#0d9488,#0891b2)",color:"#fff",fontSize:10,fontWeight:700,padding:"4px 16px",borderRadius:20,letterSpacing:1,textTransform:"uppercase",whiteSpace:"nowrap"}}>{t.badge}</div>}
                   <div style={{fontSize:14,fontWeight:700,color:t.color,marginBottom:8,textTransform:"uppercase",letterSpacing:0.5}}>{t.name}</div>
                   <div style={{marginBottom:4}}><span style={{fontSize:36,fontWeight:900,color:"#0f172a",letterSpacing:-1}}>{t.price}</span><span style={{fontSize:13,color:"#6b7280",marginLeft:4}}>{t.period}</span></div>
                   <div style={{fontSize:12,color:"#9ca3af",marginBottom:18}}>{t.isAgent?"One-time payment · No recurring":"Cancel anytime"}</div>
@@ -1309,7 +1311,7 @@ Return ONLY JSON:
                     if(!t.gumroad){if(!user){setAuthMode("signup");setShowAuth(true);}}
                     else{if(!user){setAuthMode("signup");setShowAuth(true);}else window.open(t.gumroad,"_blank");}
                   }}
-                    style={{width:"100%",padding:13,background:t.highlight?"linear-gradient(135deg,#0d9488,#0891b2)":t.isAgent?"linear-gradient(135deg,#dc2626,#b91c1c)":"#fff",border:t.highlight||t.isAgent?"none":`2px solid ${t.color}`,color:t.highlight||t.isAgent?"#fff":t.color,borderRadius:9,fontSize:14,fontWeight:700,cursor:"pointer",marginTop:"auto"}}>
+                    style={{width:"100%",padding:13,background:t.highlight?"linear-gradient(135deg,#0d9488,#0891b2)":t.isAgent?"linear-gradient(135deg,#7c3aed,#6d28d9)":"#fff",border:t.highlight||t.isAgent?"none":`2px solid ${t.color}`,color:t.highlight||t.isAgent?"#fff":t.color,borderRadius:9,fontSize:14,fontWeight:700,cursor:"pointer",marginTop:"auto"}}>
                     {t.cta}
                   </button>
                 </div>

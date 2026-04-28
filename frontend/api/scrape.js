@@ -90,11 +90,46 @@ export default async function handler(req, res) {
 
     let extracted = "";
 
-    // Reed.co.uk — has structured job description div
+    // Reed.co.uk — use official Reed API for reliable extraction
     if (isReed) {
-      const reedMatch = html.match(/class="[^"]*job-description[^"]*"[^>]*>([\s\S]{100,8000}?)<\/div>/i)
-        || html.match(/<div[^>]*id="job-description"[^>]*>([\s\S]{100,8000}?)<\/div>/i);
-      if (reedMatch) extracted = reedMatch[1];
+      try {
+        const jobIdMatch = url.match(/\/(\d{6,})/);
+        if (jobIdMatch) {
+          const jobId = jobIdMatch[1];
+          const reedApiKey = process.env.REED_API_KEY || "";
+          const auth = Buffer.from(`${reedApiKey}:`).toString("base64");
+          const reedRes = await fetch(`https://www.reed.co.uk/api/1.0/jobs/${jobId}`, {
+            headers: { "Authorization": `Basic ${auth}`, "Accept": "application/json" },
+            signal: AbortSignal.timeout(8000),
+          });
+          if (reedRes.ok) {
+            const reedData = await reedRes.json();
+            if (reedData.jobDescription) {
+              const desc = reedData.jobDescription
+                .replace(/<br\s*\/?>/gi, "\n").replace(/<\/p>/gi, "\n")
+                .replace(/<\/li>/gi, "\n").replace(/<[^>]+>/g, " ")
+                .replace(/&amp;/g, "&").replace(/&nbsp;/g, " ").replace(/&pound;/g, "£")
+                .replace(/\s{3,}/g, "\n").trim();
+              const meta = [
+                reedData.jobTitle && `Role: ${reedData.jobTitle}`,
+                reedData.employerName && `Company: ${reedData.employerName}`,
+                reedData.locationName && `Location: ${reedData.locationName}`,
+                reedData.minimumSalary && `Salary: £${reedData.minimumSalary}–£${reedData.maximumSalary || reedData.minimumSalary}`,
+              ].filter(Boolean).join("\n");
+              return res.status(200).json({
+                success: true,
+                title: reedData.jobTitle || title,
+                content: `${meta}\n\n${desc}`.slice(0, 5000),
+                platform: "Reed",
+                url,
+              });
+            }
+          }
+        }
+      } catch (reedErr) {
+        console.error("Reed API error:", reedErr.message);
+        // Fall through to generic HTML extraction
+      }
     }
 
     // Indeed — has jobDescriptionText
