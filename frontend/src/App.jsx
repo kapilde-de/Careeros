@@ -12,13 +12,14 @@ const RESUME_FORMATS = [
 ];
 
 const TABS = [
-  { id:"builder", label:"Resume Builder" },
-  { id:"jobs", label:"Job Search" },
-  { id:"tracker", label:"Applications" },
-  { id:"history", label:"Resume History", pro:true },
+  { id:"builder", label:"Builder" },
+  { id:"jobs", label:"Jobs" },
+  { id:"tracker", label:"Tracker" },
+  { id:"scores", label:"CV Scores" },
+  { id:"history", label:"History", pro:true },
   { id:"cover", label:"Cover Letter" },
-  { id:"interview", label:"Interview Prep", pro:true },
-  { id:"simulator", label:"Interview Sim", pro:true },
+  { id:"interview", label:"Interview", pro:true },
+  { id:"simulator", label:"Simulator", pro:true },
   { id:"pricing", label:"Pricing" },
 ];
 
@@ -172,14 +173,13 @@ function ViralBadge({text="🔥 VIRAL"}) {
 function FormatPicker({resume,selected,onSelect,onDownload}) {
   return (
     <div>
-      <div style={{fontSize:12,fontWeight:600,color:"#374151",marginBottom:10}}>Choose format:</div>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:12}}>
+      <div style={{fontSize:12,fontWeight:600,color:"#374151",marginBottom:8}}>Choose format:</div>
+      <div className="fmt-scroll" style={{display:"flex",gap:7,marginBottom:12,overflowX:"auto",paddingBottom:4}}>
         {RESUME_FORMATS.map(f=>(
-          <div key={f.id} onClick={()=>onSelect(f.id)}
-            style={{border:`2px solid ${selected===f.id?f.accentColor:"#e8ecf0"}`,borderRadius:8,padding:10,cursor:"pointer",background:selected===f.id?f.accentColor+"08":"#fafbfc",transition:"all 0.15s",textAlign:"center"}}>
-            <div style={{fontSize:22,marginBottom:4}}>{f.icon}</div>
-            <div style={{fontSize:11,fontWeight:700,color:selected===f.id?f.accentColor:"#374151"}}>{f.name}</div>
-            <div style={{fontSize:9,color:"#9ca3af"}}>{f.desc}</div>
+          <div key={f.id} onClick={()=>onSelect(f.id)} className="fmt-item"
+            style={{border:`2px solid ${selected===f.id?f.accentColor:"#e8ecf0"}`,borderRadius:8,padding:"8px 10px",cursor:"pointer",background:selected===f.id?f.accentColor+"10":"#fafbfc",transition:"all 0.15s",textAlign:"center",flexShrink:0,minWidth:80}}>
+            <div style={{fontSize:18,marginBottom:3}}>{f.icon}</div>
+            <div style={{fontSize:10,fontWeight:700,color:selected===f.id?f.accentColor:"#374151"}}>{f.name}</div>
           </div>
         ))}
       </div>
@@ -295,6 +295,54 @@ function UpgradeModal({onClose,feature}) {
   );
 }
 
+function LogoIcon({size=36}) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style={{flexShrink:0}}>
+      <defs>
+        <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#0d9488"/><stop offset="100%" stopColor="#0891b2"/>
+        </linearGradient>
+      </defs>
+      <rect width="100" height="100" rx="22" fill="url(#lg)"/>
+      <text x="46" y="74" fontSize="64" fontWeight="900" textAnchor="middle" fill="white" fontFamily="'Arial Black',Arial,sans-serif">C</text>
+      <g transform="translate(73,19) rotate(42)">
+        <ellipse cx="0" cy="0" rx="5" ry="9" fill="white"/>
+        <polygon points="-4,7 4,7 0,14" fill="#fcd34d"/>
+        <ellipse cx="-5" cy="4" rx="3" ry="2" fill="rgba(255,255,255,0.35)"/>
+        <ellipse cx="5" cy="4" rx="3" ry="2" fill="rgba(255,255,255,0.35)"/>
+      </g>
+    </svg>
+  );
+}
+
+function PrivacyModal({onClose}) {
+  return (
+    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.55)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center",padding:16,overflowY:"auto"}} onClick={onClose}>
+      <div style={{background:"#fff",borderRadius:16,padding:32,width:"100%",maxWidth:620,boxShadow:"0 20px 60px rgba(0,0,0,0.2)",maxHeight:"85vh",overflowY:"auto"}} onClick={e=>e.stopPropagation()}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
+          <div style={{fontSize:18,fontWeight:800,color:"#111827"}}>Privacy Policy</div>
+          <button onClick={onClose} style={{background:"#f1f5f9",border:"none",borderRadius:"50%",width:30,height:30,cursor:"pointer",fontSize:14,color:"#6b7280"}}>✕</button>
+        </div>
+        <div style={{fontSize:12,color:"#9ca3af",marginBottom:20}}>Last updated: {new Date().toLocaleDateString("en-GB",{month:"long",year:"numeric"})}</div>
+        {[
+          {h:"1. What We Collect",b:"We collect your email address and name when you sign up, the CVs and job descriptions you paste or import, resumes we generate for you, and your application tracking data. We do not collect payment card details — these are handled by Gumroad."},
+          {h:"2. How We Use Your Data",b:"Your data is used solely to provide the CareerOS service: generating tailored resumes, tracking applications, and delivering AI career insights. We never sell your data to third parties or use it for advertising."},
+          {h:"3. AI Processing",b:"Content you submit (CVs, job descriptions) is sent to Anthropic's Claude API for processing. This is governed by Anthropic's privacy policy. We do not use your content to train AI models."},
+          {h:"4. Data Storage",b:"Your account data is stored securely in Supabase (EU region). Resumes and applications are linked to your account and deleted upon account deletion."},
+          {h:"5. Cookies",b:"We use only essential cookies for authentication. We do not use tracking or advertising cookies."},
+          {h:"6. Your Rights",b:"You can request deletion of your account and all associated data at any time by emailing us. You can also export your resume history from within the app."},
+          {h:"7. Contact",b:"For privacy questions, contact: kapil.de@gmail.com"},
+        ].map(s=>(
+          <div key={s.h} style={{marginBottom:18}}>
+            <div style={{fontSize:14,fontWeight:700,color:"#111827",marginBottom:6}}>{s.h}</div>
+            <div style={{fontSize:13,color:"#6b7280",lineHeight:1.7}}>{s.b}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ─── MAIN APP ────────────────────────────────────────────────────────────────
 export default function App() {
   const [user,setUser]=useState(null);
@@ -304,6 +352,7 @@ export default function App() {
   const [authMode,setAuthMode]=useState("login");
   const [showUpgrade,setShowUpgrade]=useState(false);
   const [upgradeFeature,setUpgradeFeature]=useState("");
+  const [showPrivacy,setShowPrivacy]=useState(false);
   const [menuOpen,setMenuOpen]=useState(false);
 
   const [tab,setTab]=useState("builder");
@@ -570,6 +619,7 @@ Return ONLY JSON:
 
   function handleTabChange(t){
     if(t.id==="history"){if(!requireAuth("Resume History")||!requirePro("Resume History"))return;loadHistory();}
+    if(t.id==="scores"&&user){loadHistory();}
     if(t.id==="simulator"){if(!requireAuth("Interview Simulator"))return;}
     setTab(t.id);setMenuOpen(false);
   }
@@ -600,18 +650,33 @@ Return ONLY JSON:
         .jcard:hover{border-color:#99f6e4 !important;box-shadow:0 2px 8px rgba(13,148,136,0.08) !important}
         .tab-nav::-webkit-scrollbar{display:none}
         .tab-nav{-ms-overflow-style:none;scrollbar-width:none}
-        @media(max-width:768px){.desktop-nav{display:none!important}.mob-btn{display:flex!important}}
+        .fmt-scroll::-webkit-scrollbar{height:4px}.fmt-scroll::-webkit-scrollbar-track{background:#f1f5f9}.fmt-scroll::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:2px}
+        @media(max-width:768px){
+          .desktop-nav{display:none!important}.mob-btn{display:flex!important}
+          .hero-pad{padding:24px 14px 20px!important}
+          .main-pad{padding:14px 10px 70px!important}
+          .score-grid{grid-template-columns:repeat(2,1fr)!important}
+          .gap-grid{grid-template-columns:1fr!important}
+          .input-grid{grid-template-columns:1fr!important}
+          .action-btns{flex-direction:column!important}
+          .action-btns button{width:100%!important;justify-content:center!important}
+        }
         @media(min-width:769px){.mob-btn{display:none!important}.mobile-menu{display:none!important}}
+        @media(max-width:480px){
+          .pricing-grid{grid-template-columns:1fr!important}
+          .fmt-item{min-width:90px!important;padding:8px 6px!important}
+        }
       `}</style>
 
       {showAuth&&<AuthModal onClose={()=>setShowAuth(false)} onSuccess={u=>loadUser(u)} initialMode={authMode}/>}
       {showUpgrade&&<UpgradeModal onClose={()=>setShowUpgrade(false)} feature={upgradeFeature}/>}
+      {showPrivacy&&<PrivacyModal onClose={()=>setShowPrivacy(false)}/>}
 
       {/* ── HEADER ── */}
       <div style={{background:"#fff",borderBottom:"1px solid #e8ecf0",position:"sticky",top:0,zIndex:100,boxShadow:"0 1px 4px rgba(0,0,0,0.06)"}}>
         <div style={{maxWidth:1280,margin:"0 auto",padding:"0 20px",display:"flex",alignItems:"center",justifyContent:"space-between",height:60}}>
           <div style={{display:"flex",alignItems:"center",gap:9,cursor:"pointer",flexShrink:0}} onClick={()=>setTab("builder")}>
-            <div style={{width:34,height:34,borderRadius:9,background:"linear-gradient(135deg,#0d9488,#0891b2)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:16,color:"#fff"}}>C</div>
+            <LogoIcon size={36}/>
             <div>
               <div style={{fontSize:16,fontWeight:800,color:"#111827",letterSpacing:-0.4}}>CareerOS</div>
               <div style={{fontSize:8,color:"#9ca3af",letterSpacing:1.5,textTransform:"uppercase"}}>AI Career Platform</div>
@@ -682,13 +747,13 @@ Return ONLY JSON:
         )}
       </div>
 
-      <div style={{maxWidth:1280,margin:"0 auto",padding:"24px 16px 80px"}}>
+      <div className="main-pad" style={{maxWidth:1280,margin:"0 auto",padding:"24px 16px 80px"}}>
 
         {/* ════ RESUME BUILDER ════ */}
         {tab==="builder"&&(
           <div style={{animation:"fadeIn 0.3s ease"}}>
             {/* Hero */}
-            <div style={{textAlign:"center",padding:"40px 16px 32px",background:"#fff",borderRadius:16,marginBottom:20,border:"1px solid #e8ecf0",boxShadow:"0 1px 4px rgba(0,0,0,0.04)"}}>
+            <div className="hero-pad" style={{textAlign:"center",padding:"40px 16px 32px",background:"#fff",borderRadius:16,marginBottom:20,border:"1px solid #e8ecf0",boxShadow:"0 1px 4px rgba(0,0,0,0.04)"}}>
               <div style={{display:"inline-flex",alignItems:"center",gap:6,padding:"5px 14px",borderRadius:20,background:"#f0fdfa",border:"1px solid #99f6e4",color:"#0d9488",fontSize:11,fontWeight:600,letterSpacing:1,textTransform:"uppercase",marginBottom:16}}>
                 AI Resume Builder · ATS & Rejection Risk Score · Salary Intelligence
               </div>
@@ -719,8 +784,8 @@ Return ONLY JSON:
                   value={jobUrl} onChange={e=>{setJobUrl(e.target.value);setUrlError("");}}
                   onKeyDown={e=>e.key==="Enter"&&handleUrlImport()}
                 />
-                <button onClick={handleUrlImport} disabled={urlLoading||!jobUrl}
-                  style={{background:"rgba(255,255,255,0.2)",color:"#fff",border:"1px solid rgba(255,255,255,0.4)",borderRadius:8,padding:"10px 18px",fontSize:13,fontWeight:600,cursor:urlLoading||!jobUrl?"not-allowed":"pointer",flexShrink:0,whiteSpace:"nowrap",opacity:urlLoading||!jobUrl?0.6:1}}>
+                <button onClick={handleUrlImport}
+                  style={{background:"rgba(255,255,255,0.2)",color:"#fff",border:"1px solid rgba(255,255,255,0.4)",borderRadius:8,padding:"10px 18px",fontSize:13,fontWeight:600,cursor:urlLoading||!jobUrl?"not-allowed":"pointer",flexShrink:0,whiteSpace:"nowrap",opacity:urlLoading||!jobUrl?0.6:1,pointerEvents:urlLoading?"none":"auto"}}>
                   {urlLoading?"Fetching...":"Import →"}
                 </button>
               </div>
@@ -771,20 +836,20 @@ Return ONLY JSON:
             {/* Format picker */}
             <Card>
               <SLabel>Choose Your Resume Format</SLabel>
-              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(130px,1fr))",gap:10}}>
+              <div className="fmt-scroll" style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:4}}>
                 {RESUME_FORMATS.map(f=>(
-                  <div key={f.id} onClick={()=>setFmt(f.id)}
-                    style={{border:`2px solid ${fmt===f.id?f.accentColor:"#e8ecf0"}`,borderRadius:8,padding:12,cursor:"pointer",background:fmt===f.id?f.accentColor+"08":"#fafbfc",transition:"all 0.15s",textAlign:"center"}}>
-                    <div style={{fontSize:24,marginBottom:6}}>{f.icon}</div>
-                    <div style={{fontSize:12,fontWeight:700,color:fmt===f.id?f.accentColor:"#374151",marginBottom:2}}>{f.name}</div>
-                    <div style={{fontSize:10,color:"#9ca3af"}}>{f.desc}</div>
+                  <div key={f.id} onClick={()=>setFmt(f.id)} className="fmt-item"
+                    style={{border:`2px solid ${fmt===f.id?f.accentColor:"#e8ecf0"}`,borderRadius:8,padding:"10px 12px",cursor:"pointer",background:fmt===f.id?f.accentColor+"10":"#fafbfc",transition:"all 0.15s",textAlign:"center",flexShrink:0,minWidth:90}}>
+                    <div style={{fontSize:20,marginBottom:4}}>{f.icon}</div>
+                    <div style={{fontSize:11,fontWeight:700,color:fmt===f.id?f.accentColor:"#374151",marginBottom:2}}>{f.name}</div>
+                    <div style={{fontSize:9,color:"#9ca3af"}}>{f.desc}</div>
                   </div>
                 ))}
               </div>
             </Card>
 
             {/* Inputs */}
-            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:14,marginBottom:14}}>
+            <div className="input-grid" style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:14,marginBottom:14}}>
               <div>
                 <label style={{display:"block",fontSize:11,fontWeight:700,color:"#374151",marginBottom:6,textTransform:"uppercase",letterSpacing:0.5}}>Job Description</label>
                 <textarea style={{...inp,height:200,resize:"vertical"}} placeholder="Paste job description here (or use One-URL Apply above)..." value={jd} onChange={e=>setJd(e.target.value)}/>
@@ -811,7 +876,7 @@ Return ONLY JSON:
               </div>
             )}
 
-            <div style={{display:"flex",gap:10,marginBottom:24,flexWrap:"wrap"}}>
+            <div className="action-btns" style={{display:"flex",gap:10,marginBottom:24,flexWrap:"wrap"}}>
               <button id="generate-btn" onClick={generate} disabled={loading||!jd||!cv} style={{...btn({background:"linear-gradient(135deg,#0d9488,#0891b2)",padding:"12px 24px",fontSize:14}),opacity:loading||!jd||!cv?0.5:1}}>
                 {loading?"Generating...":"✦ Generate Tailored Resume"}
               </button>
@@ -828,7 +893,7 @@ Return ONLY JSON:
             {result&&!result.error&&(
               <div ref={ref}>
                 {/* ── Score Cards Row ── */}
-                <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))",gap:12,marginBottom:14}}>
+                <div className="score-grid" style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))",gap:12,marginBottom:14}}>
                   <Card style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6}}>
                     <SLabel>ATS Score</SLabel>
                     <ScoreRing score={result.matchScore} size={70}/>
@@ -1064,6 +1129,104 @@ Return ONLY JSON:
                 ))}
               </div>
             </>)}
+          </div>
+        )}
+
+        {/* ════ CV SCORES ════ */}
+        {tab==="scores"&&(
+          <div style={{animation:"fadeIn 0.3s ease"}}>
+            <div style={{marginBottom:20}}>
+              <h2 style={{fontSize:24,fontWeight:800,color:"#111827",marginBottom:4,letterSpacing:-0.5}}>CV Score Dashboard</h2>
+              <p style={{color:"#6b7280",fontSize:14}}>Track your resume performance and improvement over time.</p>
+            </div>
+
+            {!result&&resumeHistory.length===0&&(
+              <div style={{textAlign:"center",padding:60,background:"#fff",borderRadius:16,border:"1px solid #e8ecf0"}}>
+                <div style={{fontSize:48,marginBottom:14}}>📊</div>
+                <div style={{fontSize:16,fontWeight:700,color:"#111827",marginBottom:6}}>No scores yet</div>
+                <div style={{fontSize:13,color:"#6b7280",marginBottom:20}}>Generate a resume in the Builder tab to see your scores here.</div>
+                <button onClick={()=>setTab("builder")} style={btn({padding:"11px 24px"})}>Go to Builder →</button>
+              </div>
+            )}
+
+            {result&&result.matchScore>0&&(
+              <>
+                <div style={{background:"linear-gradient(135deg,#f0fdfa,#ecfdf5)",border:"1px solid #99f6e4",borderRadius:14,padding:20,marginBottom:16}}>
+                  <div style={{fontSize:12,fontWeight:700,color:"#0d9488",letterSpacing:1,textTransform:"uppercase",marginBottom:12}}>Current Resume</div>
+                  <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(130px,1fr))",gap:12}}>
+                    {[
+                      {label:"ATS Score",score:result.matchScore,color:result.matchScore>=80?"#16a34a":result.matchScore>=65?"#d97706":"#dc2626"},
+                      {label:"Human Appeal",score:result.hiringManagerScore,color:"#7c3aed"},
+                      {label:"Rejection Risk",score:result.rejectionRisk?.score,color:result.rejectionRisk?.score>60?"#dc2626":result.rejectionRisk?.score>35?"#d97706":"#16a34a",invert:true},
+                    ].map(m=>(
+                      <div key={m.label} style={{background:"#fff",borderRadius:10,padding:14,textAlign:"center",border:"1px solid #e8ecf0"}}>
+                        <ScoreRing score={m.score} size={64} color={m.color}/>
+                        <div style={{fontSize:11,fontWeight:600,color:"#6b7280",marginTop:6}}>{m.label}</div>
+                        {m.invert&&<div style={{fontSize:10,color:"#9ca3af"}}>(lower = better)</div>}
+                      </div>
+                    ))}
+                    {result.salaryIntelligence?.recommendedAsk&&(
+                      <div style={{background:"#fff",borderRadius:10,padding:14,textAlign:"center",border:"1px solid #e8ecf0"}}>
+                        <div style={{fontSize:26,fontWeight:900,color:"#059669",marginBottom:4}}>{result.salaryIntelligence.recommendedAsk}</div>
+                        <div style={{fontSize:11,fontWeight:600,color:"#6b7280"}}>Recommended Ask</div>
+                        <div style={{fontSize:10,color:"#9ca3af"}}>{result.salaryIntelligence.marketMin}–{result.salaryIntelligence.marketMax}</div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {result.rejectionRisk&&(
+                  <Card>
+                    <SLabel color="#dc2626">Top Rejection Risks to Fix</SLabel>
+                    {result.rejectionRisk.topReasons?.map((r,i)=>(
+                      <div key={i} style={{display:"flex",gap:10,padding:"8px 0",borderBottom:"1px solid #f9fafb",alignItems:"flex-start"}}>
+                        <span style={{background:"#fef2f2",color:"#dc2626",borderRadius:"50%",width:20,height:20,display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:800,flexShrink:0}}>{i+1}</span>
+                        <div style={{fontSize:13,color:"#374151",lineHeight:1.6}}>{r}</div>
+                      </div>
+                    ))}
+                    <div style={{marginTop:12,padding:12,background:"#f0fdf4",borderRadius:8}}>
+                      <div style={{fontSize:11,fontWeight:700,color:"#16a34a",marginBottom:8}}>HOW TO FIX IT</div>
+                      {result.rejectionRisk.howToFix?.map((f,i)=>(
+                        <div key={i} style={{display:"flex",gap:8,fontSize:13,color:"#374151",padding:"4px 0"}}>
+                          <span style={{color:"#16a34a",fontWeight:700}}>✓</span>{f}
+                        </div>
+                      ))}
+                    </div>
+                  </Card>
+                )}
+              </>
+            )}
+
+            {resumeHistory.length>0&&(
+              <Card>
+                <SLabel>Resume History — Score Trends</SLabel>
+                <div style={{overflowX:"auto"}}>
+                  <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}>
+                    <thead>
+                      <tr style={{borderBottom:"2px solid #f1f5f9"}}>
+                        {["Role","Company","Date","ATS Score"].map(h=>(
+                          <th key={h} style={{textAlign:"left",padding:"8px 10px",fontSize:11,fontWeight:700,color:"#9ca3af",textTransform:"uppercase",letterSpacing:0.5}}>{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {resumeHistory.map((r,i)=>(
+                        <tr key={r.id} style={{borderBottom:"1px solid #f9fafb",background:i%2===0?"#fff":"#fafbfc"}}>
+                          <td style={{padding:"10px 10px",fontWeight:600,color:"#111827"}}>{r.job_title||"—"}</td>
+                          <td style={{padding:"10px 10px",color:"#6b7280"}}>{r.company||"—"}</td>
+                          <td style={{padding:"10px 10px",color:"#9ca3af"}}>{new Date(r.created_at).toLocaleDateString("en-GB",{day:"numeric",month:"short"})}</td>
+                          <td style={{padding:"10px 10px"}}>
+                            <span style={{background:r.ats_score>=80?"#f0fdf4":r.ats_score>=65?"#fffbeb":"#fef2f2",color:r.ats_score>=80?"#16a34a":r.ats_score>=65?"#d97706":"#dc2626",padding:"3px 10px",borderRadius:20,fontSize:12,fontWeight:700}}>
+                              {r.ats_score>0?`${r.ats_score}%`:"—"}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </Card>
+            )}
           </div>
         )}
 
@@ -1345,8 +1508,16 @@ Return ONLY JSON:
         )}
       </div>
 
-      <div style={{borderTop:"1px solid #e8ecf0",padding:"14px 20px",textAlign:"center",color:"#d1d5db",fontSize:11,background:"#fff"}}>
-        <span style={{color:"#0d9488",fontWeight:700}}>CareerOS</span> · AI Career Platform · Resume · Jobs · Cover Letter · Interview Prep · Interview Simulator
+      <div style={{borderTop:"1px solid #e8ecf0",padding:"14px 20px",textAlign:"center",background:"#fff"}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,marginBottom:6}}>
+          <LogoIcon size={18}/>
+          <span style={{fontWeight:800,fontSize:13,color:"#111827"}}>CareerOS</span>
+          <span style={{color:"#d1d5db",fontSize:11}}>· AI Career Platform</span>
+        </div>
+        <div style={{fontSize:11,color:"#d1d5db"}}>
+          Resume · Jobs · Cover Letter · Interview Prep · Simulator ·{" "}
+          <button onClick={()=>setShowPrivacy(true)} style={{background:"none",border:"none",color:"#9ca3af",fontSize:11,cursor:"pointer",textDecoration:"underline",padding:0}}>Privacy Policy</button>
+        </div>
       </div>
     </div>
   );
