@@ -887,20 +887,17 @@ Return ONLY JSON:
             ))}
           </nav>
 
-          <div className="desktop-nav" style={{display:"flex",gap:8,alignItems:"center",flexShrink:0}}>
+          <div className="desktop-nav" style={{display:"flex",gap:8,alignItems:"center",flexShrink:0,marginLeft:8}}>
             {user?(
-              <>
-                {!isPro&&<button onClick={()=>setTab("pricing")} style={btn({padding:"7px 16px",fontSize:12,background:"linear-gradient(135deg,#0d9488,#0891b2)"})}>Upgrade</button>}
-                <div style={{display:"flex",alignItems:"center",gap:7,padding:"5px 10px",background:"#f8fafc",borderRadius:8,border:"1px solid #e8ecf0",cursor:"pointer"}} onClick={handleSignOut}>
-                  <div style={{width:26,height:26,borderRadius:"50%",background:"linear-gradient(135deg,#0d9488,#0891b2)",display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:700,fontSize:12}}>
-                    {(user.user_metadata?.full_name||user.email||"U")[0].toUpperCase()}
-                  </div>
-                  <div>
-                    <div style={{fontSize:11,fontWeight:600,color:"#111827",lineHeight:1.2}}>{user.user_metadata?.full_name||user.email?.split("@")[0]}</div>
-                    <div style={{fontSize:9,color:isPro?"#0d9488":"#9ca3af",fontWeight:600,textTransform:"uppercase",letterSpacing:0.5}}>{isPro?"Pro":"Free"} · Sign out</div>
-                  </div>
+              <div style={{display:"flex",alignItems:"center",gap:7,padding:"5px 10px",background:"#f8fafc",borderRadius:8,border:"1px solid #e8ecf0",cursor:"pointer"}} onClick={handleSignOut}>
+                <div style={{width:26,height:26,borderRadius:"50%",background:"linear-gradient(135deg,#0d9488,#0891b2)",display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:700,fontSize:12}}>
+                  {(user.user_metadata?.full_name||user.email||"U")[0].toUpperCase()}
                 </div>
-              </>
+                <div>
+                  <div style={{fontSize:11,fontWeight:600,color:"#111827",lineHeight:1.2}}>{user.user_metadata?.full_name||user.email?.split("@")[0]}</div>
+                  <div style={{fontSize:9,color:isPro?"#0d9488":"#9ca3af",fontWeight:600,textTransform:"uppercase",letterSpacing:0.5}}>{isPro?"Pro":"Free"} · Sign out</div>
+                </div>
+              </div>
             ):(
               <>
                 <button onClick={()=>{setAuthMode("login");setShowAuth(true);}} style={ghost({fontSize:12,padding:"7px 14px"})}>Sign in</button>
@@ -964,182 +961,125 @@ Return ONLY JSON:
         {/* ════ RESUME BUILDER ════ */}
         {tab==="builder"&&(
           <div style={{animation:"fadeIn 0.3s ease"}}>
-            {/* Hero */}
-            <div className="hero-pad" style={{textAlign:"center",padding:"40px 16px 32px",background:"#fff",borderRadius:16,marginBottom:20,border:"1px solid #e8ecf0",boxShadow:"0 1px 4px rgba(0,0,0,0.04)"}}>
-              <div style={{display:"inline-flex",alignItems:"center",gap:6,padding:"5px 14px",borderRadius:20,background:"#f0fdfa",border:"1px solid #99f6e4",color:"#0d9488",fontSize:11,fontWeight:600,letterSpacing:1,textTransform:"uppercase",marginBottom:16}}>
-                AI Resume Builder · ATS & Rejection Risk Score · Salary Intelligence
+
+            {/* ── HERO ── */}
+            <div className="hero-pad" style={{textAlign:"center",padding:"48px 20px 40px",background:"#fff",borderRadius:16,marginBottom:16,border:"1px solid #e8ecf0",boxShadow:"0 1px 6px rgba(0,0,0,0.04)"}}>
+              <div style={{display:"inline-flex",alignItems:"center",gap:6,padding:"4px 14px",borderRadius:20,background:"#f0fdfa",border:"1px solid #99f6e4",color:"#0d9488",fontSize:11,fontWeight:700,letterSpacing:1,textTransform:"uppercase",marginBottom:18}}>
+                ✦ AI Resume Builder
               </div>
-              <h1 style={{fontSize:"clamp(28px,6vw,52px)",fontWeight:900,color:"#0f172a",lineHeight:1.1,marginBottom:10,letterSpacing:-1.5}}>
-                Land more interviews.<br/><span style={{color:"#0d9488"}}>Faster.</span>
+              <h1 style={{fontSize:"clamp(30px,6vw,54px)",fontWeight:900,color:"#0f172a",lineHeight:1.08,marginBottom:12,letterSpacing:-1.5}}>
+                Get the interview.<br/><span style={{color:"#0d9488"}}>Not the rejection.</span>
               </h1>
-              <p style={{color:"#6b7280",fontSize:16,maxWidth:520,margin:"0 auto 20px",lineHeight:1.65}}>
-                Paste a job URL or description — get a tailored resume, ATS score, rejection risk analysis, salary negotiation script, and interview coaching in under 60 seconds.
+              <p style={{color:"#6b7280",fontSize:15,maxWidth:480,margin:"0 auto 24px",lineHeight:1.7}}>
+                Paste a job description, upload your CV — get a tailored resume, ATS score, rejection risk, salary intel and interview coaching in 60 seconds.
               </p>
-              {!user&&<button onClick={()=>{setAuthMode("signup");setShowAuth(true);}} style={{...btn({padding:"12px 28px",fontSize:15,background:"linear-gradient(135deg,#0d9488,#0891b2)",borderRadius:10})}}>Create Free Account →</button>}
+              <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:20,flexWrap:"wrap",marginBottom:user?0:20}}>
+                {[["⚡","ATS scored"],["💀","Rejection risk"],["💰","Salary script"],["🎯","Tailored per job"]].map(([icon,label])=>(
+                  <div key={label} style={{display:"flex",alignItems:"center",gap:5,fontSize:12,color:"#6b7280",fontWeight:500}}>
+                    <span style={{fontSize:14}}>{icon}</span>{label}
+                  </div>
+                ))}
+              </div>
+              {!user&&<button onClick={()=>{setAuthMode("signup");setShowAuth(true);}} style={{...btn({padding:"13px 32px",fontSize:15,background:"linear-gradient(135deg,#0d9488,#0891b2)",borderRadius:10,boxShadow:"0 4px 14px rgba(13,148,136,0.3)"})}}>Start Free — No Card Needed →</button>}
             </div>
 
-            {/* ── AGENT USP TILE ── */}
-            <div onClick={()=>setTab("agent")} style={{cursor:"pointer",background:"linear-gradient(135deg,#1e1b4b 0%,#4c1d95 50%,#7c2d12 100%)",borderRadius:16,padding:"22px 24px",marginBottom:20,position:"relative",overflow:"hidden",border:"1px solid rgba(139,92,246,0.3)"}}>
-              {/* Background orbs */}
-              <div style={{position:"absolute",top:-40,right:-40,width:180,height:180,background:"rgba(139,92,246,0.15)",borderRadius:"50%",pointerEvents:"none"}}/>
-              <div style={{position:"absolute",bottom:-30,left:80,width:120,height:120,background:"rgba(220,38,38,0.1)",borderRadius:"50%",pointerEvents:"none"}}/>
-              <div style={{position:"relative"}}>
-                <div style={{display:"flex",alignItems:"flex-start",gap:14,marginBottom:16,flexWrap:"wrap"}}>
-                  <div style={{width:48,height:48,background:"linear-gradient(135deg,#7c3aed,#dc2626)",borderRadius:14,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,flexShrink:0}}>🤖</div>
-                  <div style={{flex:1,minWidth:200}}>
-                    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4,flexWrap:"wrap"}}>
-                      <div style={{fontSize:18,fontWeight:900,color:"#fff",letterSpacing:-0.5}}>CareerOS Agent</div>
-                      <span style={{background:"linear-gradient(90deg,#f59e0b,#ef4444)",color:"#fff",fontSize:9,fontWeight:800,padding:"2px 8px",borderRadius:8,letterSpacing:1,textTransform:"uppercase"}}>ULTRA · £99 once</span>
-                    </div>
-                    <div style={{fontSize:13,color:"rgba(196,181,253,0.9)",lineHeight:1.5}}>Your personal AI recruiter that runs <strong style={{color:"#c4b5fd"}}>24/7</strong> — hunting, evaluating and tailoring applications <strong style={{color:"#c4b5fd"}}>while you sleep.</strong></div>
+            {/* ── AGENT CALLOUT (compact) ── */}
+            <div onClick={()=>setTab("agent")} style={{cursor:"pointer",background:"linear-gradient(135deg,#1e1b4b,#4c1d95)",borderRadius:12,padding:"14px 20px",marginBottom:16,display:"flex",alignItems:"center",gap:14,border:"1px solid rgba(139,92,246,0.25)"}}>
+              <div style={{width:40,height:40,background:"linear-gradient(135deg,#7c3aed,#dc2626)",borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>🤖</div>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontSize:13,fontWeight:800,color:"#fff",marginBottom:2}}>CareerOS Agent — 24/7 autonomous job hunting</div>
+                <div style={{fontSize:11,color:"rgba(196,181,253,0.8)"}}>Scans 160+ companies, tailors your CV, builds your daily shortlist. £99 once · lifetime access.</div>
+              </div>
+              <div style={{fontSize:11,fontWeight:700,color:"#c4b5fd",whiteSpace:"nowrap",flexShrink:0}}>Learn more →</div>
+            </div>
+
+            {/* ── INPUTS ── */}
+            <Card style={{marginBottom:14}}>
+              <div className="input-grid" style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:20}}>
+
+                {/* Job Description */}
+                <div>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+                    <label style={{fontSize:12,fontWeight:700,color:"#111827",letterSpacing:-0.2}}>Job Description</label>
+                    <span style={{fontSize:10,color:jd.length<80&&jd.length>0?"#f97316":jd.length>=80?"#16a34a":"#9ca3af",fontWeight:600}}>
+                      {jd.length>0?`${jd.length} chars${jd.length<80?" — need more":"  ✓"}`:""}
+                    </span>
                   </div>
+                  {/* URL import — inline */}
+                  <div style={{display:"flex",gap:6,marginBottom:8}}>
+                    <input
+                      style={{flex:1,background:"#f8fafc",border:"1.5px solid #e2e8f0",borderRadius:7,padding:"8px 12px",color:"#111827",fontSize:12,fontFamily:"inherit",outline:"none"}}
+                      placeholder="⚡ Paste job URL to auto-import (Reed, Adzuna, TotalJobs…)"
+                      value={jobUrl} onChange={e=>{setJobUrl(e.target.value);setUrlError("");}}
+                      onKeyDown={e=>e.key==="Enter"&&handleUrlImport()}
+                    />
+                    <button onClick={handleUrlImport}
+                      style={{background:urlLoading||!jobUrl?"#f1f5f9":"#0d9488",color:urlLoading||!jobUrl?"#9ca3af":"#fff",border:"none",borderRadius:7,padding:"8px 14px",fontSize:12,fontWeight:600,cursor:urlLoading||!jobUrl?"not-allowed":"pointer",flexShrink:0,whiteSpace:"nowrap",transition:"all 0.15s"}}>
+                      {urlLoading?"…":"Import"}
+                    </button>
+                  </div>
+                  {urlError&&(
+                    <div style={{background:"#fef2f2",border:"1px solid #fecaca",borderRadius:7,padding:"8px 12px",marginBottom:8,fontSize:11,color:"#dc2626",lineHeight:1.5}}>
+                      {urlError}
+                      {(urlError.includes("LinkedIn")||urlError.includes("login"))&&(
+                        <button onClick={async()=>{try{const t=await navigator.clipboard.readText();if(t&&t.length>100){setJd(t);setUrlError("");}else setUrlError("Clipboard empty — paste manually below.");}catch{setUrlError("Could not read clipboard — paste manually below.");}}}
+                          style={{display:"block",marginTop:6,background:"#dc2626",color:"#fff",border:"none",borderRadius:5,padding:"4px 10px",fontSize:10,fontWeight:600,cursor:"pointer"}}>📋 Paste from clipboard</button>
+                      )}
+                    </div>
+                  )}
+                  {!urlError&&jd&&!urlLoading&&jobUrl===""&&<div style={{fontSize:11,color:"#16a34a",marginBottom:6,fontWeight:600}}>✓ Imported successfully</div>}
+                  <textarea
+                    style={{...inp,height:200,resize:"vertical",borderColor:jd.length>0&&jd.length<80?"#fca5a5":undefined}}
+                    placeholder="Or paste the full job description here…"
+                    value={jd} onChange={e=>setJd(e.target.value)}/>
+                  {jd.length>0&&jd.length<80&&<div style={{fontSize:11,color:"#f97316",marginTop:4}}>⚠ Paste the full job description for best results</div>}
                 </div>
-                <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(170px,1fr))",gap:10,marginBottom:16}}>
-                  {[
-                    {icon:"🔍",title:"Scans 50+ job boards",sub:"Every 4 hours, automatically"},
-                    {icon:"🧠",title:"AI scores every job",sub:"Match % before you even see it"},
-                    {icon:"📄",title:"Auto-tailored CV",sub:"Unique resume per application"},
-                    {icon:"⏰",title:"Daily 8am digest",sub:"Your shortlist, delivered fresh"},
-                  ].map(f=>(
-                    <div key={f.title} style={{background:"rgba(255,255,255,0.07)",borderRadius:10,padding:"10px 12px",border:"1px solid rgba(255,255,255,0.1)"}}>
-                      <div style={{fontSize:16,marginBottom:4}}>{f.icon}</div>
-                      <div style={{fontSize:12,fontWeight:700,color:"#fff",marginBottom:2}}>{f.title}</div>
-                      <div style={{fontSize:10,color:"rgba(196,181,253,0.8)"}}>{f.sub}</div>
+
+                {/* CV */}
+                <div>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+                    <label style={{fontSize:12,fontWeight:700,color:"#111827",letterSpacing:-0.2}}>Your CV / Background</label>
+                    <span style={{fontSize:10,color:cv.length<50&&cv.length>0?"#f97316":cv.length>=50?"#16a34a":"#9ca3af",fontWeight:600}}>
+                      {cv.length>0?`${cv.length} chars${cv.length<50?" — need more":"  ✓"}`:""}
+                    </span>
+                  </div>
+                  <div
+                    onDrop={e=>{e.preventDefault();const f=e.dataTransfer.files[0];if(f)handleCvFile(f);}}
+                    onDragOver={e=>e.preventDefault()}
+                    onClick={()=>document.getElementById("cv-file-input").click()}
+                    style={{border:"1.5px dashed #d1d5db",borderRadius:7,padding:"10px 14px",marginBottom:8,background:"#fafbfc",display:"flex",alignItems:"center",gap:10,cursor:"pointer",transition:"border-color 0.15s"}}
+                    onMouseEnter={e=>e.currentTarget.style.borderColor="#0d9488"}
+                    onMouseLeave={e=>e.currentTarget.style.borderColor="#d1d5db"}>
+                    <span style={{fontSize:16,flexShrink:0}}>{fileUploading?"⏳":"📎"}</span>
+                    <div style={{flex:1,minWidth:0}}>
+                      <div style={{fontSize:12,fontWeight:600,color:"#374151"}}>{fileUploading?"Reading file…":"Upload CV"}</div>
+                      <div style={{fontSize:10,color:"#9ca3af"}}>PDF, TXT or MD · drag & drop or click</div>
+                    </div>
+                    <input id="cv-file-input" type="file" accept=".pdf,.txt,.md" style={{display:"none"}}
+                      onChange={e=>{const f=e.target.files[0];if(f){handleCvFile(f);e.target.value="";}}}/>
+                  </div>
+                  <textarea
+                    style={{...inp,height:200,resize:"vertical"}}
+                    placeholder="Or paste your CV / describe your experience here…"
+                    value={cv} onChange={e=>setCv(e.target.value)}/>
+                  {!cv&&<button onClick={()=>setCv(SAMPLE_CV)} style={{...ghost(),marginTop:6,fontSize:11,padding:"4px 12px"}}>Use sample CV →</button>}
+                </div>
+              </div>
+
+              {/* Format picker — inside the card, below inputs */}
+              <div style={{borderTop:"1px solid #f1f5f9",marginTop:16,paddingTop:14}}>
+                <div style={{fontSize:11,fontWeight:700,color:"#6b7280",letterSpacing:1,textTransform:"uppercase",marginBottom:10}}>Resume Format</div>
+                <div className="fmt-scroll" style={{display:"flex",gap:7,overflowX:"auto",paddingBottom:2}}>
+                  {RESUME_FORMATS.map(f=>(
+                    <div key={f.id} onClick={()=>setFmt(f.id)} className="fmt-item"
+                      style={{border:`2px solid ${fmt===f.id?f.accentColor:"#e8ecf0"}`,borderRadius:8,padding:"8px 12px",cursor:"pointer",background:fmt===f.id?f.accentColor+"10":"transparent",transition:"all 0.15s",textAlign:"center",flexShrink:0,minWidth:80}}>
+                      <div style={{fontSize:16,marginBottom:3}}>{f.icon}</div>
+                      <div style={{fontSize:10,fontWeight:700,color:fmt===f.id?f.accentColor:"#374151"}}>{f.name}</div>
                     </div>
                   ))}
                 </div>
-                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:10}}>
-                  <div style={{display:"flex",gap:12,flexWrap:"wrap"}}>
-                    {["Lifetime licence","30-day guarantee","No subscription","Local dashboard"].map(t=>(
-                      <span key={t} style={{fontSize:11,color:"rgba(196,181,253,0.8)",display:"flex",alignItems:"center",gap:4}}><span style={{color:"#4ade80"}}>✓</span>{t}</span>
-                    ))}
-                  </div>
-                  <div style={{display:"flex",alignItems:"center",gap:6,background:"rgba(255,255,255,0.12)",borderRadius:10,padding:"8px 16px",border:"1px solid rgba(255,255,255,0.2)"}}>
-                    <span style={{fontSize:12,fontWeight:700,color:"#fff"}}>Learn more →</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* ── VIRAL FEATURE 1: Smart Job Import ── */}
-            <div style={{background:"linear-gradient(135deg,#042f2e,#0d9488)",borderRadius:14,padding:20,marginBottom:20,position:"relative",overflow:"hidden"}}>
-              <div style={{position:"absolute",top:-20,right:-20,width:120,height:120,background:"rgba(255,255,255,0.05)",borderRadius:"50%"}}/>
-              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
-                <span style={{fontSize:20}}>⚡</span>
-                <div style={{flex:1}}>
-                  <div style={{fontSize:14,fontWeight:800,color:"#fff"}}>Smart Job Import</div>
-                  <div style={{fontSize:11,color:"#99f6e4"}}>Works with Reed, Adzuna, TotalJobs, CV-Library and more</div>
-                </div>
-                <ViralBadge text="🔥 NEW"/>
-              </div>
-              <div style={{display:"flex",gap:8,marginBottom:10}}>
-                <input
-                  style={{flex:1,background:"rgba(255,255,255,0.15)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:8,padding:"10px 14px",color:"#fff",fontSize:13,fontFamily:"inherit",outline:"none"}}
-                  placeholder="Paste Reed, Adzuna, TotalJobs, or any job URL..."
-                  value={jobUrl} onChange={e=>{setJobUrl(e.target.value);setUrlError("");}}
-                  onKeyDown={e=>e.key==="Enter"&&handleUrlImport()}
-                />
-                <button onClick={handleUrlImport}
-                  style={{background:"rgba(255,255,255,0.2)",color:"#fff",border:"1px solid rgba(255,255,255,0.4)",borderRadius:8,padding:"10px 18px",fontSize:13,fontWeight:600,cursor:urlLoading||!jobUrl?"not-allowed":"pointer",flexShrink:0,whiteSpace:"nowrap",opacity:urlLoading||!jobUrl?0.6:1,pointerEvents:urlLoading?"none":"auto"}}>
-                  {urlLoading?"Fetching...":"Import →"}
-                </button>
-              </div>
-
-              {/* Platform guide */}
-              <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:urlError?10:0}}>
-                {[
-                  {name:"Reed",color:"#fca5a5",works:true},
-                  {name:"Adzuna",color:"#99f6e4",works:true},
-                  {name:"TotalJobs",color:"#99f6e4",works:true},
-                  {name:"CV-Library",color:"#99f6e4",works:true},
-                  {name:"Indeed",color:"#fcd34d",works:"partial"},
-                  {name:"LinkedIn",color:"#fca5a5",works:false},
-                ].map(p=>(
-                  <div key={p.name} style={{display:"flex",alignItems:"center",gap:3,padding:"2px 8px",borderRadius:10,background:"rgba(255,255,255,0.1)",fontSize:10,fontWeight:600}}>
-                    <span style={{color:p.works===true?"#4ade80":p.works==="partial"?"#fcd34d":"#f87171"}}>
-                      {p.works===true?"✓":p.works==="partial"?"~":"✕"}
-                    </span>
-                    <span style={{color:"rgba(255,255,255,0.85)"}}>{p.name}</span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Error with helpful guidance */}
-              {urlError&&(
-                <div style={{marginTop:8,background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"10px 12px"}}>
-                  <div style={{fontSize:12,color:"#fca5a5",marginBottom:urlError.includes("LinkedIn")||urlError.includes("Indeed")?8:0}}>{urlError}</div>
-                  {(urlError.includes("LinkedIn")||urlError.includes("login"))&&(
-                    <div style={{fontSize:11,color:"#99f6e4",lineHeight:1.7}}>
-                      <div style={{fontWeight:700,marginBottom:4}}>How to copy from LinkedIn/Indeed:</div>
-                      <div>1. Open the job in your browser</div>
-                      <div>2. Click "Show more" to expand the full description</div>
-                      <div>3. Select all the job description text (Ctrl+A won't work — select manually)</div>
-                      <div>4. Copy (Ctrl+C) and paste into the Job Description box below</div>
-                      <button onClick={async()=>{
-                        try{const t=await navigator.clipboard.readText();if(t&&t.length>100){setJd(t);setUrlError("");}else{setUrlError("Clipboard is empty or too short — please manually paste in the box below.");}}
-                        catch{setUrlError("Could not read clipboard. Please paste manually in the box below.");}
-                      }} style={{marginTop:8,background:"rgba(255,255,255,0.2)",border:"1px solid rgba(255,255,255,0.4)",color:"#fff",borderRadius:6,padding:"5px 12px",fontSize:11,fontWeight:600,cursor:"pointer"}}>
-                        📋 Paste from clipboard
-                      </button>
-                    </div>
-                  )}
-                </div>
-              )}
-              {!urlError&&jd&&urlLoading===false&&<div style={{marginTop:8,fontSize:12,color:"#4ade80",fontWeight:600}}>✓ Job description imported successfully!</div>}
-            </div>
-
-            {/* Format picker */}
-            <Card>
-              <SLabel>Choose Your Resume Format</SLabel>
-              <div className="fmt-scroll" style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:4}}>
-                {RESUME_FORMATS.map(f=>(
-                  <div key={f.id} onClick={()=>setFmt(f.id)} className="fmt-item"
-                    style={{border:`2px solid ${fmt===f.id?f.accentColor:"#e8ecf0"}`,borderRadius:8,padding:"10px 12px",cursor:"pointer",background:fmt===f.id?f.accentColor+"10":"#fafbfc",transition:"all 0.15s",textAlign:"center",flexShrink:0,minWidth:90}}>
-                    <div style={{fontSize:20,marginBottom:4}}>{f.icon}</div>
-                    <div style={{fontSize:11,fontWeight:700,color:fmt===f.id?f.accentColor:"#374151",marginBottom:2}}>{f.name}</div>
-                    <div style={{fontSize:9,color:"#9ca3af"}}>{f.desc}</div>
-                  </div>
-                ))}
               </div>
             </Card>
-
-            {/* Inputs */}
-            <div className="input-grid" style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:14,marginBottom:14}}>
-              <div>
-                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
-                  <label style={{fontSize:11,fontWeight:700,color:"#374151",textTransform:"uppercase",letterSpacing:0.5}}>Job Description</label>
-                  <span style={{fontSize:10,color:jd.length<80&&jd.length>0?"#f97316":jd.length>=80?"#16a34a":"#9ca3af",fontWeight:600}}>
-                    {jd.length>0?`${jd.length} chars${jd.length<80?" (need more)":"✓"}`:""}
-                  </span>
-                </div>
-                <textarea style={{...inp,height:200,resize:"vertical",borderColor:jd.length>0&&jd.length<80?"#fca5a5":undefined}} placeholder="Paste job description here (or use One-URL Apply above)..." value={jd} onChange={e=>setJd(e.target.value)}/>
-                {jd.length>0&&jd.length<80&&<div style={{fontSize:11,color:"#f97316",marginTop:4}}>⚠ Paste the full job description for best results</div>}
-              </div>
-              <div>
-                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
-                  <label style={{fontSize:11,fontWeight:700,color:"#374151",textTransform:"uppercase",letterSpacing:0.5}}>Your CV / Background</label>
-                  <span style={{fontSize:10,color:cv.length<50&&cv.length>0?"#f97316":cv.length>=50?"#16a34a":"#9ca3af",fontWeight:600}}>
-                    {cv.length>0?`${cv.length} chars${cv.length<50?" (need more)":"✓"}`:""}
-                  </span>
-                </div>
-                {/* File upload drop zone */}
-                <div
-                  onDrop={e=>{e.preventDefault();const f=e.dataTransfer.files[0];if(f)handleCvFile(f);}}
-                  onDragOver={e=>e.preventDefault()}
-                  style={{border:"1.5px dashed #99f6e4",borderRadius:8,padding:"10px 14px",marginBottom:8,background:"#f0fdfa",display:"flex",alignItems:"center",gap:10,cursor:"pointer"}}
-                  onClick={()=>document.getElementById("cv-file-input").click()}>
-                  <span style={{fontSize:18}}>{fileUploading?"⏳":"📎"}</span>
-                  <div style={{flex:1,minWidth:0}}>
-                    <div style={{fontSize:12,fontWeight:600,color:"#0d9488"}}>{fileUploading?"Reading file...":"Upload CV file"}</div>
-                    <div style={{fontSize:10,color:"#6b7280"}}>Drag & drop or click · PDF, TXT, MD supported</div>
-                  </div>
-                  <input id="cv-file-input" type="file" accept=".pdf,.txt,.md" style={{display:"none"}}
-                    onChange={e=>{const f=e.target.files[0];if(f){handleCvFile(f);e.target.value="";}}}/>
-                </div>
-                <textarea style={{...inp,height:180,resize:"vertical"}} placeholder="Or paste your CV / describe your experience here..." value={cv} onChange={e=>setCv(e.target.value)}/>
-                {!cv&&<button onClick={()=>setCv(SAMPLE_CV)} style={{...ghost(),marginTop:8,fontSize:11,padding:"5px 12px"}}>Use sample CV →</button>}
-              </div>
-            </div>
 
             {loading&&(
               <div style={{background:"#f0fdfa",border:"1px solid #99f6e4",borderRadius:10,padding:"14px 18px",marginBottom:14,animation:"pulse 2s infinite"}}>
