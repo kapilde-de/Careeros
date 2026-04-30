@@ -42,7 +42,7 @@ const TIERS = [
   { name:"Free", price:"£0", period:"forever", features:["3 resumes/month","Basic ATS score","5 searches/day","1 cover letter","Classic format only"], cta:"Get Started", highlight:false, color:"#6b7280", gumroad:null },
   { name:"Pro", price:"£9", period:"/month", badge:"Most Popular", features:["Unlimited resumes","ATS + Rejection Risk score","Salary intelligence + negotiation script","One-URL Apply","All 6 formats + preview","Unlimited searches","Interview prep AI","Interview Simulator","Resume history","Persistent tracker"], cta:"Start Pro — £9/mo", highlight:true, color:"#0d9488", gumroad:"https://gumroad.com/l/careeros-pro" },
   { name:"Enterprise", price:"£29", period:"/month", features:["Everything in Pro","Team workspace","Bulk optimization","API access","Recruiter dashboard","White-label"], cta:"Start Enterprise — £29/mo", highlight:false, color:"#4f46e5", gumroad:"https://gumroad.com/l/careeros-enterprise" },
-  { name:"Agent", price:"£99", period:"once · lifetime", badge:"🤖 ULTRA", features:["Everything in Pro","🤖 24/7 autonomous job hunter","Scans 50+ job boards every 4hrs","AI evaluates every job for you","Auto-tailored CV per match","Daily review queue at 8am","Autopilot mode after 7 days","Local dashboard at localhost:3939","Lifetime license — no subscription","30-day money-back guarantee"], cta:"Get the Agent — £99", highlight:false, color:"#dc2626", gumroad:"https://kapilicious44.gumroad.com/l/ywajrb", isAgent:true },
+  { name:"Agent", price:"£99", period:"once · lifetime", badge:"🤖 ULTRA", features:["Everything in Pro","🤖 24/7 autonomous job hunter","Scans 50+ job boards every 4hrs","AI evaluates every job for you","Auto-tailored CV per match","Daily review queue at 8am","Autopilot mode after 7 days","Local dashboard at localhost:3939","Lifetime license — no subscription","30-day money-back guarantee"], cta:"Get the Agent — £99", highlight:false, color:"#dc2626", gumroad:"https://kapilicious44.gumroad.com/l/wqqkpy", isAgent:true },
 ];
 
 const STATUS_COLORS = {
@@ -1766,7 +1766,7 @@ Return ONLY JSON:
                   Stop manually searching 50 job boards. The CareerOS Agent runs 24/7 on your computer — scanning, scoring, tailoring CVs, and delivering your perfect shortlist every morning at 8am.
                 </p>
                 <div style={{display:"flex",gap:12,justifyContent:"center",flexWrap:"wrap"}}>
-                  <button onClick={()=>window.open("https://kapilicious44.gumroad.com/l/ywajrb","_blank")}
+                  <button onClick={()=>window.open("https://kapilicious44.gumroad.com/l/wqqkpy","_blank")}
                     style={{background:"linear-gradient(135deg,#7c3aed,#dc2626)",color:"#fff",border:"none",borderRadius:12,padding:"14px 32px",fontSize:15,fontWeight:800,cursor:"pointer",boxShadow:"0 4px 20px rgba(124,58,237,0.4)"}}>
                     Get the Agent — £99 once →
                   </button>
@@ -1893,7 +1893,7 @@ Return ONLY JSON:
               <div style={{fontSize:11,fontWeight:700,color:"rgba(196,181,253,0.8)",letterSpacing:1.5,textTransform:"uppercase",marginBottom:10}}>One-time purchase · No subscription</div>
               <div style={{fontSize:28,fontWeight:900,color:"#fff",marginBottom:6}}>Get the CareerOS Agent</div>
               <div style={{fontSize:15,color:"rgba(196,181,253,0.8)",marginBottom:24}}>£99 once · Lifetime licence · Instant download after purchase</div>
-              <button onClick={()=>window.open("https://kapilicious44.gumroad.com/l/ywajrb","_blank")}
+              <button onClick={()=>window.open("https://kapilicious44.gumroad.com/l/wqqkpy","_blank")}
                 style={{background:"linear-gradient(135deg,#7c3aed,#dc2626)",color:"#fff",border:"none",borderRadius:12,padding:"15px 40px",fontSize:16,fontWeight:800,cursor:"pointer",boxShadow:"0 6px 24px rgba(124,58,237,0.5)",marginBottom:14}}>
                 Buy Now — £99 →
               </button>
@@ -1918,10 +1918,10 @@ Return ONLY JSON:
                 <span style={{fontSize:13,color:"#6b7280"}}>4.9/5 · 12,000+ users</span>
               </div>
             </div>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(230px,1fr))",gap:16,marginBottom:32,alignItems:"stretch"}}>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(230px,1fr))",gap:16,marginBottom:32,alignItems:"stretch",paddingTop:20}}>
               {TIERS.map(t=>(
-                <div key={t.name} style={{background:"#fff",border:`2px solid ${t.highlight?"#0d9488":"#e8ecf0"}`,borderRadius:14,padding:26,position:"relative",boxShadow:t.highlight?"0 8px 32px rgba(13,148,136,0.12)":"0 1px 4px rgba(0,0,0,0.04)",display:"flex",flexDirection:"column"}}>
-                  {t.badge&&<div style={{position:"absolute",top:-13,left:"50%",transform:"translateX(-50%)",background:t.highlight?"linear-gradient(135deg,#0d9488,#0891b2)":"#111827",color:"#fff",fontSize:10,fontWeight:700,padding:"4px 16px",borderRadius:20,letterSpacing:1,textTransform:"uppercase",whiteSpace:"nowrap"}}>{t.badge}</div>}
+                <div key={t.name} style={{background:"#fff",border:`2px solid ${t.highlight?"#0d9488":"#e8ecf0"}`,borderRadius:14,padding:26,paddingTop:t.badge?32:26,position:"relative",boxShadow:t.highlight?"0 8px 32px rgba(13,148,136,0.12)":"0 1px 4px rgba(0,0,0,0.04)",display:"flex",flexDirection:"column"}}>
+                  {t.badge&&<div style={{position:"absolute",top:-14,left:"50%",transform:"translateX(-50%)",background:t.highlight?"linear-gradient(135deg,#0d9488,#0891b2)":"#111827",color:"#fff",fontSize:10,fontWeight:700,padding:"4px 16px",borderRadius:20,letterSpacing:1,textTransform:"uppercase",whiteSpace:"nowrap",zIndex:1}}>{t.badge}</div>}
                   <div style={{fontSize:12,fontWeight:700,color:"#9ca3af",marginBottom:6,textTransform:"uppercase",letterSpacing:1}}>{t.name}</div>
                   <div style={{marginBottom:4}}><span style={{fontSize:36,fontWeight:900,color:"#0f172a",letterSpacing:-1}}>{t.price}</span><span style={{fontSize:13,color:"#6b7280",marginLeft:4}}>{t.period}</span></div>
                   <div style={{fontSize:12,color:"#9ca3af",marginBottom:20}}>{t.isAgent?"One-time · Lifetime license":"Cancel anytime"}</div>
