@@ -39,7 +39,7 @@ const JOB_PLATFORMS = [
 ];
 
 const TIERS = [
-  { name:"Free", price:"£0", period:"forever", features:["3 resumes/month","Basic ATS score","5 searches/day","1 cover letter","Classic format only"], cta:"Get Started", highlight:false, color:"#6b7280", gumroad:null },
+  { name:"Free", price:"£0", period:"forever", features:["2 resumes/month","Interview Probability Score","Basic ATS score","5 job searches/day","1 cover letter","Classic format only"], cta:"Get Started Free", highlight:false, color:"#6b7280", gumroad:null },
   { name:"Pro", price:"£9", period:"/month", badge:"Most Popular", features:["Unlimited resumes","ATS + Rejection Risk score","Salary intelligence + negotiation script","One-URL Apply","All 6 formats + preview","Unlimited searches","Interview prep AI","Interview Simulator","Resume history","Persistent tracker"], cta:"Start Pro — £9/mo", highlight:true, color:"#0d9488", gumroad:"https://gumroad.com/l/careeros-pro" },
   { name:"Enterprise", price:"£29", period:"/month", features:["Everything in Pro","Team workspace","Bulk optimization","API access","Recruiter dashboard","White-label"], cta:"Start Enterprise — £29/mo", highlight:false, color:"#4f46e5", gumroad:"https://gumroad.com/l/careeros-enterprise" },
   { name:"Agent", price:"£99", period:"once · lifetime", badge:"🤖 ULTRA", features:["Everything in Pro","🤖 24/7 autonomous job hunter","Scans 50+ job boards every 4hrs","AI evaluates every job for you","Auto-tailored CV per match","Daily review queue at 8am","Autopilot mode after 7 days","Local dashboard at localhost:3939","Lifetime license — no subscription","30-day money-back guarantee"], cta:"Get the Agent — £99", highlight:false, color:"#dc2626", gumroad:"https://kapilicious44.gumroad.com/l/wqqkpy", isAgent:true },
@@ -465,6 +465,9 @@ export default function App() {
   const [originalCv,setOriginalCv]=useState("");
   const [showBefore,setShowBefore]=useState(false);
   const [fileUploading,setFileUploading]=useState(false);
+  const [optimising,setOptimising]=useState(false);
+  const [showShareCard,setShowShareCard]=useState(false);
+  const [shareCopied,setShareCopied]=useState(false);
   const [coverResult,setCoverResult]=useState(null);
   const [coverLoading,setCoverLoading]=useState(false);
   const [intResult,setIntResult]=useState(null);
@@ -558,10 +561,10 @@ export default function App() {
     if(user) {
       if(!isPro) {
         const used = await getMonthlyUsage(user.id);
-        if(used >= 3) {
-          setUpgradeFeature("More than 3 resumes/month");
+        if(used >= 2) {
+          setUpgradeFeature("More than 2 resumes/month");
           setShowUpgrade(true);
-          showToast("Free plan: 3 resumes/month. Upgrade to Pro for unlimited.", "warning");
+          showToast("Free plan: 2 resumes/month. Upgrade to Pro for unlimited.", "warning");
           return;
         }
       }
@@ -643,6 +646,49 @@ JD: ${jd.slice(0,1200)} CV: ${cv.slice(0,1200)}`,1500);
       showToast("Interview prep ready!", "success");
     } catch(e){console.error("genInterview error:",e);setIntResult({error:"Failed. Retry."});showToast("Interview prep failed. Try again.","error");}
     finally{setIntLoading(false);}
+  }
+
+  // ── 1-Click Resume Optimiser ───────────────────────────────────────────────
+  async function optimiseResume() {
+    if(!result?.resume||!jd) return;
+    if(!requirePro("1-Click Resume Optimiser")) return;
+    setOptimising(true);
+    try {
+      const r = await callClaude(`You are an elite resume writer. Rewrite ONLY the experience bullets to maximise ATS score and human appeal for this specific job. Keep same structure, improve impact, add metrics where plausible, mirror job keywords naturally.
+Return ONLY JSON matching the same resume schema:
+{"name":"${result.resume.name}","contact":"${result.resume.contact}","summary":"improved 2-sentence summary","skills":["sk1","sk2","sk3","sk4","sk5","sk6","sk7","sk8"],"experience":[{"title":"Title","company":"Co","period":"dates","bullets":["stronger bullet with verb+metric","stronger bullet with verb+metric","stronger bullet with verb+metric"]}],"education":"${result.resume.education}"}
+Rules: Every bullet must start with a strong action verb. Add or infer plausible metrics. Mirror keywords from the JD. No clichés.
+JD: ${jd.slice(0,1400)}
+Current resume: ${JSON.stringify(result.resume).slice(0,1400)}`, 2000);
+      setResult(prev=>({...prev, resume:r, _optimised:true}));
+      showToast("Resume optimised! Bullets rewritten for maximum impact.", "success");
+    } catch(e){console.error("optimise error:",e);showToast("Optimisation failed. Try again.","error");}
+    finally{setOptimising(false);}
+  }
+
+  // ── Share Score Card ───────────────────────────────────────────────────────
+  function getInterviewProb(r) {
+    if(!r) return 0;
+    return Math.round((r.matchScore||0)*0.35 + ((100-(r.rejectionRisk?.score||50))*0.40) + (r.hiringManagerScore||0)*0.25);
+  }
+
+  function copyShareCard() {
+    if(!result) return;
+    const prob = getInterviewProb(result);
+    const text = `🎯 My CareerOS AI Career Report
+
+📊 Interview Probability:  ${prob}%
+✅ ATS Match Score:        ${result.matchScore||0}%
+🧠 Hiring Manager Appeal:  ${result.hiringManagerScore||0}%
+💀 Rejection Risk:         ${result.rejectionRisk?.score||0}%
+💰 Recommended Salary:     ${result.salaryIntelligence?.recommendedAsk||"—"}
+
+Generated by CareerOS AI → careeros-rose.vercel.app
+#CareerOS #JobSearch #AI`;
+    navigator.clipboard.writeText(text);
+    setShareCopied(true);
+    setTimeout(()=>setShareCopied(false),2000);
+    showToast("Score card copied — paste anywhere to share!", "success");
   }
 
   // ── Interview Simulator ────────────────────────────────────────────────────
@@ -1103,15 +1149,47 @@ Return ONLY JSON:
               {result&&!result.error&&(<>
                 <button onClick={()=>{setTab("cover");genCover();}} style={ghost({color:"#7c3aed",borderColor:"#ddd6fe"})}>✉ Cover Letter</button>
                 <button onClick={()=>{setTab("interview");genInterview();}} style={ghost({color:"#0891b2",borderColor:"#bae6fd"})}>◆ Interview Prep</button>
-                <button onClick={()=>handleTabChange({id:"simulator",pro:true})} style={ghost({color:"#ef4444",borderColor:"#fecaca"})}>🎭 Interview Sim</button>
+                <button onClick={()=>handleTabChange({id:"simulator",pro:true})} style={ghost({color:"#ef4444",borderColor:"#fecaca"})}>🎭 Sim</button>
                 <button onClick={()=>{navigator.clipboard.writeText([result.resume?.name,result.resume?.contact,"",result.resume?.summary].join("\n"));setCopied(true);setTimeout(()=>setCopied(false),1500);}} style={ghost({color:copied?"#16a34a":"#6b7280"})}>
-                  {copied?"✓ Copied":"Copy Text"}
+                  {copied?"✓ Copied":"Copy"}
                 </button>
               </>)}
             </div>
 
             {result&&!result.error&&(
               <div ref={ref}>
+
+                {/* ── INTERVIEW PROBABILITY — HERO METRIC ── */}
+                {(()=>{
+                  const prob = getInterviewProb(result);
+                  const probColor = prob>=70?"#16a34a":prob>=50?"#d97706":"#dc2626";
+                  const probLabel = prob>=70?"Strong Candidate":prob>=50?"Competitive":"Needs Work";
+                  return (
+                    <div style={{background:"#fff",border:"2px solid #e8ecf0",borderRadius:16,padding:"24px 28px",marginBottom:14,display:"flex",alignItems:"center",gap:24,flexWrap:"wrap",boxShadow:"0 2px 12px rgba(0,0,0,0.05)"}}>
+                      <div style={{display:"flex",alignItems:"center",gap:18,flex:1,minWidth:220}}>
+                        <div style={{position:"relative",flexShrink:0}}>
+                          <ScoreRing score={prob} size={96} color={probColor}/>
+                        </div>
+                        <div>
+                          <div style={{fontSize:11,fontWeight:700,color:"#9ca3af",letterSpacing:1,textTransform:"uppercase",marginBottom:4}}>Interview Probability</div>
+                          <div style={{fontSize:28,fontWeight:900,color:probColor,letterSpacing:-1,lineHeight:1}}>{prob}%</div>
+                          <div style={{fontSize:13,fontWeight:600,color:probColor,marginTop:3}}>{probLabel}</div>
+                          <div style={{fontSize:11,color:"#9ca3af",marginTop:4}}>Based on ATS fit, human appeal & rejection risk</div>
+                        </div>
+                      </div>
+                      <div style={{display:"flex",gap:8,flexWrap:"wrap",alignItems:"center"}}>
+                        {result._optimised&&<span style={{background:"#f0fdf4",color:"#16a34a",border:"1px solid #bbf7d0",borderRadius:6,fontSize:11,fontWeight:700,padding:"4px 10px"}}>✦ Optimised</span>}
+                        <button onClick={optimiseResume} disabled={optimising} style={{...btn({background:optimising?"#f1f5f9":"linear-gradient(135deg,#7c3aed,#6d28d9)",padding:"9px 18px",fontSize:12}),opacity:optimising?0.6:1}}>
+                          {optimising?"Optimising…":"✨ 1-Click Optimise"}
+                        </button>
+                        <button onClick={copyShareCard} style={ghost({fontSize:12,padding:"9px 16px",color:shareCopied?"#16a34a":"#374151",borderColor:shareCopied?"#bbf7d0":"#e2e8f0"})}>
+                          {shareCopied?"✓ Copied!":"📤 Share Score"}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })()}
+
                 {/* ── Score Cards Row ── */}
                 <div className="score-grid" style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))",gap:12,marginBottom:14}}>
                   <Card style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6}}>
@@ -1170,46 +1248,77 @@ Return ONLY JSON:
                       ))}
                     </div>
 
-                    <div style={{marginBottom:12}}>
-                      <div style={{fontSize:11,fontWeight:700,color:"#dc2626",marginBottom:8}}>TOP REJECTION REASONS:</div>
-                      {result.rejectionRisk.topReasons?.map((r,i)=>(
-                        <div key={i} style={{display:"flex",gap:8,padding:"7px 10px",background:"#fff",borderRadius:7,border:"1px solid #fecaca",marginBottom:6}}>
-                          <span style={{color:"#dc2626",fontWeight:800,flexShrink:0}}>{i+1}.</span>
-                          <span style={{fontSize:12,color:"#374151",lineHeight:1.5}}>{r}</span>
+                    {/* Rejection details — Pro only */}
+                    {isPro ? (<>
+                      <div style={{marginBottom:12}}>
+                        <div style={{fontSize:11,fontWeight:700,color:"#dc2626",marginBottom:8}}>TOP REJECTION REASONS:</div>
+                        {result.rejectionRisk.topReasons?.map((r,i)=>(
+                          <div key={i} style={{display:"flex",gap:8,padding:"7px 10px",background:"#fff",borderRadius:7,border:"1px solid #fecaca",marginBottom:6}}>
+                            <span style={{color:"#dc2626",fontWeight:800,flexShrink:0}}>{i+1}.</span>
+                            <span style={{fontSize:12,color:"#374151",lineHeight:1.5}}>{r}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <div>
+                        <div style={{fontSize:11,fontWeight:700,color:"#16a34a",marginBottom:8}}>HOW TO FIX IT:</div>
+                        {result.rejectionRisk.howToFix?.map((fix,i)=>(
+                          <div key={i} style={{display:"flex",gap:8,padding:"6px 0",borderBottom:"1px solid #fee2e2"}}>
+                            <span style={{color:"#16a34a",flexShrink:0}}>✓</span>
+                            <span style={{fontSize:12,color:"#374151",lineHeight:1.5}}>{fix}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </>) : (
+                      <div style={{position:"relative",overflow:"hidden",borderRadius:8}}>
+                        <div style={{filter:"blur(4px)",pointerEvents:"none",userSelect:"none",opacity:0.5}}>
+                          {result.rejectionRisk.topReasons?.slice(0,2).map((r,i)=>(
+                            <div key={i} style={{display:"flex",gap:8,padding:"7px 10px",background:"#fff",borderRadius:7,border:"1px solid #fecaca",marginBottom:6}}>
+                              <span style={{color:"#dc2626",fontWeight:800,flexShrink:0}}>{i+1}.</span>
+                              <span style={{fontSize:12,color:"#374151"}}>{r}</span>
+                            </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
-
-                    <div>
-                      <div style={{fontSize:11,fontWeight:700,color:"#16a34a",marginBottom:8}}>HOW TO FIX IT:</div>
-                      {result.rejectionRisk.howToFix?.map((fix,i)=>(
-                        <div key={i} style={{display:"flex",gap:8,padding:"6px 0",borderBottom:"1px solid #fee2e2"}}>
-                          <span style={{color:"#16a34a",flexShrink:0}}>✓</span>
-                          <span style={{fontSize:12,color:"#374151",lineHeight:1.5}}>{fix}</span>
+                        <div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:"rgba(255,255,255,0.7)",backdropFilter:"blur(2px)",borderRadius:8,gap:8}}>
+                          <div style={{fontSize:13,fontWeight:700,color:"#111827"}}>🔒 Pro Feature</div>
+                          <div style={{fontSize:11,color:"#6b7280",textAlign:"center",maxWidth:220}}>Full rejection breakdown + how to fix each reason</div>
+                          <button onClick={()=>{setUpgradeFeature("Rejection Breakdown");setShowUpgrade(true);}} style={btn({fontSize:11,padding:"6px 16px",background:"linear-gradient(135deg,#dc2626,#b91c1c)"})}>Unlock with Pro →</button>
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    )}
                   </div>
                 )}
 
-                {/* ── VIRAL FEATURE 3: Salary Negotiation Script ── */}
+                {/* ── Salary Negotiation Script — Pro paywall ── */}
                 {result.salaryIntelligence?.negotiationScript&&(
                   <div style={{background:"linear-gradient(135deg,#f0fdf4,#ecfdf5)",border:"2px solid #bbf7d0",borderRadius:12,padding:20,marginBottom:14}}>
                     <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
                       <span style={{fontSize:20}}>💰</span>
-                      <div>
+                      <div style={{flex:1}}>
                         <div style={{fontSize:14,fontWeight:800,color:"#16a34a",display:"flex",alignItems:"center",gap:8}}>
                           Salary Negotiation Script
                           <ViralBadge text="🔥 WORD-FOR-WORD"/>
                         </div>
                         <div style={{fontSize:11,color:"#9ca3af"}}>Exactly what to say when they make you an offer</div>
                       </div>
+                      {!isPro&&<span style={{background:"#0d9488",color:"#fff",fontSize:9,fontWeight:700,padding:"2px 8px",borderRadius:6,letterSpacing:0.5}}>PRO</span>}
                     </div>
-                    <div style={{background:"#fff",borderRadius:8,border:"1px solid #bbf7d0",padding:16,fontSize:13,color:"#374151",lineHeight:1.8,fontStyle:"italic",position:"relative"}}>
-                      <div style={{position:"absolute",top:-10,left:16,background:"#16a34a",color:"#fff",fontSize:10,fontWeight:700,padding:"2px 8px",borderRadius:10}}>Script</div>
-                      {result.salaryIntelligence.negotiationScript}
-                    </div>
-                    <div style={{marginTop:10,fontSize:11,color:"#6b7280"}}>💡 Tip: Say this confidently, then stay silent. The first person to speak after making a salary ask usually loses.</div>
+                    {isPro ? (<>
+                      <div style={{background:"#fff",borderRadius:8,border:"1px solid #bbf7d0",padding:16,fontSize:13,color:"#374151",lineHeight:1.8,fontStyle:"italic",position:"relative"}}>
+                        <div style={{position:"absolute",top:-10,left:16,background:"#16a34a",color:"#fff",fontSize:10,fontWeight:700,padding:"2px 8px",borderRadius:10}}>Script</div>
+                        {result.salaryIntelligence.negotiationScript}
+                      </div>
+                      <div style={{marginTop:10,fontSize:11,color:"#6b7280"}}>💡 Tip: Stay silent after your ask. The first person to speak usually loses.</div>
+                    </>) : (
+                      <div style={{position:"relative",borderRadius:8,overflow:"hidden"}}>
+                        <div style={{filter:"blur(5px)",pointerEvents:"none",userSelect:"none",background:"#fff",borderRadius:8,border:"1px solid #bbf7d0",padding:16,fontSize:13,color:"#374151",lineHeight:1.8,fontStyle:"italic"}}>
+                          When they make an offer say: "Thank you so much — I'm really excited about this role. Based on my research and experience, I was expecting something closer to [X]. Is there flexibility there?"
+                        </div>
+                        <div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:8,background:"rgba(255,255,255,0.6)",backdropFilter:"blur(2px)"}}>
+                          <div style={{fontSize:13,fontWeight:700,color:"#111827"}}>🔒 Word-for-word script — Pro only</div>
+                          <button onClick={()=>{setUpgradeFeature("Salary Negotiation Script");setShowUpgrade(true);}} style={btn({fontSize:11,padding:"7px 18px",background:"linear-gradient(135deg,#059669,#0d9488)"})}>Unlock with Pro →</button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
 
