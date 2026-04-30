@@ -42,7 +42,7 @@ const TIERS = [
   { name:"Free", price:"£0", period:"forever", features:["2 resumes/month","Interview Probability Score","Basic ATS score","5 job searches/day","1 cover letter","Classic format only"], cta:"Get Started Free", highlight:false, color:"#6b7280", gumroad:null },
   { name:"Pro", price:"£9", period:"/month", badge:"Most Popular", features:["Unlimited resumes","ATS + Rejection Risk score","Salary intelligence + negotiation script","One-URL Apply","All 6 formats + preview","Unlimited searches","Interview prep AI","Interview Simulator","Resume history","Persistent tracker"], cta:"Start Pro — £9/mo", highlight:true, color:"#0d9488", gumroad:"https://gumroad.com/l/careeros-pro" },
   { name:"Enterprise", price:"£29", period:"/month", features:["Everything in Pro","Team workspace","Bulk optimization","API access","Recruiter dashboard","White-label"], cta:"Start Enterprise — £29/mo", highlight:false, color:"#4f46e5", gumroad:"https://gumroad.com/l/careeros-enterprise" },
-  { name:"Agent", price:"£99", period:"once · lifetime", badge:"🤖 ULTRA", features:["Everything in Pro","🤖 24/7 autonomous job hunter","Scans 50+ job boards every 4hrs","AI evaluates every job for you","Auto-tailored CV per match","Daily review queue at 8am","Autopilot mode after 7 days","Local dashboard at localhost:3939","Lifetime license — no subscription","30-day money-back guarantee"], cta:"Get the Agent — £99", highlight:false, color:"#dc2626", gumroad:"https://kapilicious44.gumroad.com/l/wqqkpy", isAgent:true },
+  { name:"Agent", price:"Beta", period:"free for now", badge:"🤖 ULTRA", features:["Everything in Pro","🤖 24/7 autonomous job hunter","Scans 160+ company job pages","AI evaluates every job for you","Auto-tailored CV per match","Daily review queue at 8am","Autopilot mode after 7 days","Local dashboard at localhost:3939","Windows · Mac · Linux","Feedback welcome!"], cta:"⬇ Download Agent (Beta)", highlight:false, color:"#dc2626", gumroad:"/downloads/careeros-agent.zip", isAgent:true },
 ];
 
 const STATUS_COLORS = {
@@ -1034,7 +1034,7 @@ Return ONLY JSON:
               <div style={{width:40,height:40,background:"linear-gradient(135deg,#7c3aed,#dc2626)",borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>🤖</div>
               <div style={{flex:1,minWidth:0}}>
                 <div style={{fontSize:13,fontWeight:800,color:"#fff",marginBottom:2}}>CareerOS Agent — 24/7 autonomous job hunting</div>
-                <div style={{fontSize:11,color:"rgba(196,181,253,0.8)"}}>Scans 160+ companies, tailors your CV, builds your daily shortlist. £99 once · lifetime access.</div>
+                <div style={{fontSize:11,color:"rgba(196,181,253,0.8)"}}>Scans 160+ companies, tailors your CV, builds your daily shortlist. Free beta — download now.</div>
               </div>
               <div style={{fontSize:11,fontWeight:700,color:"#c4b5fd",whiteSpace:"nowrap",flexShrink:0}}>Learn more →</div>
             </div>
@@ -1815,9 +1815,9 @@ Return ONLY JSON:
                   Stop manually searching 50 job boards. The CareerOS Agent runs 24/7 on your computer — scanning, scoring, tailoring CVs, and delivering your perfect shortlist every morning at 8am.
                 </p>
                 <div style={{display:"flex",gap:12,justifyContent:"center",flexWrap:"wrap"}}>
-                  <button onClick={()=>window.open("https://kapilicious44.gumroad.com/l/wqqkpy","_blank")}
+                  <button onClick={()=>{const a=document.createElement("a");a.href="/downloads/careeros-agent.zip";a.download="careeros-agent.zip";document.body.appendChild(a);a.click();document.body.removeChild(a);}}
                     style={{background:"linear-gradient(135deg,#7c3aed,#dc2626)",color:"#fff",border:"none",borderRadius:12,padding:"14px 32px",fontSize:15,fontWeight:800,cursor:"pointer",boxShadow:"0 4px 20px rgba(124,58,237,0.4)"}}>
-                    Get the Agent — £99 once →
+                    ⬇ Download Agent (Beta) →
                   </button>
                   <div style={{display:"flex",alignItems:"center",gap:6,color:"rgba(196,181,253,0.7)",fontSize:12}}>
                     <span style={{color:"#4ade80"}}>✓</span> Lifetime licence &nbsp;
@@ -1939,12 +1939,12 @@ Return ONLY JSON:
 
             {/* CTA */}
             <div style={{background:"linear-gradient(135deg,#1e1b4b,#4c1d95,#7c2d12)",borderRadius:16,padding:"32px 24px",textAlign:"center"}}>
-              <div style={{fontSize:11,fontWeight:700,color:"rgba(196,181,253,0.8)",letterSpacing:1.5,textTransform:"uppercase",marginBottom:10}}>One-time purchase · No subscription</div>
-              <div style={{fontSize:28,fontWeight:900,color:"#fff",marginBottom:6}}>Get the CareerOS Agent</div>
-              <div style={{fontSize:15,color:"rgba(196,181,253,0.8)",marginBottom:24}}>£99 once · Lifetime licence · Instant download after purchase</div>
-              <button onClick={()=>window.open("https://kapilicious44.gumroad.com/l/wqqkpy","_blank")}
+              <div style={{fontSize:11,fontWeight:700,color:"rgba(196,181,253,0.8)",letterSpacing:1.5,textTransform:"uppercase",marginBottom:10}}>Beta · Free for now · Feedback welcome</div>
+              <div style={{fontSize:28,fontWeight:900,color:"#fff",marginBottom:6}}>Download CareerOS Agent</div>
+              <div style={{fontSize:15,color:"rgba(196,181,253,0.8)",marginBottom:24}}>Free beta · Windows · Mac · Linux · Setup in 10 minutes</div>
+              <button onClick={()=>{const a=document.createElement("a");a.href="/downloads/careeros-agent.zip";a.download="careeros-agent.zip";document.body.appendChild(a);a.click();document.body.removeChild(a);}}
                 style={{background:"linear-gradient(135deg,#7c3aed,#dc2626)",color:"#fff",border:"none",borderRadius:12,padding:"15px 40px",fontSize:16,fontWeight:800,cursor:"pointer",boxShadow:"0 6px 24px rgba(124,58,237,0.5)",marginBottom:14}}>
-                Buy Now — £99 →
+                ⬇ Download Now — Free Beta
               </button>
               <div style={{display:"flex",gap:16,justifyContent:"center",flexWrap:"wrap"}}>
                 {["Lifetime updates","30-day money-back","Runs locally — your data stays private","Full source code included"].map(t=>(
@@ -1977,9 +1977,10 @@ Return ONLY JSON:
                   <div style={{flex:1,marginBottom:24}}>{t.features.map(f=><div key={f} style={{display:"flex",gap:8,padding:"7px 0",borderBottom:"1px solid #f3f4f6",fontSize:13,color:"#374151",lineHeight:1.4,alignItems:"flex-start"}}><span style={{color:"#0d9488",flexShrink:0,marginTop:1,fontWeight:700}}>✓</span><span>{f}</span></div>)}</div>
                   <button onClick={()=>{
                     if(!t.gumroad){if(!user){setAuthMode("signup");setShowAuth(true);}}
+                    else if(t.isAgent){const a=document.createElement("a");a.href="/downloads/careeros-agent.zip";a.download="careeros-agent.zip";document.body.appendChild(a);a.click();document.body.removeChild(a);}
                     else{if(!user){setAuthMode("signup");setShowAuth(true);}else window.open(t.gumroad,"_blank");}
                   }}
-                    style={{width:"100%",padding:13,background:t.highlight?"linear-gradient(135deg,#0d9488,#0891b2)":"#fff",border:t.highlight?"none":"2px solid #e2e8f0",color:t.highlight?"#fff":"#111827",borderRadius:9,fontSize:14,fontWeight:600,cursor:"pointer",marginTop:"auto"}}>
+                    style={{width:"100%",padding:13,background:t.isAgent?"linear-gradient(135deg,#7c3aed,#dc2626)":t.highlight?"linear-gradient(135deg,#0d9488,#0891b2)":"#fff",border:t.isAgent||t.highlight?"none":"2px solid #e2e8f0",color:t.isAgent||t.highlight?"#fff":"#111827",borderRadius:9,fontSize:14,fontWeight:600,cursor:"pointer",marginTop:"auto"}}>
                     {t.cta}
                   </button>
                 </div>
