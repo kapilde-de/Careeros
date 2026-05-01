@@ -71,6 +71,13 @@ const config = {
   console.log("\nOptional — Reed.co.uk (free at reed.co.uk/developers):");
   const reedKey = await ask("REED_API_KEY (or skip): ");
 
+  console.log(chalk.cyan("\n📧 Step 3b: Email Notifications (optional but recommended)\n"));
+  console.log("CareerOS can email you a daily report of applications sent.");
+  console.log("Requires a Gmail App Password (NOT your regular Gmail password).");
+  console.log("Get one at: myaccount.google.com → Security → 2-Step Verification → App passwords\n");
+  const gmailUser = await ask("Your Gmail address (or skip): ");
+  const gmailAppPassword = gmailUser ? await ask("Gmail App Password (16-char, no spaces): ") : "";
+
   // ── Search Criteria ──
   console.log(chalk.cyan("\n🎯 Step 4: What jobs do you want?\n"));
   const keywords = await ask("Keywords (comma-separated, e.g. 'product manager, senior PM'): ");
@@ -121,6 +128,8 @@ ANTHROPIC_API_KEY=${anthropicKey}
 ADZUNA_APP_ID=${adzunaAppId || ""}
 ADZUNA_APP_KEY=${adzunaAppKey || ""}
 REED_API_KEY=${reedKey || ""}
+GMAIL_USER=${gmailUser || ""}
+GMAIL_APP_PASSWORD=${gmailAppPassword || ""}
 SKIP_LICENSE_CHECK=${licenseKey ? "false" : "true"}
 `;
   fs.writeFileSync(path.join(__dirname, ".env"), envContent);
@@ -136,19 +145,4 @@ SKIP_LICENSE_CHECK=${licenseKey ? "false" : "true"}
 
   const cvPath = path.join(dataDir, "cv.md");
   if (!fs.existsSync(cvPath)) {
-    fs.writeFileSync(cvPath, `# Your CV in Markdown\n\nPaste your CV here.\n\nThe agent uses this to evaluate jobs and tailor applications.\n`);
-    console.log(chalk.yellow("   ⚠ data/cv.md placeholder created — please add your CV"));
-  } else {
-    console.log(chalk.green("   ✓ data/cv.md found"));
-  }
-
-  console.log(chalk.cyan(`\n✅ Setup complete!\n`));
-  console.log("Next steps:");
-  console.log(chalk.yellow("   1. Edit data/cv.md and paste your CV"));
-  console.log(chalk.yellow("   2. Optionally drop a PDF version at data/cv.pdf"));
-  console.log(chalk.yellow("   3. Run: npm start"));
-  console.log(chalk.yellow("   4. Open: http://localhost:3939"));
-  console.log("\n");
-
-  rl.close();
-})();
+    fs.writeFileSync(cvPath, `# Your CV in Markdown\n\nPaste your CV here.\n\nThe agent uses this to evaluat

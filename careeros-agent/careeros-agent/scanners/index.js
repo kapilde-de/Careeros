@@ -11,6 +11,13 @@ import { AshbyScanner } from "./ashby.js";
 import { LeverScanner } from "./lever.js";
 import { RemotiveScanner } from "./remotive.js";
 import { JobicyScanner } from "./jobicy.js";
+// New ATS scanners
+import { WorkdayScanner } from "./workday.js";
+import { SmartRecruitersScanner } from "./smartrecruiters.js";
+import { RecruiteeScanner } from "./recruitee.js";
+import { ICIMSScanner } from "./icims.js";
+import { BambooHRScanner } from "./bamboohr.js";
+import { TaleoScanner } from "./taleo.js";
 
 export class JobScanner {
   constructor(config) {
@@ -31,6 +38,14 @@ export class JobScanner {
     // Free no-key scanners
     this.scanners.push(new RemotiveScanner());
     this.scanners.push(new JobicyScanner());
+
+    // Direct ATS API scanners (no auth, public job boards)
+    this.scanners.push(new WorkdayScanner());
+    this.scanners.push(new SmartRecruitersScanner());
+    this.scanners.push(new RecruiteeScanner());
+    this.scanners.push(new ICIMSScanner());
+    this.scanners.push(new BambooHRScanner());
+    this.scanners.push(new TaleoScanner());
 
     // Browser-based scanners (Playwright) for ATS pages
     this.scanners.push(new GreenhouseScanner());
