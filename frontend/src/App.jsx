@@ -2172,7 +2172,7 @@ Return ONLY JSON:
 
         {/* ── Stats bar ── */}
         <div style={{display:"flex",justifyContent:"center",gap:"clamp(20px,4vw,60px)",flexWrap:"wrap",padding:"28px 20px",borderTop:"1px solid #e2e8f0",borderBottom:"1px solid #e2e8f0",marginBottom:60,background:"#fff"}}>
-          {[["3×","more interview callbacks"],["30s","to tailor your CV"],["26","premium templates"],["160+","job sites scanned"]].map(([n,l])=>(
+          {[["3×","more interview callbacks"],["< 2 min","to tailor your CV"],["26","premium templates"],["160+","job sites scanned"]].map(([n,l])=>(
             <div key={l} style={{textAlign:"center"}}>
               <div style={{fontSize:"clamp(24px,4vw,36px)",fontWeight:900,background:"linear-gradient(135deg,#0d9488,#6366f1)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",lineHeight:1.1}}>{n}</div>
               <div style={{fontSize:12,color:"#94a3b8",marginTop:3,textTransform:"uppercase",letterSpacing:"0.06em"}}>{l}</div>
