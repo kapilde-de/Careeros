@@ -27,10 +27,19 @@ BSc Computer Science — UCL (2019)
 SKILLS
 Product Strategy, Agile, Jira, OKRs, Stakeholder Management, SQL, Figma`;
 
+// Dismiss cookie banner if it appears
+async function dismissCookies(page) {
+  try {
+    const btn = page.getByRole('button', { name: /essential only|accept|got it/i }).first();
+    await btn.click({ timeout: 3000 });
+  } catch { /* no banner — that's fine */ }
+}
+
 test.describe('CV Builder', () => {
 
   test('builder input panels are visible on scroll', async ({ page }) => {
     await page.goto('/');
+    await dismissCookies(page);
     await page.evaluate(() => window.scrollBy(0, 500));
     await expect(page.getByText('Job Description')).toBeVisible();
     await expect(page.getByText('Your CV / Background')).toBeVisible();
@@ -38,11 +47,13 @@ test.describe('CV Builder', () => {
 
   test('Generate button is visible', async ({ page }) => {
     await page.goto('/');
+    await dismissCookies(page);
     await expect(page.getByRole('button', { name: /Generate Tailored Resume/i })).toBeVisible();
   });
 
   test('resume format selector shows all 6 formats', async ({ page }) => {
     await page.goto('/');
+    await dismissCookies(page);
     await page.evaluate(() => window.scrollBy(0, 600));
     for (const format of ['Apex', 'Horizon', 'Pinnacle', 'Slate', 'Prism', 'Foundation']) {
       await expect(page.getByText(format).first()).toBeVisible();
@@ -52,6 +63,7 @@ test.describe('CV Builder', () => {
   test('full generation flow — all score cards appear', async ({ page }) => {
     test.setTimeout(120000);
     await page.goto('/');
+    await dismissCookies(page);
     await page.evaluate(() => window.scrollBy(0, 500));
     await page.locator('textarea').first().fill(SAMPLE_JD);
     await page.locator('textarea').nth(1).fill(SAMPLE_CV);
@@ -67,6 +79,7 @@ test.describe('CV Builder', () => {
   test('rejection section visible after generation', async ({ page }) => {
     test.setTimeout(120000);
     await page.goto('/');
+    await dismissCookies(page);
     await page.evaluate(() => window.scrollBy(0, 500));
     await page.locator('textarea').first().fill(SAMPLE_JD);
     await page.locator('textarea').nth(1).fill(SAMPLE_CV);
@@ -80,6 +93,7 @@ test.describe('CV Builder', () => {
   test('salary negotiation script is shown', async ({ page }) => {
     test.setTimeout(120000);
     await page.goto('/');
+    await dismissCookies(page);
     await page.evaluate(() => window.scrollBy(0, 500));
     await page.locator('textarea').first().fill(SAMPLE_JD);
     await page.locator('textarea').nth(1).fill(SAMPLE_CV);
@@ -93,6 +107,7 @@ test.describe('CV Builder', () => {
   test('gap analysis section visible', async ({ page }) => {
     test.setTimeout(120000);
     await page.goto('/');
+    await dismissCookies(page);
     await page.evaluate(() => window.scrollBy(0, 500));
     await page.locator('textarea').first().fill(SAMPLE_JD);
     await page.locator('textarea').nth(1).fill(SAMPLE_CV);
@@ -108,6 +123,7 @@ test.describe('CV Builder', () => {
   test('tailored CV preview and download button visible', async ({ page }) => {
     test.setTimeout(120000);
     await page.goto('/');
+    await dismissCookies(page);
     await page.evaluate(() => window.scrollBy(0, 500));
     await page.locator('textarea').first().fill(SAMPLE_JD);
     await page.locator('textarea').nth(1).fill(SAMPLE_CV);
