@@ -82,11 +82,11 @@ test.describe('CV Builder', () => {
     await page.locator('textarea').nth(1).fill(SAMPLE_CV);
     await page.getByRole('button', { name: /Generate Tailored Resume/i }).click();
     await expect(page.getByText(/Reading|Extracting|Mapping|Rewriting|Calculating|Finalising/i)).toBeVisible({ timeout: 10000 });
-    await expect(page.getByText('INTERVIEW PROBABILITY')).toBeVisible({ timeout: 90000 });
-    await expect(page.getByText('ATS SCORE')).toBeVisible();
-    await expect(page.getByText('HUMAN APPEAL')).toBeVisible();
-    await expect(page.getByText('REJECTION RISK')).toBeVisible();
-    await expect(page.getByText('SALARY INTEL')).toBeVisible();
+    await expect(page.getByText(/interview probability/i).first()).toBeVisible({ timeout: 90000 });
+    await expect(page.getByText(/ats score/i, { exact: false }).nth(1)).toBeVisible();
+    await expect(page.getByText(/human appeal/i, { exact: false }).first()).toBeVisible();
+    await expect(page.getByText(/rejection risk/i, { exact: false }).first()).toBeVisible();
+    await expect(page.getByText(/salary intel/i, { exact: false }).first()).toBeVisible();
   });
 
   test('rejection section visible after generation', async ({ page }) => {
@@ -97,10 +97,10 @@ test.describe('CV Builder', () => {
     await page.locator('textarea').first().fill(SAMPLE_JD);
     await page.locator('textarea').nth(1).fill(SAMPLE_CV);
     await page.getByRole('button', { name: /Generate Tailored Resume/i }).click();
-    await expect(page.getByText('INTERVIEW PROBABILITY')).toBeVisible({ timeout: 90000 });
+    await expect(page.getByText(/interview probability/i).first()).toBeVisible({ timeout: 90000 });
     await page.evaluate(() => window.scrollBy(0, 800));
-    await expect(page.getByText("Why You'll Get Rejected")).toBeVisible();
-    await expect(page.getByText('HOW TO FIX IT')).toBeVisible();
+    await expect(page.getByText(/why you'll get rejected/i).first()).toBeVisible();
+    await expect(page.getByText(/how to fix it/i).first()).toBeVisible();
   });
 
   test('salary negotiation script is shown', async ({ page }) => {
@@ -111,7 +111,7 @@ test.describe('CV Builder', () => {
     await page.locator('textarea').first().fill(SAMPLE_JD);
     await page.locator('textarea').nth(1).fill(SAMPLE_CV);
     await page.getByRole('button', { name: /Generate Tailored Resume/i }).click();
-    await expect(page.getByText('INTERVIEW PROBABILITY')).toBeVisible({ timeout: 90000 });
+    await expect(page.getByText(/interview probability/i).first()).toBeVisible({ timeout: 90000 });
     await page.evaluate(() => window.scrollBy(0, 1200));
     await expect(page.getByText('Your Salary Negotiation Script')).toBeVisible();
     await expect(page.getByText('READY TO USE')).toBeVisible();
@@ -125,12 +125,12 @@ test.describe('CV Builder', () => {
     await page.locator('textarea').first().fill(SAMPLE_JD);
     await page.locator('textarea').nth(1).fill(SAMPLE_CV);
     await page.getByRole('button', { name: /Generate Tailored Resume/i }).click();
-    await expect(page.getByText('INTERVIEW PROBABILITY')).toBeVisible({ timeout: 90000 });
+    await expect(page.getByText(/interview probability/i).first()).toBeVisible({ timeout: 90000 });
     await page.evaluate(() => window.scrollBy(0, 1800));
-    await expect(page.getByText('GAP ANALYSIS')).toBeVisible();
-    await expect(page.getByText('Strengths')).toBeVisible();
-    await expect(page.getByText('Gaps')).toBeVisible();
-    await expect(page.getByText('Transferable')).toBeVisible();
+    await expect(page.getByText(/gap analysis/i).first()).toBeVisible();
+    await expect(page.getByText(/strengths/i).first()).toBeVisible();
+    await expect(page.getByText(/\bgaps\b/i).first()).toBeVisible();
+    await expect(page.getByText(/transferable/i).first()).toBeVisible();
   });
 
   test('tailored CV preview and download button visible', async ({ page }) => {
@@ -141,10 +141,10 @@ test.describe('CV Builder', () => {
     await page.locator('textarea').first().fill(SAMPLE_JD);
     await page.locator('textarea').nth(1).fill(SAMPLE_CV);
     await page.getByRole('button', { name: /Generate Tailored Resume/i }).click();
-    await expect(page.getByText('INTERVIEW PROBABILITY')).toBeVisible({ timeout: 90000 });
+    await expect(page.getByText(/interview probability/i).first()).toBeVisible({ timeout: 90000 });
     await page.evaluate(() => window.scrollBy(0, 2000));
-    await expect(page.getByText('YOUR TAILORED RESUME')).toBeVisible();
-    await expect(page.getByRole('button', { name: /Download/i })).toBeVisible();
+    await expect(page.getByText(/your tailored resume/i).first()).toBeVisible();
+    await expect(page.getByRole('button', { name: /Download/i }).first()).toBeVisible();
   });
 
 });
