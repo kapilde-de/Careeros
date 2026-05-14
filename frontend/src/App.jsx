@@ -37,7 +37,7 @@ const JOB_PLATFORMS = [
 
 const TIERS = [
   { name:"Free", price:"£0", period:"forever", features:["2 resumes/month","Interview Probability Score","Basic ATS score","5 job searches/day","1 cover letter","Classic format only"], cta:"Get Started Free", highlight:false, color:"#6b7280", gumroad:null, tab:null },
-  { name:"Pro", price:"£9", period:"/month", badge:"Most Popular", features:["Unlimited resumes","ATS + Rejection Risk score","Salary intelligence + negotiation script","One-URL Apply","All 6 formats + preview","Unlimited searches","Interview prep AI","Interview Simulator","Resume history","Persistent tracker"], cta:"Explore Pro →", highlight:true, color:"#0d9488", gumroad:null, tab:"pro" },
+  { name:"Pro", price:"£9", period:"/month", badge:"Most Popular", features:["Unlimited resumes","ATS + Rejection Risk score","Salary intelligence + negotiation script","One-URL Apply","26 premium templates + preview","Unlimited searches","Interview prep AI","Interview Simulator","Resume history","Persistent tracker"], cta:"Explore Pro →", highlight:true, color:"#0d9488", gumroad:null, tab:"pro" },
   { name:"Enterprise", price:"£29", period:"/month", features:["Everything in Pro","Team workspace","Bulk optimization","API access","Recruiter dashboard","White-label"], cta:"Explore Enterprise →", highlight:false, color:"#4f46e5", gumroad:null, tab:"enterprise" },
   { name:"Agent", price:"Beta", period:"free for now", badge:"🤖 ULTRA", features:["Everything in Pro","🤖 24/7 autonomous job hunter","Scans 160+ company job pages","AI evaluates every job for you","Auto-tailored CV per match","Daily review queue at 8am","Autopilot mode after 7 days","Local dashboard at localhost:3939","Windows · Mac · Linux","Feedback welcome!"], cta:"⬇ Download Agent (Beta)", highlight:false, color:"#dc2626", gumroad:"/downloads/careeros-agent.zip", isAgent:true, tab:null },
 ];
@@ -495,7 +495,7 @@ function UpgradeModal({ onClose, feature, onGoToPro }) {
           <div style={{fontSize:13,color:"#64748b"}}><strong style={{color:"#374151"}}>{feature}</strong> is a Pro feature.</div>
         </div>
         <div style={{background:"rgba(13,148,136,0.08)",border:"1px solid rgba(13,148,136,0.2)",borderRadius:10,padding:14,marginBottom:18}}>
-          {["One-URL Apply — paste any job URL","Rejection Risk Score — why you'll get rejected","Salary Negotiation Script — word-for-word","Interview Simulator — AI mock interviews","All 6 resume formats","Unlimited everything"].map(f=>(
+          {["One-URL Apply — paste any job URL","Rejection Risk Score — why you'll get rejected","Salary Negotiation Script — word-for-word","Interview Simulator — AI mock interviews","26 premium resume templates","Unlimited everything"].map(f=>(
             <div key={f} style={{display:"flex",gap:8,padding:"5px 0",fontSize:13,color:"#374151"}}><span style={{color:"#0d9488"}}>✓</span>{f}</div>
           ))}
         </div>
@@ -3040,7 +3040,7 @@ Return ONLY JSON:
                 {
                   name:"Pro",price:"£9",period:"/month",
                   accent:"#0d9488",bg:"#f0fdfa",border:"rgba(13,148,136,0.3)",badge:"Most Popular",
-                  features:["Unlimited resumes","All 6 templates","Salary intelligence + script","Interview prep & simulator","Resume history","Unlimited job searches","Unlimited cover letters","Persistent tracker"],
+                  features:["Unlimited resumes","26 premium templates","Salary intelligence + script","Interview prep & simulator","Resume history","Unlimited job searches","Unlimited cover letters","Persistent tracker"],
                   cta:"Upgrade to Pro →",active:false,delay:0.08,
                 },
                 {
@@ -3102,7 +3102,7 @@ Return ONLY JSON:
           <motion.div key="templates" variants={fadeUp} initial="initial" animate="animate" exit="exit">
             <div style={{background:"linear-gradient(135deg,#f0fdfa,#eff6ff)",borderRadius:16,padding:"28px",marginBottom:24,border:"1px solid #e2e8f0",boxShadow:"0 1px 3px rgba(0,0,0,0.04)"}}>
               <div style={{fontSize:"clamp(20px,4vw,28px)",fontWeight:700,color:"#0f172a",marginBottom:6,fontFamily:"'Plus Jakarta Sans',sans-serif"}}>Resume Templates</div>
-              <p style={{fontSize:13,color:"#64748b",maxWidth:520,lineHeight:1.7}}>6 professionally designed templates. Generate your resume in Builder, then pick your style and download.</p>
+              <p style={{fontSize:13,color:"#64748b",maxWidth:520,lineHeight:1.7}}>26 professionally designed templates. Generate your resume in Builder, then pick your style and download.</p>
             </div>
             <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))",gap:20,maxWidth:1100,margin:"0 auto"}}>
               {RESUME_FORMATS.map((f,i)=>{
