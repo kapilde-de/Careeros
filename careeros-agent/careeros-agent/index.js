@@ -88,9 +88,7 @@ const config = {
 
   // Notifications
   emailEnabled: userConfig.notifications?.email?.enabled,
-  emailTo: userConfig.notifications?.email?.to || userConfig.profile.email,
-  gmailUser: process.env.GMAIL_USER,
-  gmailAppPassword: process.env.GMAIL_APP_PASSWORD,
+  emailTo: userConfig.notifications?.email?.to,
   whatsappEnabled: userConfig.notifications?.whatsapp?.enabled,
   whatsappNumber: userConfig.notifications?.whatsapp?.number,
 
@@ -130,4 +128,8 @@ async function validateLicense() {
 
   // Graceful shutdown
   process.on("SIGINT", async () => {
-    conso
+    console.log(chalk.yellow("\n⏸  Shutting down gracefully..."));
+    await agent.stop();
+    process.exit(0);
+  });
+})();

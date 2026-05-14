@@ -1,0 +1,2161 @@
+[
+  {
+    "id": "remotive_2089995",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no CV content was provided for analysis.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided",
+      "Unable to assess technical leadership experience",
+      "Unable to assess engineering background",
+      "Unable to assess product-minded approach",
+      "Unable to assess team scaling experience"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No CV submitted - automatic rejection"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No CV content provided for evaluation"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your actual CV content in markdown format",
+      "Once CV is provided, highlight any experience leading engineering teams through platform transformations",
+      "Emphasize examples of shipping products quickly while maintaining quality",
+      "Demonstrate business impact and product-minded engineering decisions",
+      "Show experience with marketplace or matching platforms if applicable"
+    ],
+    "rejectedAt": "2026-04-27T19:46:49.371Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "remotive_2089994",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV was provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess fit"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Cannot assess candidate qualifications without CV"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your CV to receive a proper evaluation",
+      "The role requires video editing expertise, AI/generative tools experience, and ability to work independently",
+      "Highlight any experience creating social media ads, working with AI video tools, and managing full production pipelines"
+    ],
+    "rejectedAt": "2026-04-27T19:46:54.133Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "remotive_2089990",
+    "matchScore": 45,
+    "summary": "This is a poor match - it's a $14/hour freelance gig requiring no experience, which is significantly below your qualifications and career level, representing a massive step backward professionally.",
+    "strengths": [
+      "Remote/flexible work arrangement if you need supplemental income",
+      "No previous professional experience required means guaranteed qualification",
+      "Can work part-time alongside other opportunities"
+    ],
+    "gaps": [
+      "No CV provided to assess specific qualifications",
+      "Cannot verify US residency for 3+ consecutive years",
+      "Cannot assess English communication skills or familiarity with US business/media/sports"
+    ],
+    "rejectionRisk": {
+      "score": 15,
+      "topReason": "Risk is actually very low since they require no experience - main rejection would only occur if you're not a US resident for 3+ years or fail basic assessment"
+    },
+    "salaryFit": "BELOW_MARKET",
+    "redFlags": [
+      "$14/hour is below minimum wage in many US states and far below professional rates",
+      "Freelance classification means no benefits, no employment protections, and you pay both sides of payroll taxes",
+      "Only one household member can work on this - suggests oversaturated labor pool",
+      "This is essentially micro-task gig work, not a career-building opportunity",
+      "Quality assurance checks suggest high monitoring and potential arbitrary termination"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "You didn't provide a CV, so I cannot give specific tailoring advice",
+      "However, if you're considering this role, honestly ask yourself: why would someone with professional experience apply to a no-experience-required $14/hour gig?",
+      "This should only be considered if you're desperate for any income or want very flexible supplemental work while job searching"
+    ],
+    "rejectedAt": "2026-04-27T19:47:06.202Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "remotive_2089958",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV was provided in the input.",
+    "strengths": [],
+    "gaps": [],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No CV provided for evaluation"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No candidate information available to assess fit"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:47:09.714Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "remotive_2088656",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV was provided in the input.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Cannot assess without candidate CV"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your CV to receive a proper job match evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:47:13.485Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "remotive_2088655",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV was provided in the input.",
+    "strengths": [],
+    "gaps": [],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No CV submitted for evaluation"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No candidate information provided to assess fit"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:47:17.698Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "remotive_1919266",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no CV provided, only placeholder text instructing to paste CV content.",
+    "strengths": [],
+    "gaps": [
+      "No CV content provided",
+      "Unable to assess technical experience",
+      "Unable to verify qualifications"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No actual CV submitted for evaluation"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Application submitted without CV content"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "You must provide your actual CV content to receive a proper evaluation",
+      "Replace the placeholder text with your real work experience, skills, and accomplishments",
+      "Include specific AI/ML projects you've built, technologies used, and measurable outcomes"
+    ],
+    "rejectedAt": "2026-04-27T19:47:22.585Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "remotive_1919265",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV provided, only placeholder text instructing to paste CV.",
+    "strengths": [],
+    "gaps": [
+      "No CV content provided",
+      "Cannot assess technical skills",
+      "Cannot assess experience level",
+      "Cannot assess location eligibility"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to evaluate"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No CV provided for evaluation"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Provide your actual CV content to receive a proper evaluation",
+      "Include your software development experience and tech stack",
+      "Specify your location (must be Americas, Europe, or Israel)",
+      "Highlight senior-level experience and independent/contract work history"
+    ],
+    "rejectedAt": "2026-04-27T19:47:27.790Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "remotive_2088711",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no CV content was provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV content provided",
+      "Unable to assess technical experience",
+      "Cannot verify any qualifications"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No CV or candidate information submitted for evaluation"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No candidate information available to assess"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your actual CV content in markdown format where indicated",
+      "Ensure your CV includes years of experience with React.js and backend technologies (Python/Golang)",
+      "Highlight cloud platform experience (AWS, GCP, or Azure) prominently if you have it"
+    ],
+    "rejectedAt": "2026-04-27T19:47:32.846Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "remotive_2069746",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV was provided in the input.",
+    "strengths": [],
+    "gaps": [],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No CV submitted for evaluation"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No candidate information provided to assess fit"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:47:36.575Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "remotive_2069747",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV was provided in the request.",
+    "strengths": [],
+    "gaps": [],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No CV submitted for evaluation"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No candidate information provided to assess fit"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your complete CV in the designated section to receive a proper evaluation",
+      "Include specific experience with Databricks, Spark, Python, and cloud platforms (AWS/GCP)",
+      "Highlight any data engineering leadership, ETL pipeline work, and financial/market data experience"
+    ],
+    "rejectedAt": "2026-04-27T19:47:41.498Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "remotive_2088710",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV was provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess qualifications"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Cannot assess candidate without CV data"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your actual CV content to receive a proper evaluation",
+      "Replace the placeholder text with your real work experience, education, and skills",
+      "Once CV is provided, analysis can assess fit for this freelance data annotation role"
+    ],
+    "rejectedAt": "2026-04-27T19:47:46.368Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "remotive_1680495",
+    "matchScore": 0,
+    "summary": "Cannot evaluate this match because no candidate CV was provided - only placeholder text remains in the CV section.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided",
+      "Cannot assess any qualifications or experience",
+      "Unable to determine candidate suitability"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No application materials submitted"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No candidate information available to evaluate"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your actual CV in markdown format to receive a proper evaluation",
+      "Include relevant experience with administrative tasks, bookkeeping, or office management",
+      "Highlight any experience with Google Sheets, Excel, QuickBooks, or similar tools"
+    ],
+    "rejectedAt": "2026-04-27T19:47:51.314Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "remotive_2088708",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no CV provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess fit"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Missing CV - unable to perform evaluation"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your complete CV in the designated section to receive a proper evaluation",
+      "Include your technical experience with PHP, TypeScript, Rust, or Kotlin if applicable",
+      "Highlight any relevant backend/frontend development experience and GitHub profile"
+    ],
+    "rejectedAt": "2026-04-27T19:47:57.334Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "remotive_1956455",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match as no candidate CV was provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation",
+      "Cannot assess iOS development experience",
+      "Cannot assess Swift/SwiftUI expertise",
+      "Cannot assess relevant technical qualifications",
+      "Cannot assess years of experience"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No CV submitted - automatic rejection"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No candidate information provided for evaluation"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your actual CV in markdown format where indicated",
+      "Ensure CV highlights iOS development experience with specific years",
+      "Include Swift and SwiftUI projects with concrete examples",
+      "List relevant architecture patterns (MVVM, dependency injection)",
+      "Mention App Store published apps if applicable"
+    ],
+    "rejectedAt": "2026-04-27T19:48:02.562Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "remotive_2088707",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no CV content was provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided",
+      "Unable to assess technical skills",
+      "Unable to assess experience level",
+      "Unable to assess location compatibility"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No CV content submitted for evaluation"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your actual CV content in markdown format where indicated",
+      "Include specific frontend frameworks you've mastered (React, Vue, Next.js, etc.)",
+      "Highlight pixel-perfect UI implementation experience and attention to detail",
+      "Emphasize work with modern frontend tooling and performance optimization",
+      "Showcase portfolio of visually stunning web projects similar to garden3d's client roster"
+    ],
+    "rejectedAt": "2026-04-27T19:48:08.722Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "remotive_2088706",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV was provided in the input.",
+    "strengths": [],
+    "gaps": [],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No CV submitted for evaluation"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No candidate information provided"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your CV in the designated section to receive a personalized job match evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:48:12.446Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "remotive_2088704",
+    "matchScore": 0,
+    "summary": "Cannot evaluate this match because no candidate CV was provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess qualifications"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Unable to perform evaluation without candidate CV"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your actual CV in the designated area to receive a proper evaluation",
+      "Ensure CV includes language proficiency details (Spanish fluency required)",
+      "Include residency history showing 2+ consecutive years in United States"
+    ],
+    "rejectedAt": "2026-04-27T19:48:16.815Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "remotive_1185979",
+    "matchScore": 0,
+    "summary": "Cannot evaluate this match because no candidate CV was provided in the input.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess qualifications"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Job posting contains contradictory pay rates ($20/100 words = ~$100/article or $50/hour, but title says $50-$75/hour)",
+      "Warning in job post about 'payment required to access writing tasks' suggests potential scam",
+      "IAPWE legitimacy unclear without candidate research capability"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your actual CV content in the designated section to receive a proper evaluation",
+      "Research IAPWE thoroughly before applying - payment-to-access-work is a common freelance scam red flag",
+      "Clarify the actual pay structure before proceeding as the rates listed are inconsistent"
+    ],
+    "rejectedAt": "2026-04-27T19:48:23.939Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "remotive_1749306",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV was provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess qualifications"
+    },
+    "salaryFit": "BELOW_MARKET",
+    "redFlags": [
+      "Extremely low compensation ($0.034-0.06 per word equates to roughly $17-30 per 500-word page)",
+      "Salary range of $20k-$35k is significantly below market for professional copywriters",
+      "Per-word payment model with no guaranteed minimum hours/income creates income instability",
+      "Must write 400-800 pages before receiving modest raises"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your CV in the designated section to receive a proper evaluation",
+      "Once CV is provided, highlight any 2-4 years of professional copywriting experience",
+      "Emphasize SEO writing experience and any specialized industry knowledge (especially tech, finance, law, medical, or marketing)"
+    ],
+    "rejectedAt": "2026-04-27T19:48:31.409Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "remotive_2088697",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no CV provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV content provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess fit"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Cannot assess without CV data"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your actual CV content in markdown format where indicated",
+      "Ensure CV includes your Customer Success experience, team leadership background, and German language proficiency",
+      "Include specific metrics around customer retention, onboarding programs, and team management"
+    ],
+    "rejectedAt": "2026-04-27T19:48:36.010Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "jobicy_142487",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no CV content was provided in the candidate section.",
+    "strengths": [],
+    "gaps": [
+      "CV content missing - unable to assess qualifications",
+      "Cannot evaluate clinical project management experience",
+      "Cannot assess CRO or pharmaceutical industry background"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No CV provided for evaluation"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No candidate information available to assess fit"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your CV content in the designated section",
+      "Ensure CV highlights clinical project management experience if applicable",
+      "Include any CRO, pharmaceutical, or oncology/rare disease trial experience"
+    ],
+    "rejectedAt": "2026-04-27T19:48:40.273Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "gh_anthropic_5133449008",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV provided in the request.",
+    "strengths": [],
+    "gaps": [],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available for evaluation"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "CV content missing - placeholder text was not replaced with actual candidate information"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your actual CV content where it says 'Paste your CV here' to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:48:44.761Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "gh_anthropic_5102171008",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess fit"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Missing candidate CV - evaluation impossible"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your complete CV in the designated section to receive a proper evaluation",
+      "Include relevant experience in program management, student outreach, education, or community engagement",
+      "Highlight any experience with AI safety, technology education, or working with academic institutions"
+    ],
+    "rejectedAt": "2026-04-27T19:48:49.377Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "gh_anthropic_5106199008",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV was provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess qualifications"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Cannot perform evaluation without candidate CV"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your complete CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:48:53.291Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "gh_anthropic_5138044008",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV provided in the request.",
+    "strengths": [],
+    "gaps": [],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available for evaluation"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Missing candidate CV - unable to perform evaluation"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:48:56.590Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "gh_anthropic_5062968008",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV provided in the input.",
+    "strengths": [],
+    "gaps": [],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available for evaluation"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No CV provided for analysis"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your complete CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:49:00.277Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "gh_stripe_7815794",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV was provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess qualifications"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Missing candidate CV - unable to perform any meaningful evaluation"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your actual CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:49:04.332Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "gh_stripe_7747178",
+    "matchScore": 0,
+    "summary": "Cannot evaluate - no candidate CV provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV data available for analysis"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information provided to assess qualifications"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Missing candidate CV - evaluation impossible"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your actual CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:49:08.813Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "gh_stripe_7739260",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV was provided in the request.",
+    "strengths": [],
+    "gaps": [],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available for evaluation"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No CV provided for assessment"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your complete CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:49:12.409Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "gh_stripe_7639823",
+    "matchScore": 0,
+    "summary": "Unable to evaluate match - no candidate CV provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "CV content missing"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess qualifications"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Cannot perform evaluation without candidate CV data"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your actual CV content in markdown format where indicated",
+      "Include relevant work experience, skills, and accomplishments",
+      "Ensure education and certifications are listed"
+    ],
+    "rejectedAt": "2026-04-27T19:49:16.522Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "gh_stripe_7644883",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV data available for analysis"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information provided to assess qualifications"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Missing candidate CV - evaluation impossible"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your complete CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:49:20.550Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "gh_figma_5978327004",
+    "matchScore": 0,
+    "summary": "Cannot evaluate job match because no candidate CV was provided.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess fit"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Missing candidate CV - evaluation impossible"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:49:30.942Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "gh_figma_5837760004",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess fit"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Missing candidate CV - unable to perform meaningful evaluation"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your complete CV in the designated section",
+      "Include relevant technical program management experience",
+      "Highlight any AI/ML project experience and performance optimization work"
+    ],
+    "rejectedAt": "2026-04-27T19:49:35.324Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "gh_cloudflare_7826916",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV data provided for analysis"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess fit"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Missing candidate CV - unable to perform evaluation"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your actual CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:49:39.616Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "gh_cloudflare_7702175",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV content provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess fit"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Missing candidate CV - unable to perform evaluation"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your complete CV in the designated section to receive a proper evaluation",
+      "Include relevant technical program management experience, internships, or coursework",
+      "Highlight any cloud infrastructure, networking, or security-related projects"
+    ],
+    "rejectedAt": "2026-04-27T19:49:44.512Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "gh_cloudflare_7702476",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV provided in the input.",
+    "strengths": [],
+    "gaps": [],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No CV provided for evaluation"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Missing candidate CV - unable to assess qualifications, experience, or fit"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:49:48.047Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "gh_discord_8453087002",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV data provided for analysis"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess qualifications"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Missing candidate CV - unable to perform evaluation"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your complete CV in the designated section to receive a proper evaluation",
+      "Include relevant experience with design systems, program management, and cross-functional collaboration",
+      "Highlight any experience working in consumer tech or community platforms similar to Discord"
+    ],
+    "rejectedAt": "2026-04-27T19:49:53.909Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "gh_discord_8497292002",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV was provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess qualifications"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Missing candidate CV - unable to perform meaningful evaluation"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:49:58.002Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "gh_discord_8465264002",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV provided in the request.",
+    "strengths": [],
+    "gaps": [],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No CV provided for evaluation"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Cannot assess candidate qualifications without CV data"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:50:00.994Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "gh_discord_8490528002",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV was provided in the input.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess fit"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Missing candidate CV - unable to perform evaluation"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:50:05.263Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "gh_discord_8450205002",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV provided in the submission.",
+    "strengths": [],
+    "gaps": [],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available for evaluation"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No CV provided - unable to assess qualifications, experience, or fit for Staff Technical Program Manager role focused on revenue product compliance at Discord"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your complete CV to receive a proper evaluation",
+      "For this role, emphasize technical program management experience with compliance, regulatory, or legal product requirements",
+      "Highlight experience managing cross-functional programs in revenue operations, payments, or monetization platforms"
+    ],
+    "rejectedAt": "2026-04-27T19:50:10.503Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "ashby_openai_8fb1615c-34bf-47c4-a1d1-b7b2f836bbd3",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no CV provided in the submission.",
+    "strengths": [],
+    "gaps": [],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No CV submitted for evaluation"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No candidate information provided to assess fit"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:50:13.601Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "ashby_openai_240d459b-696d-43eb-8497-fab3e56ecd9b",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV provided, only placeholder text requesting CV to be pasted.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided",
+      "No candidate information available",
+      "No skills or experience to evaluate"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No application materials submitted - CV is missing"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No CV provided for evaluation"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your actual CV in markdown format",
+      "Include specific programming languages and frameworks you've worked with",
+      "Detail any experience with distributed systems or machine learning infrastructure"
+    ],
+    "rejectedAt": "2026-04-27T19:50:18.229Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "ashby_openai_18f58952-c242-4562-8732-073a0ae8029e",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV was provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation",
+      "Cannot assess 7+ years PaaS/SaaS sales experience",
+      "Cannot verify revenue achievement track record",
+      "Cannot assess enterprise sales capabilities",
+      "Cannot verify language capabilities for Tokyo role"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess qualifications"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No CV submitted for evaluation"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your CV to receive a meaningful evaluation",
+      "Ensure CV highlights PaaS/SaaS enterprise sales experience with specific revenue numbers",
+      "Include details about managing key accounts and complex deal cycles",
+      "Specify Japanese language proficiency level if applicable",
+      "Quantify achievements: revenue targets exceeded, deal sizes, customer deployments"
+    ],
+    "rejectedAt": "2026-04-27T19:50:24.390Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "ashby_openai_7322d344-9325-4a92-8445-0a2c4e9272f8",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no CV provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV content provided for evaluation",
+      "Unable to assess technical background in retrieval/search systems",
+      "Unable to assess production ML experience",
+      "Unable to assess vector database or search index experience",
+      "Unable to assess internet-scale systems experience"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess qualifications"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No CV provided - placeholder text submitted instead of actual resume"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your actual CV content to receive a proper evaluation",
+      "Ensure CV highlights production ML systems experience if applicable",
+      "Include specific examples of work with search/retrieval systems, vector databases, or large-scale search infrastructure",
+      "Emphasize end-to-end ownership of technical projects and ability to work in fast-paced environments"
+    ],
+    "rejectedAt": "2026-04-27T19:50:31.034Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "ashby_openai_10980026-e468-4516-958c-7c697793d1d4",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no CV provided in the input.",
+    "strengths": [],
+    "gaps": [
+      "No CV data available for analysis"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information provided to assess qualifications"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Missing CV - unable to perform evaluation"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:50:35.188Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "ashby_ramp_34413f8d-26bf-4bbc-8ade-eb309a0e2245",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV was provided in the input.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess fit"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Cannot perform evaluation without candidate CV"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:50:38.786Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "ashby_ramp_63df0ffc-bdc6-40ba-906f-fe03378536b0",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no CV provided in the candidate section.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess qualifications"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Cannot perform evaluation without candidate CV"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:50:42.720Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "ashby_ramp_f564dcf9-9390-4a3f-896f-8047a5086040",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV was provided in the input.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for analysis"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess qualifications"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Cannot perform evaluation without candidate CV"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:50:46.371Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "ashby_ramp_4e64ab86-4e30-403b-b1b9-41dc052570ce",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no CV provided in the input.",
+    "strengths": [],
+    "gaps": [
+      "No CV content provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Missing CV - unable to perform any meaningful evaluation"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your CV content in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:50:50.367Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "ashby_ramp_d64609dd-c391-45a2-bfdb-c1bb34e8f93c",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no CV was provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess qualifications"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Cannot perform evaluation without candidate CV"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your CV in the designated section to receive a proper evaluation",
+      "Once CV is provided, I can assess your customer support experience, technical aptitude, and problem-solving skills",
+      "Include relevant experience with B2B SaaS, financial products, or complex technical support"
+    ],
+    "rejectedAt": "2026-04-27T19:50:55.211Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "ashby_linear_d3bc1ced-3ce4-4086-a050-555055dbb1ff",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no CV provided in the input.",
+    "strengths": [],
+    "gaps": [],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No CV provided for evaluation"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No candidate information available to assess fit"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:50:58.554Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "ashby_linear_cd5ae036-0223-427a-b038-ba16ef9dcb32",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV was provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Cannot perform evaluation without candidate CV"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:51:02.485Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "ashby_linear_069c4628-88d7-4e4d-b393-c996fc7f3076",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV was provided in the input.",
+    "strengths": [],
+    "gaps": [],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No CV submitted for evaluation"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No candidate information provided"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:51:05.893Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "ashby_linear_453f1ba0-a35e-4ed2-8215-1514e0a30b92",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV was provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Cannot perform evaluation without candidate CV"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your CV in the designated section to receive a proper job match evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:51:09.923Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "ashby_linear_4f10c2ca-d19a-42b5-9e1f-d1794c43dd89",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no CV provided for comparison against the Designer, Web & Brand role at Linear.",
+    "strengths": [],
+    "gaps": [],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No CV submitted for evaluation"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No candidate information provided to assess fit"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your CV to receive a personalized evaluation",
+      "Include portfolio showcasing web and brand design work",
+      "Highlight experience with interactive web experiences and motion design"
+    ],
+    "rejectedAt": "2026-04-27T19:51:14.282Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "ashby_watershed_289cd9d8-98cb-46b5-9287-e58504da72b7",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no CV provided in the candidate section.",
+    "strengths": [],
+    "gaps": [],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No CV provided for evaluation"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "CV missing - unable to assess candidate qualifications"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your actual CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:51:18.023Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "ashby_watershed_13b2eadc-5695-4f1f-8a46-5418c0dec657",
+    "matchScore": 0,
+    "summary": "Cannot evaluate - no CV provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV data available for analysis"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information provided to assess qualifications"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Cannot assess fit without candidate CV"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your actual CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:51:22.161Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "ashby_watershed_ecc52ad5-e0d1-480e-b0b3-74e96c08e062",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no CV was provided in the input.",
+    "strengths": [],
+    "gaps": [],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No CV provided for evaluation"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Cannot assess candidate qualifications without CV"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:51:25.517Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "ashby_watershed_972c7596-8aae-403a-9569-1983ab8de98d",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no CV provided in the input.",
+    "strengths": [],
+    "gaps": [
+      "No CV data available for analysis"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information provided to assess fit"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Missing CV - unable to perform evaluation"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your CV in the designated section to receive a proper evaluation",
+      "Include relevant SaaS enterprise sales experience with deal sizes and tenure",
+      "Highlight any experience with sustainability, ESG, or climate tech if applicable"
+    ],
+    "rejectedAt": "2026-04-27T19:51:30.314Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "ashby_watershed_272a22db-e714-402f-9d05-46358dcd003f",
+    "matchScore": 0,
+    "summary": "Cannot evaluate this match because no CV was provided in the input.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No CV submitted - automatic rejection"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No CV provided - unable to assess candidate qualifications"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your CV in the designated section to receive a proper evaluation",
+      "Ensure your CV highlights technical leadership experience and hands-on coding abilities",
+      "Include experience with scaling engineering teams and mentoring engineers if applicable"
+    ],
+    "rejectedAt": "2026-04-27T19:51:34.753Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "lever_spotify_1ff4a4e3-897c-4eab-9ee2-aa7d1d07a9d6",
+    "matchScore": 0,
+    "summary": "Cannot evaluate this match because no candidate CV was provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess fit"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Cannot assess candidate qualifications without CV"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your CV to receive a proper evaluation of this Account Executive role at Spotify"
+    ],
+    "rejectedAt": "2026-04-27T19:51:38.562Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "lever_spotify_d33ef090-2e71-43a2-ac10-cb81dfb13489",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV was provided in the input.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided",
+      "Unable to assess technical sales experience",
+      "Unable to assess developer tooling knowledge",
+      "Unable to assess B2B SaaS experience",
+      "Unable to assess relationship management skills"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess fit"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Cannot perform evaluation without candidate CV"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your CV in the designated section",
+      "Include technical sales experience if applicable",
+      "Highlight any developer tooling or platform sales experience",
+      "Emphasize enterprise B2B relationship management",
+      "Showcase understanding of developer workflows and infrastructure"
+    ],
+    "rejectedAt": "2026-04-27T19:51:44.263Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "lever_spotify_7374bb62-07bf-4541-8cb8-c7ea3c1fc41b",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no CV provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "CV not provided"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available for evaluation"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No CV submitted for analysis"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your CV in markdown format where indicated to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:51:47.598Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "lever_spotify_cc5ccf57-b851-4c25-8840-ed4cd0535c12",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no CV provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV content provided for analysis"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess qualifications"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "CV missing - unable to perform evaluation"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your CV content in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:51:52.045Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "lever_spotify_52601664-fd17-4c05-a80e-b76ee4fb3ba1",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV provided, only placeholder text.",
+    "strengths": [],
+    "gaps": [
+      "No CV content provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess qualifications"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Cannot perform evaluation without actual CV content"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your actual CV content in markdown format to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:51:55.867Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "lever_palantir_a543d82a-a089-4b1c-afd1-4f30d3d8ee23",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV was provided in the input.",
+    "strengths": [],
+    "gaps": [],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No CV submitted for evaluation"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No candidate information provided to assess fit"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:51:59.353Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "lever_palantir_a63092fa-64c0-4c09-b827-bb23a98cb207",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV provided in the submission.",
+    "strengths": [],
+    "gaps": [],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No CV provided for evaluation"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No candidate information available to assess fit"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:52:03.150Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "lever_palantir_fe2a8c69-49b7-405f-816c-a6c6f894399a",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV was provided in the input.",
+    "strengths": [],
+    "gaps": [],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No CV provided for evaluation"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Cannot assess candidate qualifications without CV"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:52:06.818Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "lever_palantir_50a8a83d-cc13-44b2-bc0c-4730fd7aa51c",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV provided, only placeholder text instructing to paste CV.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Cannot perform evaluation without candidate CV"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your actual CV in markdown format to receive a personalized evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:52:10.346Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "lever_palantir_205c3184-4272-41a9-a1e2-5352d4d00910",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV data available for assessment"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information provided to evaluate"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Cannot assess candidate qualifications without CV"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your actual CV content replacing the placeholder text",
+      "Include relevant application security experience, penetration testing, or vulnerability research",
+      "Highlight any experience with threat modeling, security architecture reviews, or secure SDLC"
+    ],
+    "rejectedAt": "2026-04-27T19:52:14.818Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "lever_mistral_2a357282-9d44-4b41-a249-c75ffe878ce2",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no CV content was provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess fit"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Cannot assess candidate qualifications without CV data"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your actual CV content to receive a proper evaluation",
+      "Include relevant experience in consulting, investment banking, or enterprise sales",
+      "Highlight strategic deal execution and client engagement experience if applicable"
+    ],
+    "rejectedAt": "2026-04-27T19:52:19.451Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "lever_mistral_7894fd8a-ffc9-4c89-87f0-f8a7b695cf01",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no CV content provided.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No CV submitted"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No candidate information available to assess fit"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your CV content to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:52:22.351Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "lever_mistral_618c9763-cb22-4343-baca-cf1cf6b05f5c",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV was provided in the input.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Cannot perform evaluation without candidate CV"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T19:52:26.156Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "lever_mistral_ed08b81f-9c52-4f86-addd-c4c06f3b114a",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match as no candidate CV was provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess qualifications"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Cannot assess candidate qualifications without CV"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your actual CV in the designated section to receive a proper evaluation",
+      "Include enterprise B2B sales experience with quantified achievements",
+      "Highlight experience selling SaaS/AI/ML solutions to Fortune 500 companies"
+    ],
+    "rejectedAt": "2026-04-27T19:52:30.964Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "lever_mistral_25757afe-9b9d-4be7-87e1-e744eaa01105",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no CV provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess qualifications"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No CV submitted - unable to perform any assessment"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your CV in the designated section to receive a proper evaluation",
+      "Include enterprise sales experience with deal sizes and outcomes",
+      "Highlight experience selling technical/SaaS solutions to Fortune 500 companies"
+    ],
+    "rejectedAt": "2026-04-27T19:52:35.965Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "jobicy_141893",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV was provided, only placeholder text instructing to paste a CV.",
+    "strengths": [],
+    "gaps": [],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess qualifications"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No CV provided for evaluation"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your actual CV content to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T20:06:16.622Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "jobicy_141851",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match as no CV content was provided - only placeholder text was submitted.",
+    "strengths": [],
+    "gaps": [
+      "No CV content provided for evaluation",
+      "Cannot assess project management experience",
+      "Cannot assess APAC regional experience",
+      "Cannot assess SaaS or HR tech background",
+      "Cannot assess stakeholder management capabilities"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess fit for Project Manager role"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "CV not provided - only placeholder template text submitted"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your actual CV content in markdown format to receive a proper evaluation",
+      "Include project management experience with specific examples of complex projects delivered",
+      "Highlight any experience in APAC markets, remote/distributed teams, or SaaS environments",
+      "Quantify achievements with metrics (budget size, team size, project timelines, business impact)"
+    ],
+    "rejectedAt": "2026-04-27T20:06:23.624Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "jobicy_141444",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no CV provided for comparison against the Shared Services Project Manager role.",
+    "strengths": [],
+    "gaps": [],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess qualification fit"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No CV content provided for evaluation"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your actual CV content in the designated section",
+      "Once CV is provided, I can assess your project management experience against implementation requirements",
+      "I'll be able to evaluate your healthcare/pharmacy experience and stakeholder management skills once your background is visible"
+    ],
+    "rejectedAt": "2026-04-27T20:06:28.708Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "jobicy_141370",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no CV provided in the candidate section.",
+    "strengths": [],
+    "gaps": [],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No CV submitted for evaluation"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No candidate information provided to assess fit"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your actual CV in markdown format to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T20:06:31.972Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "jobicy_141315",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV was provided in the input.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation",
+      "Cannot assess environmental remediation experience",
+      "Cannot verify 15+ years project management experience",
+      "Cannot confirm federal/USACE project background",
+      "Cannot evaluate technical qualifications or education"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No application materials provided - automatic rejection"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No CV submitted for evaluation"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your CV/resume to receive a proper evaluation",
+      "Once CV is provided, emphasize any environmental remediation project management experience",
+      "Highlight federal contracting experience, especially USACE cost-reimbursable projects if applicable",
+      "Quantify project values managed and budget/schedule performance metrics",
+      "Demonstrate 15+ years of relevant experience with specific examples from east coast projects if available"
+    ],
+    "rejectedAt": "2026-04-27T20:06:38.312Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "jobicy_141309",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV was provided in the input.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation",
+      "Unable to assess technical program management experience",
+      "Unable to assess embedded systems or IoT expertise",
+      "Unable to assess Agile and project management tool proficiency",
+      "Unable to assess years of relevant experience"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess qualifications against the required 12+ years of technical program management experience and embedded systems expertise"
+    },
+    "salaryFit": "BELOW_MARKET",
+    "redFlags": [
+      "Salary range ($84K-$105K) appears significantly below market for a Technical Project Manager role requiring 12+ years of specialized experience in embedded systems and IoT"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please provide your actual CV content to receive a proper evaluation",
+      "Replace the placeholder text with your real work experience, skills, and accomplishments",
+      "Include specific details about technical program management, embedded systems projects, and Agile delivery experience"
+    ],
+    "rejectedAt": "2026-04-27T20:06:44.559Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "jobicy_141305",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV was provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess qualifications"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Cannot perform evaluation without candidate CV"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your CV in the designated section to receive a proper job match evaluation"
+    ],
+    "rejectedAt": "2026-04-27T20:06:48.967Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "jobicy_141972",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV was provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess qualifications"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Cannot assess candidate qualifications without CV"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your CV in the designated section to receive a proper evaluation",
+      "Ensure your CV includes relevant research administration or sponsored programs experience",
+      "Highlight any experience with post-award grant management, compliance, and financial reporting"
+    ],
+    "rejectedAt": "2026-04-27T20:06:53.617Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "gh_cloudflare_7729606",
+    "matchScore": 0,
+    "summary": "Cannot evaluate - no candidate CV was provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV provided for evaluation"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess fit"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Cannot perform evaluation without candidate CV"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T20:06:58.207Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "gh_cloudflare_7736669",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV data available for analysis"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information provided to assess qualifications"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Missing candidate CV - unable to perform evaluation"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your actual CV in the designated section to receive a proper evaluation",
+      "Include your educational background, relevant experience, and skills",
+      "Ensure CV is formatted in markdown for best analysis"
+    ],
+    "rejectedAt": "2026-04-27T20:07:03.057Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "gh_cloudflare_7773799",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV provided in the submission.",
+    "strengths": [],
+    "gaps": [
+      "No CV data provided for analysis"
+    ],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No candidate information available to assess qualifications"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "Missing candidate CV - evaluation impossible"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your actual CV in markdown format where indicated",
+      "Include education, work experience, skills, and projects",
+      "Ensure technical skills and relevant experience are clearly listed"
+    ],
+    "rejectedAt": "2026-04-27T20:07:07.625Z",
+    "reason": "low_score"
+  },
+  {
+    "id": "gh_anthropic_5107763008",
+    "matchScore": 0,
+    "summary": "Cannot evaluate match - no candidate CV provided in the input.",
+    "strengths": [],
+    "gaps": [],
+    "rejectionRisk": {
+      "score": 100,
+      "topReason": "No CV submitted for evaluation"
+    },
+    "salaryFit": "NOT_DISCLOSED",
+    "redFlags": [
+      "No candidate information provided to assess fit"
+    ],
+    "recommendApply": false,
+    "tailoringHints": [
+      "Please paste your CV in the designated section to receive a proper evaluation"
+    ],
+    "rejectedAt": "2026-04-27T20:22:22.049Z",
+    "reason": "low_score"
+  }
+]
