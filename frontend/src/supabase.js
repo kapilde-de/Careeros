@@ -170,3 +170,71 @@ export async function updateApplicationStatus(appId, status) {
     if (error) console.error('updateApplicationStatus error:', error.message)
   } catch(e) { console.error('updateApplicationStatus exception:', e.message) }
 }
+
+// ── Agent ─────────────────────────────────────────────────────────────────────
+export async function saveAgentConfig(userId, config) {
+  try {
+    const { error } = await supabase.from('agent_configs').upsert({
+      user_id:          userId,
+      email:            config.email || '',
+      full_name:        config.fullName || '',
+      titles:           config.titles || '',
+      sector:           config.sector || '',
+      location:         config.location || '',
+      salary_min:       parseInt(config.salaryMin) || 0,
+      exclude_keywords: config.exclude || '',
+      active:           config.active ?? true,
+      updated_at:       new Date().toISOString(),
+    }, { onConflict: 'user_id' })
+    if (error) console.error('saveAgentConfig error:', error.message)
+    return !error
+  } catch(e) { console.error('saveAgentConfig exception:', e.message); return false }
+}
+
+export async function getAgentConfig(userId) {
+  try {
+    const { data, error } = await supabase
+      .from('agent_configs')
+      .select('*')
+      .eq('user_id', userId)
+      .single()
+    if (error && error.code !== 'PGRST116') console.error('getAgentConfig error:', error.message)
+    return data
+  } catch(e) { console.error('getAgentConfig exception:', e.message); return null }
+}
+
+export async function getAgentJobs(userId) {
+  try {
+    const { data, error } = await supabase
+      .from('agent_jobs')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('dismissed', false)
+      .order('match_score', { ascending: false })
+      .order('scanned_at', { ascending: false })
+      .limit(50)
+    if (error) console.error('getAgentJobs error:', error.message)
+    return data || []
+  } catch(e) { console.error('getAgentJobs exception:', e.message); return [] }
+}
+
+export async function dismissAgentJob(id) {
+  try {
+    await supabase.from('agent_jobs').update({ dismissed: true }).eq('id', id)
+  } catch(e) { console.error('dismissAgentJob exception:', e.message) }
+}
+
+export async function markAgentJobApplied(id) {
+  try {
+    await supabase.from('agent_jobs').update({ applied: true }).eq('id', id)
+  } catch(e) { console.error('markAgentJobApplied exception:', e.message) }
+}
+
+export async function saveAgentTailoredCV(id, tailoredCv, matchScore) {
+  try {
+    await supabase.from('agent_jobs').update({
+      tailored_cv:    tailoredCv,
+      tailored_match: matchScore,
+    }).eq('id', id)
+  } catch(e) { console.error('saveAgentTailoredCV exception:', e.message) }
+}
