@@ -41,7 +41,7 @@ test.describe('CV Builder', () => {
     await page.goto('/');
     await dismissCookies(page);
     await page.evaluate(() => window.scrollBy(0, 500));
-    await expect(page.getByText('Job Description')).toBeVisible();
+    await expect(page.getByText('Job Description', { exact: true })).toBeVisible();
     await expect(page.getByText('Your CV / Background')).toBeVisible();
   });
 
