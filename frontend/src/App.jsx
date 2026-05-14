@@ -2095,11 +2095,11 @@ Return ONLY JSON:
   const ghost=(x={})=>({background:"#f8fafc",border:"1.5px solid #e2e8f0",color:"#475569",borderRadius:10,padding:"9px 16px",fontSize:13,cursor:"pointer",...x});
 
   if(authLoading) return (
-    <div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",background:"#080d1a"}}>
+    <div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",background:"#f8fafc"}}>
       <style>{`@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}`}</style>
       <div style={{textAlign:"center"}}>
-        <div style={{width:36,height:36,border:"3px solid rgba(20,184,166,0.25)",borderTopColor:"#14b8a6",borderRadius:"50%",animation:"spin 0.8s linear infinite",margin:"0 auto 14px"}}/>
-        <div style={{color:"#64748b",fontSize:13,letterSpacing:"0.02em"}}>Loading CareerOS…</div>
+        <div style={{width:36,height:36,border:"3px solid rgba(13,148,136,0.2)",borderTopColor:"#0d9488",borderRadius:"50%",animation:"spin 0.8s linear infinite",margin:"0 auto 14px"}}/>
+        <div style={{color:"#94a3b8",fontSize:13,letterSpacing:"0.02em"}}>Loading CareerOS…</div>
       </div>
     </div>
   );
@@ -2115,103 +2115,94 @@ Return ONLY JSON:
       {icon:"🔍",title:"Job Agent",body:"Autonomous agent scans 160+ sites nightly and queues your best matches."},
     ];
     return (
-      <div style={{minHeight:"100vh",background:"#080d1a",color:"#f1f5f9",fontFamily:"'DM Sans',sans-serif",overflowX:"hidden"}}>
+      <div style={{minHeight:"100vh",background:"#f8fafc",color:"#0f172a",fontFamily:"'DM Sans',sans-serif",overflowX:"hidden",backgroundImage:"radial-gradient(circle at 20% 10%,rgba(13,148,136,0.06) 0%,transparent 50%),radial-gradient(circle at 80% 90%,rgba(99,102,241,0.05) 0%,transparent 50%)"}}>
         <style>{`
           @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
           @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-          @keyframes glow{0%,100%{opacity:0.5}50%{opacity:1}}
-          @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-          .gate-card:hover{border-color:rgba(20,184,166,0.35)!important;transform:translateY(-3px);box-shadow:0 12px 40px rgba(20,184,166,0.08)!important}
+          @keyframes glow{0%,100%{opacity:0.6}50%{opacity:1}}
+          .gate-card:hover{border-color:rgba(13,148,136,0.3)!important;transform:translateY(-3px);box-shadow:0 12px 40px rgba(13,148,136,0.1)!important}
           .gate-card{transition:all 0.2s ease}
-          .gate-input:focus{border-color:#14b8a6!important;box-shadow:0 0 0 3px rgba(20,184,166,0.15)!important;outline:none}
-          input:-webkit-autofill{-webkit-box-shadow:0 0 0 30px #0f172a inset!important;-webkit-text-fill-color:#f1f5f9!important}
         `}</style>
 
-        {/* ── Background glows ── */}
-        <div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:0}}>
-          <div style={{position:"absolute",top:"-10%",left:"50%",transform:"translateX(-50%)",width:"80vw",height:"60vh",background:"radial-gradient(ellipse,rgba(20,184,166,0.08) 0%,transparent 70%)"}}/>
-          <div style={{position:"absolute",bottom:"10%",right:"-10%",width:"50vw",height:"50vh",background:"radial-gradient(ellipse,rgba(99,102,241,0.07) 0%,transparent 70%)"}}/>
-        </div>
-
         {/* ── Top bar ── */}
-        <div style={{position:"relative",zIndex:10,padding:"18px 32px",display:"flex",alignItems:"center",justifyContent:"space-between",borderBottom:"1px solid rgba(255,255,255,0.06)"}}>
+        <div style={{position:"relative",zIndex:10,padding:"18px 32px",display:"flex",alignItems:"center",justifyContent:"space-between",borderBottom:"1px solid #e2e8f0",background:"rgba(255,255,255,0.8)",backdropFilter:"blur(12px)"}}>
           <div style={{display:"flex",alignItems:"center",gap:10}}>
-            <div style={{width:32,height:32,borderRadius:9,background:"linear-gradient(135deg,#14b8a6,#6366f1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}}>🎯</div>
-            <span style={{fontSize:18,fontWeight:800,letterSpacing:"-0.02em",background:"linear-gradient(90deg,#f1f5f9,#94a3b8)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>CareerOS</span>
+            <div style={{width:32,height:32,borderRadius:9,background:"linear-gradient(135deg,#0d9488,#6366f1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}}>🎯</div>
+            <span style={{fontSize:18,fontWeight:800,letterSpacing:"-0.02em",color:"#0f172a"}}>CareerOS</span>
           </div>
           <div style={{display:"flex",gap:10}}>
             <button onClick={()=>{setAuthMode("login");setShowAuth(true);}}
-              style={{background:"transparent",border:"1.5px solid rgba(255,255,255,0.15)",color:"#cbd5e1",borderRadius:8,padding:"8px 18px",fontSize:13,fontWeight:600,cursor:"pointer"}}>
+              style={{background:"transparent",border:"1.5px solid #e2e8f0",color:"#475569",borderRadius:8,padding:"8px 18px",fontSize:13,fontWeight:600,cursor:"pointer"}}>
               Sign in
             </button>
             <button onClick={()=>{setAuthMode("signup");setShowAuth(true);}}
-              style={{background:"linear-gradient(135deg,#14b8a6,#0891b2)",border:"none",color:"#fff",borderRadius:8,padding:"8px 18px",fontSize:13,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 14px rgba(20,184,166,0.3)"}}>
+              style={{background:"linear-gradient(135deg,#0d9488,#0891b2)",border:"none",color:"#fff",borderRadius:8,padding:"8px 18px",fontSize:13,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 14px rgba(13,148,136,0.25)"}}>
               Get started free
             </button>
           </div>
         </div>
 
         {/* ── Hero ── */}
-        <div style={{position:"relative",zIndex:5,textAlign:"center",padding:"80px 20px 60px",animation:"fadeUp 0.7s ease both"}}>
-          <div style={{display:"inline-flex",alignItems:"center",gap:8,background:"rgba(20,184,166,0.1)",border:"1px solid rgba(20,184,166,0.25)",borderRadius:20,padding:"6px 14px",marginBottom:28}}>
-            <span style={{width:7,height:7,borderRadius:"50%",background:"#14b8a6",display:"inline-block",animation:"glow 2s ease infinite"}}/>
-            <span style={{fontSize:12,fontWeight:600,color:"#14b8a6",letterSpacing:"0.04em"}}>AI-POWERED CAREER PLATFORM</span>
+        <div style={{textAlign:"center",padding:"80px 20px 60px",animation:"fadeUp 0.7s ease both"}}>
+          <div style={{display:"inline-flex",alignItems:"center",gap:8,background:"rgba(13,148,136,0.08)",border:"1px solid rgba(13,148,136,0.2)",borderRadius:20,padding:"6px 14px",marginBottom:28}}>
+            <span style={{width:7,height:7,borderRadius:"50%",background:"#0d9488",display:"inline-block",animation:"glow 2s ease infinite"}}/>
+            <span style={{fontSize:12,fontWeight:600,color:"#0d9488",letterSpacing:"0.04em"}}>AI-POWERED CAREER PLATFORM</span>
           </div>
-          <h1 style={{fontSize:"clamp(36px,6vw,72px)",fontWeight:900,lineHeight:1.08,letterSpacing:"-0.03em",margin:"0 auto 20px",maxWidth:820}}>
+          <h1 style={{fontSize:"clamp(36px,6vw,68px)",fontWeight:900,lineHeight:1.08,letterSpacing:"-0.03em",margin:"0 auto 20px",maxWidth:820,color:"#0f172a"}}>
             Get the interview.<br/>
-            <span style={{background:"linear-gradient(90deg,#14b8a6,#6366f1)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>Not the rejection.</span>
+            <span style={{background:"linear-gradient(90deg,#0d9488,#6366f1)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>Not the rejection.</span>
           </h1>
-          <p style={{fontSize:"clamp(15px,2vw,18px)",color:"#94a3b8",maxWidth:520,margin:"0 auto 40px",lineHeight:1.7}}>
+          <p style={{fontSize:"clamp(15px,2vw,18px)",color:"#64748b",maxWidth:520,margin:"0 auto 40px",lineHeight:1.7}}>
             CareerOS tailors your CV to every job description, scores your ATS odds, and arms you with a salary negotiation script — in under 30 seconds.
           </p>
           <div style={{display:"flex",gap:12,justifyContent:"center",flexWrap:"wrap"}}>
             <button onClick={()=>{setAuthMode("signup");setShowAuth(true);}}
-              style={{background:"linear-gradient(135deg,#14b8a6,#0891b2)",border:"none",color:"#fff",borderRadius:12,padding:"14px 32px",fontSize:16,fontWeight:800,cursor:"pointer",boxShadow:"0 8px 30px rgba(20,184,166,0.35)",letterSpacing:"-0.01em",display:"flex",alignItems:"center",gap:10}}>
+              style={{background:"linear-gradient(135deg,#0d9488,#0891b2)",border:"none",color:"#fff",borderRadius:12,padding:"14px 32px",fontSize:16,fontWeight:800,cursor:"pointer",boxShadow:"0 8px 30px rgba(13,148,136,0.3)",letterSpacing:"-0.01em",display:"flex",alignItems:"center",gap:10}}>
               Start for free — no card needed <span style={{fontSize:18}}>→</span>
             </button>
             <button onClick={()=>{setAuthMode("login");setShowAuth(true);}}
-              style={{background:"rgba(255,255,255,0.05)",border:"1.5px solid rgba(255,255,255,0.12)",color:"#cbd5e1",borderRadius:12,padding:"14px 28px",fontSize:15,fontWeight:600,cursor:"pointer"}}>
+              style={{background:"#fff",border:"1.5px solid #e2e8f0",color:"#374151",borderRadius:12,padding:"14px 28px",fontSize:15,fontWeight:600,cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}}>
               I have an account
             </button>
           </div>
-          <div style={{marginTop:18,fontSize:12,color:"#475569",display:"flex",gap:20,justifyContent:"center",flexWrap:"wrap"}}>
+          <div style={{marginTop:18,fontSize:12,color:"#94a3b8",display:"flex",gap:20,justifyContent:"center",flexWrap:"wrap"}}>
             {["✓ Free forever plan","✓ No credit card","✓ 30-second setup"].map(t=><span key={t}>{t}</span>)}
           </div>
         </div>
 
         {/* ── Stats bar ── */}
-        <div style={{position:"relative",zIndex:5,display:"flex",justifyContent:"center",gap:"clamp(20px,4vw,60px)",flexWrap:"wrap",padding:"24px 20px",borderTop:"1px solid rgba(255,255,255,0.06)",borderBottom:"1px solid rgba(255,255,255,0.06)",marginBottom:60,background:"rgba(255,255,255,0.02)"}}>
+        <div style={{display:"flex",justifyContent:"center",gap:"clamp(20px,4vw,60px)",flexWrap:"wrap",padding:"28px 20px",borderTop:"1px solid #e2e8f0",borderBottom:"1px solid #e2e8f0",marginBottom:60,background:"#fff"}}>
           {[["3×","more interview callbacks"],["30s","to tailor your CV"],["26","premium templates"],["160+","job sites scanned"]].map(([n,l])=>(
             <div key={l} style={{textAlign:"center"}}>
-              <div style={{fontSize:"clamp(24px,4vw,36px)",fontWeight:900,background:"linear-gradient(135deg,#14b8a6,#6366f1)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",lineHeight:1.1}}>{n}</div>
-              <div style={{fontSize:12,color:"#64748b",marginTop:3,textTransform:"uppercase",letterSpacing:"0.06em"}}>{l}</div>
+              <div style={{fontSize:"clamp(24px,4vw,36px)",fontWeight:900,background:"linear-gradient(135deg,#0d9488,#6366f1)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",lineHeight:1.1}}>{n}</div>
+              <div style={{fontSize:12,color:"#94a3b8",marginTop:3,textTransform:"uppercase",letterSpacing:"0.06em"}}>{l}</div>
             </div>
           ))}
         </div>
 
         {/* ── Feature cards ── */}
-        <div style={{position:"relative",zIndex:5,maxWidth:960,margin:"0 auto",padding:"0 20px 80px"}}>
+        <div style={{maxWidth:960,margin:"0 auto",padding:"0 20px 80px"}}>
           <div style={{textAlign:"center",marginBottom:40}}>
-            <h2 style={{fontSize:"clamp(22px,3vw,32px)",fontWeight:800,letterSpacing:"-0.02em",margin:"0 0 10px"}}>Everything you need to land the job</h2>
+            <h2 style={{fontSize:"clamp(22px,3vw,32px)",fontWeight:800,letterSpacing:"-0.02em",margin:"0 0 10px",color:"#0f172a"}}>Everything you need to land the job</h2>
             <p style={{fontSize:14,color:"#64748b"}}>Sign up free and get instant access to every feature.</p>
           </div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:16}}>
             {FEATURES.map((f,i)=>(
               <div key={f.title} className="gate-card"
-                style={{background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:16,padding:"22px 20px",animation:`fadeUp 0.5s ease ${i*0.07}s both`}}>
+                style={{background:"#fff",border:"1px solid #e2e8f0",borderRadius:16,padding:"24px 20px",boxShadow:"0 1px 3px rgba(0,0,0,0.04)",animation:`fadeUp 0.5s ease ${i*0.07}s both`}}>
                 <div style={{fontSize:28,marginBottom:12}}>{f.icon}</div>
-                <div style={{fontSize:14,fontWeight:700,color:"#f1f5f9",marginBottom:6}}>{f.title}</div>
+                <div style={{fontSize:14,fontWeight:700,color:"#0f172a",marginBottom:6}}>{f.title}</div>
                 <div style={{fontSize:13,color:"#64748b",lineHeight:1.6}}>{f.body}</div>
               </div>
             ))}
           </div>
 
           {/* ── Bottom CTA ── */}
-          <div style={{textAlign:"center",marginTop:60,padding:"40px 20px",background:"rgba(20,184,166,0.05)",border:"1px solid rgba(20,184,166,0.15)",borderRadius:20}}>
-            <div style={{fontSize:24,fontWeight:800,marginBottom:10,letterSpacing:"-0.02em"}}>Ready to stop getting rejected?</div>
+          <div style={{textAlign:"center",marginTop:60,padding:"44px 20px",background:"linear-gradient(135deg,#f0fdfa,#eff6ff)",border:"1px solid #e2e8f0",borderRadius:20,boxShadow:"0 1px 3px rgba(0,0,0,0.04)"}}>
+            <div style={{fontSize:24,fontWeight:800,marginBottom:10,letterSpacing:"-0.02em",color:"#0f172a"}}>Ready to stop getting rejected?</div>
             <div style={{fontSize:14,color:"#64748b",marginBottom:24}}>Join thousands of candidates who landed their next role with CareerOS.</div>
             <button onClick={()=>{setAuthMode("signup");setShowAuth(true);}}
-              style={{background:"linear-gradient(135deg,#14b8a6,#0891b2)",border:"none",color:"#fff",borderRadius:12,padding:"14px 36px",fontSize:16,fontWeight:800,cursor:"pointer",boxShadow:"0 8px 30px rgba(20,184,166,0.3)"}}>
+              style={{background:"linear-gradient(135deg,#0d9488,#0891b2)",border:"none",color:"#fff",borderRadius:12,padding:"14px 36px",fontSize:16,fontWeight:800,cursor:"pointer",boxShadow:"0 8px 30px rgba(13,148,136,0.25)"}}>
               Create your free account →
             </button>
           </div>
