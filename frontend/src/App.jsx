@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, useTransform, useScroll, useSpring } from "framer-motion";
 import { FileText, Search, Briefcase, BarChart3, MessageSquare, CreditCard, Bot, Wand2, Download, Share2, Copy, Zap, TrendingUp, AlertTriangle, DollarSign, Upload, X, Menu, LogOut, Star, CheckCircle, Clock, Target, RefreshCw, ArrowRight, User, LayoutDashboard, Sparkles, Shield, MoreHorizontal } from "lucide-react";
 import { supabase, signUp, signIn, signInWithGoogle, signOut, getUserProfile, saveResume, getUserResumes, getMonthlyUsage, saveApplication, getUserApplications, updateApplicationStatus, saveAgentConfig, getAgentConfig, getAgentJobs, dismissAgentJob, markAgentJobApplied, saveAgentTailoredCV } from "./supabase";
 import jsPDF from "jspdf";
@@ -125,6 +125,333 @@ async function downloadResume(resume, format = 'apex') {
     );
   }
 }
+// ─── LANDING GATE PAGE ────────────────────────────────────────────────────────
+function GatePage({ setAuthMode, setShowAuth, showAuth, authMode, loadUser }) {
+  const openSignup = () => { setAuthMode("signup"); setShowAuth(true); };
+  const openLogin  = () => { setAuthMode("login");  setShowAuth(true); };
+
+  // Mouse spotlight
+  const mouseX = useMotionValue(-400);
+  const mouseY = useMotionValue(-400);
+  useEffect(() => {
+    const move = e => { mouseX.set(e.clientX); mouseY.set(e.clientY); };
+    window.addEventListener("mousemove", move);
+    return () => window.removeEventListener("mousemove", move);
+  }, [mouseX, mouseY]);
+  const spotlightBg = useTransform([mouseX, mouseY], ([x, y]) =>
+    `radial-gradient(520px circle at ${x}px ${y}px, rgba(13,148,136,0.07) 0%, transparent 65%)`
+  );
+
+  // Scroll progress bar
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 30 });
+
+  // Count-up stats
+  const statsRef = useRef(null);
+  const [counted, setCounted] = useState(false);
+  const [counts, setCounts] = useState([0, 0, 0, 0]);
+  useEffect(() => {
+    if (!statsRef.current) return;
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !counted) {
+        setCounted(true);
+        [3, 95, 26, 160].forEach((target, i) => {
+          const dur = 1400, fps = 16;
+          const steps = dur / fps;
+          let s = 0;
+          const t = setInterval(() => {
+            s++;
+            const prog = s / steps;
+            const ease = 1 - Math.pow(1 - prog, 3);
+            const val = Math.round(ease * target);
+            setCounts(p => { const n=[...p]; n[i]=val; return n; });
+            if (s >= steps) clearInterval(t);
+          }, fps);
+        });
+      }
+    }, { threshold: 0.4 });
+    obs.observe(statsRef.current);
+    return () => obs.disconnect();
+  }, [counted]);
+
+  const statDisplay = (i) => {
+    if (!counted) return ["3×","95%","26","160+"][i];
+    return [counts[0]+"×", counts[1]+"%", counts[2]+"", counts[3]+"+"][i];
+  };
+
+  // 3D card tilt
+  const tilt = (e) => {
+    const el = e.currentTarget;
+    const r = el.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width  - 0.5;
+    const y = (e.clientY - r.top)  / r.height - 0.5;
+    el.style.transform = `perspective(900px) rotateY(${x*14}deg) rotateX(${-y*14}deg) translateZ(10px) scale(1.02)`;
+  };
+  const untilt = (e) => {
+    e.currentTarget.style.transform = "perspective(900px) rotateY(0deg) rotateX(0deg) translateZ(0) scale(1)";
+  };
+
+  const FEATURES = [
+    {icon:"🎯",title:"Beats the ATS",body:"AI rewrites your CV to match every keyword the ATS scans for.",color:"#0d9488"},
+    {icon:"⚠️",title:"Rejection Risk Score",body:"Know exactly why you'll get rejected — and how to fix it before you apply.",color:"#dc2626"},
+    {icon:"💰",title:"Salary Negotiation",body:"Word-for-word script tailored to your role and market rate.",color:"#d97706"},
+    {icon:"🤖",title:"26 Premium Templates",body:"Stunning ATS-safe designs used by candidates landing roles at top companies.",color:"#7c3aed"},
+    {icon:"📊",title:"Interview Probability",body:"See your real odds of making it past the screen before you click send.",color:"#0891b2"},
+    {icon:"🔍",title:"Job Agent",body:"Autonomous agent scans 160+ sites nightly and queues your best matches.",color:"#059669"},
+  ];
+  const GATE_TABS=[
+    {id:"builder",   label:"Builder",    icon:"📝"},
+    {id:"templates", label:"Templates",  icon:"🎨"},
+    {id:"jobs",      label:"Jobs",       icon:"🔍"},
+    {id:"interview", label:"Interview",  icon:"🎤"},
+    {id:"dashboard", label:"Dashboard",  icon:"📊"},
+    {id:"plans",     label:"Plans",      icon:"💳"},
+    {id:"agent",     label:"🤖 Agent",   icon:""},
+  ];
+  const MARQUEE_ITEMS = ["✓ 50,000+ resumes tailored","✓ 3× more interview callbacks","✓ 95% ATS pass rate","✓ 26 premium templates","✓ 160+ job sites scanned","✓ Word-for-word salary scripts","✓ AI-powered gap analysis","✓ Rejection risk scoring","✓ Interview probability score"];
+  const HEADLINE_WORDS_1 = ["Get","the","interview."];
+  const HEADLINE_WORDS_2 = ["Not","the","rejection."];
+
+  return (
+    <div style={{minHeight:"100vh",background:"#f8fafc",color:"#0f172a",fontFamily:"'DM Sans',sans-serif",overflowX:"hidden",position:"relative"}}>
+      <style>{`
+        @keyframes spin        { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+        @keyframes pulse-dot   { 0%,100%{transform:scale(1);opacity:0.7} 50%{transform:scale(1.5);opacity:1} }
+        @keyframes float-orb   { 0%,100%{transform:translate(0,0)} 33%{transform:translate(40px,-28px)} 66%{transform:translate(-22px,18px)} }
+        @keyframes float-orb2  { 0%,100%{transform:translate(0,0)} 33%{transform:translate(-30px,22px)} 66%{transform:translate(25px,-18px)} }
+        @keyframes float-orb3  { 0%,100%{transform:translate(0,0)} 50%{transform:translate(18px,30px)} }
+        @keyframes badge-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+        @keyframes grad-rotate { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+        @keyframes shimmer-btn { 0%{left:-100%} 100%{left:200%} }
+        @keyframes marquee     { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+        @keyframes particle-up { 0%{transform:translateY(0) scale(1);opacity:0.6} 100%{transform:translateY(-120px) scale(0);opacity:0} }
+        @keyframes border-spin { 0%{background-position:0% 0%} 100%{background-position:300% 0%} }
+        @keyframes word-up     { from{opacity:0;transform:translateY(100%)} to{opacity:1;transform:translateY(0)} }
+        @keyframes counter-in  { from{opacity:0;transform:scale(0.5)} to{opacity:1;transform:scale(1)} }
+
+        .gate-tab { transition:all 0.18s ease; border-radius:8px; }
+        .gate-tab:hover { background:rgba(13,148,136,0.07)!important; color:#0d9488!important; }
+
+        .gate-card { transition:transform 0.25s cubic-bezier(.34,1.2,.64,1), box-shadow 0.25s ease, border-color 0.25s ease; }
+
+        .cta-btn { position:relative; overflow:hidden; transition:transform 0.18s ease, box-shadow 0.18s ease; }
+        .cta-btn::after { content:''; position:absolute; top:0; left:-100%; width:55%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.25),transparent); transform:skewX(-22deg); animation:shimmer-btn 2.6s ease infinite; }
+        .cta-btn:hover { transform:translateY(-2px)!important; box-shadow:0 16px 44px rgba(13,148,136,0.42)!important; }
+
+        .ghost-btn { transition:all 0.18s ease; }
+        .ghost-btn:hover { background:#f0fdfa!important; border-color:#0d9488!important; color:#0d9488!important; }
+
+        .word-clip { overflow:hidden; display:inline-block; }
+        .word-reveal { display:inline-block; animation:word-up 0.55s cubic-bezier(.22,1,.36,1) both; }
+
+        .glow-border { position:relative; }
+        .glow-border::before { content:''; position:absolute; inset:-2px; border-radius:14px; background:linear-gradient(90deg,#0d9488,#6366f1,#0891b2,#0d9488); background-size:300% 100%; animation:border-spin 3s linear infinite; z-index:-1; }
+
+        .particle { position:absolute; border-radius:50%; pointer-events:none; animation:particle-up linear infinite; }
+
+        .stat-num { display:inline-block; animation:counter-in 0.5s cubic-bezier(.34,1.56,.64,1) both; }
+      `}</style>
+
+      {/* ── Scroll progress bar ── */}
+      <motion.div style={{scaleX,transformOrigin:"left",position:"fixed",top:0,left:0,right:0,height:3,background:"linear-gradient(90deg,#0d9488,#6366f1,#0891b2)",zIndex:200}}/>
+
+      {/* ── Mouse spotlight ── */}
+      <motion.div style={{background:spotlightBg,position:"fixed",inset:0,pointerEvents:"none",zIndex:1}}/>
+
+      {/* ── Floating orbs ── */}
+      <div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:0,overflow:"hidden"}}>
+        <div style={{position:"absolute",top:"5%",left:"8%",width:520,height:520,borderRadius:"50%",background:"radial-gradient(circle,rgba(13,148,136,0.09) 0%,transparent 70%)",animation:"float-orb 16s ease-in-out infinite"}}/>
+        <div style={{position:"absolute",bottom:"8%",right:"5%",width:440,height:440,borderRadius:"50%",background:"radial-gradient(circle,rgba(99,102,241,0.08) 0%,transparent 70%)",animation:"float-orb2 20s ease-in-out infinite"}}/>
+        <div style={{position:"absolute",top:"45%",right:"18%",width:280,height:280,borderRadius:"50%",background:"radial-gradient(circle,rgba(14,165,233,0.07) 0%,transparent 70%)",animation:"float-orb3 24s ease-in-out infinite"}}/>
+        <div style={{position:"absolute",top:"25%",left:"55%",width:180,height:180,borderRadius:"50%",background:"radial-gradient(circle,rgba(217,119,6,0.05) 0%,transparent 70%)",animation:"float-orb 19s ease-in-out infinite reverse"}}/>
+        {/* Floating particles */}
+        {[...Array(8)].map((_,i)=>(
+          <div key={i} className="particle" style={{
+            width:4+i%3*2,height:4+i%3*2,
+            background:`hsl(${170+i*18},60%,${50+i*4}%)`,
+            left:`${10+i*11}%`,top:`${30+i*7}%`,
+            opacity:0.4+i*0.05,
+            animationDuration:`${6+i*2}s`,
+            animationDelay:`${i*0.8}s`,
+          }}/>
+        ))}
+      </div>
+
+      {/* ── Nav ── */}
+      <motion.nav initial={{y:-56,opacity:0}} animate={{y:0,opacity:1}} transition={{duration:0.45,ease:[.22,1,.36,1]}}
+        style={{position:"sticky",top:3,zIndex:100,background:"rgba(255,255,255,0.88)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(226,232,240,0.8)",padding:"0 24px",display:"flex",alignItems:"center",height:56}}>
+        <motion.div whileHover={{rotate:12,scale:1.12}} transition={{type:"spring",stiffness:500,damping:14}}
+          style={{display:"flex",alignItems:"center",gap:9,marginRight:28,flexShrink:0,cursor:"pointer"}}>
+          <div style={{width:30,height:30,borderRadius:8,background:"linear-gradient(135deg,#0d9488,#6366f1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:15}}>🎯</div>
+          <span style={{fontSize:17,fontWeight:800,letterSpacing:"-0.02em",color:"#0f172a"}}>CareerOS</span>
+        </motion.div>
+        <div style={{display:"flex",alignItems:"center",gap:2,flex:1,overflowX:"auto"}}>
+          {GATE_TABS.map((t,i)=>(
+            <motion.button key={t.id} className="gate-tab" onClick={openSignup}
+              initial={{opacity:0,y:-10}} animate={{opacity:1,y:0}} transition={{delay:0.08+i*0.05,ease:[.22,1,.36,1]}}
+              whileTap={{scale:0.93}}
+              style={{background:"transparent",border:"none",color:"#64748b",padding:"8px 14px",fontSize:13,fontWeight:500,cursor:"pointer",whiteSpace:"nowrap",display:"flex",alignItems:"center",gap:5}}>
+              {t.id==="agent"?t.label:<><span>{t.icon}</span>{t.label}</>}
+            </motion.button>
+          ))}
+        </div>
+        <div style={{display:"flex",gap:8,flexShrink:0}}>
+          <motion.button onClick={openLogin} className="ghost-btn" whileTap={{scale:0.95}}
+            style={{background:"transparent",border:"1.5px solid #e2e8f0",color:"#475569",borderRadius:8,padding:"7px 16px",fontSize:13,fontWeight:600,cursor:"pointer"}}>
+            Sign in
+          </motion.button>
+          <motion.button onClick={openSignup} className="cta-btn" whileTap={{scale:0.95}}
+            style={{background:"linear-gradient(135deg,#0d9488,#0891b2)",border:"none",color:"#fff",borderRadius:8,padding:"7px 16px",fontSize:13,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 14px rgba(13,148,136,0.28)"}}>
+            Get started free
+          </motion.button>
+        </div>
+      </motion.nav>
+
+      {/* ── Hero ── */}
+      <div style={{position:"relative",zIndex:2,textAlign:"center",padding:"80px 20px 64px"}}>
+        {/* Badge */}
+        <motion.div initial={{opacity:0,y:12,scale:0.9}} animate={{opacity:1,y:0,scale:1}} transition={{duration:0.5,ease:[.22,1,.36,1]}}
+          style={{display:"inline-flex",alignItems:"center",gap:8,background:"rgba(13,148,136,0.08)",border:"1px solid rgba(13,148,136,0.22)",borderRadius:20,padding:"6px 16px",marginBottom:30,animation:"badge-float 3.2s ease-in-out infinite"}}>
+          <span style={{width:7,height:7,borderRadius:"50%",background:"#0d9488",display:"inline-block",animation:"pulse-dot 2s ease infinite"}}/>
+          <span style={{fontSize:11,fontWeight:700,color:"#0d9488",letterSpacing:"0.08em",textTransform:"uppercase"}}>AI-Powered Career Platform</span>
+        </motion.div>
+
+        {/* Headline with word-by-word reveal */}
+        <div style={{fontSize:"clamp(38px,6vw,70px)",fontWeight:900,lineHeight:1.06,letterSpacing:"-0.03em",margin:"0 auto 20px",maxWidth:860,color:"#0f172a"}}>
+          <div style={{marginBottom:4}}>
+            {HEADLINE_WORDS_1.map((w,i)=>(
+              <span key={w} className="word-clip" style={{marginRight:"0.25em"}}>
+                <span className="word-reveal" style={{animationDelay:`${0.1+i*0.1}s`}}>{w}</span>
+              </span>
+            ))}
+          </div>
+          <div>
+            {HEADLINE_WORDS_2.map((w,i)=>(
+              <span key={w} className="word-clip" style={{marginRight:"0.25em"}}>
+                <span className="word-reveal" style={{
+                  animationDelay:`${0.4+i*0.1}s`,
+                  background:"linear-gradient(270deg,#0d9488,#6366f1,#0891b2,#059669,#0d9488)",
+                  backgroundSize:"400% 400%",
+                  WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",
+                  animation:`word-up 0.55s cubic-bezier(.22,1,.36,1) ${0.4+i*0.1}s both, grad-rotate 5s ease ${0.4+i*0.1}s infinite`,
+                }}>{w}</span>
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <motion.p initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:0.65,duration:0.55}}
+          style={{fontSize:"clamp(15px,2vw,18px)",color:"#64748b",maxWidth:520,margin:"0 auto 40px",lineHeight:1.78}}>
+          CareerOS tailors your CV to every job description, scores your ATS odds, and arms you with a salary negotiation script — powered by AI.
+        </motion.p>
+
+        {/* CTAs */}
+        <motion.div initial={{opacity:0,y:18}} animate={{opacity:1,y:0}} transition={{delay:0.75,duration:0.5}}
+          style={{display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap"}}>
+          <div className="glow-border" style={{borderRadius:14,display:"inline-block"}}>
+            <motion.button onClick={openSignup} className="cta-btn"
+              whileHover={{scale:1.04}} whileTap={{scale:0.96}}
+              style={{background:"linear-gradient(135deg,#0d9488,#0891b2)",border:"none",color:"#fff",borderRadius:12,padding:"15px 34px",fontSize:16,fontWeight:800,cursor:"pointer",boxShadow:"0 8px 32px rgba(13,148,136,0.35)",display:"flex",alignItems:"center",gap:10,position:"relative",zIndex:1}}>
+              Start for free — no card needed
+              <motion.span animate={{x:[0,4,0]}} transition={{repeat:Infinity,duration:1.4,ease:"easeInOut"}} style={{fontSize:18}}>→</motion.span>
+            </motion.button>
+          </div>
+          <motion.button onClick={openLogin} className="ghost-btn"
+            whileHover={{scale:1.03}} whileTap={{scale:0.97}}
+            style={{background:"#fff",border:"1.5px solid #e2e8f0",color:"#374151",borderRadius:12,padding:"15px 28px",fontSize:15,fontWeight:600,cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.05)"}}>
+            I have an account
+          </motion.button>
+        </motion.div>
+
+        <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{delay:1.0}}
+          style={{marginTop:18,fontSize:12,color:"#94a3b8",display:"flex",gap:22,justifyContent:"center",flexWrap:"wrap"}}>
+          {["✓ Free forever plan","✓ No credit card required","✓ Instant access"].map(t=><span key={t}>{t}</span>)}
+        </motion.div>
+      </div>
+
+      {/* ── Marquee social proof ── */}
+      <div style={{position:"relative",zIndex:2,overflow:"hidden",background:"linear-gradient(135deg,#f0fdfa,#eff6ff)",borderTop:"1px solid #e2e8f0",borderBottom:"1px solid #e2e8f0",padding:"12px 0",marginBottom:0}}>
+        <div style={{display:"flex",animation:"marquee 28s linear infinite",width:"max-content",gap:0}}>
+          {[...MARQUEE_ITEMS,...MARQUEE_ITEMS].map((item,i)=>(
+            <span key={i} style={{padding:"0 32px",fontSize:12,fontWeight:600,color:"#0d9488",whiteSpace:"nowrap",display:"flex",alignItems:"center",gap:8}}>
+              {item}
+              <span style={{color:"#cbd5e1",margin:"0 0 0 32px"}}>·</span>
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Stats ── */}
+      <div ref={statsRef} style={{position:"relative",zIndex:2,display:"flex",justifyContent:"center",gap:"clamp(20px,5vw,70px)",flexWrap:"wrap",padding:"36px 20px",borderBottom:"1px solid #e2e8f0",background:"#fff"}}>
+        {[["more interview callbacks"],["ATS pass rate"],["premium templates"],["job sites scanned"]].map(([label],i)=>(
+          <motion.div key={label} initial={{opacity:0,y:20,scale:0.8}} whileInView={{opacity:1,y:0,scale:1}}
+            viewport={{once:true}} transition={{type:"spring",stiffness:260,damping:18,delay:i*0.1}}
+            style={{textAlign:"center"}}>
+            <div key={counted?`c${counts[i]}`:`n${i}`} className="stat-num"
+              style={{fontSize:"clamp(28px,5vw,42px)",fontWeight:900,background:"linear-gradient(135deg,#0d9488,#6366f1)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",lineHeight:1.1}}>
+              {statDisplay(i)}
+            </div>
+            <div style={{fontSize:11,color:"#94a3b8",marginTop:5,textTransform:"uppercase",letterSpacing:"0.08em"}}>{label}</div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* ── Feature cards ── */}
+      <div style={{position:"relative",zIndex:2,maxWidth:980,margin:"0 auto",padding:"64px 20px 80px"}}>
+        <motion.div initial={{opacity:0,y:18}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.5}}
+          style={{textAlign:"center",marginBottom:40}}>
+          <h2 style={{fontSize:"clamp(22px,3vw,34px)",fontWeight:900,letterSpacing:"-0.02em",margin:"0 0 10px",color:"#0f172a"}}>Everything you need to land the job</h2>
+          <p style={{fontSize:14,color:"#64748b"}}>Sign up free and get instant access to every feature.</p>
+        </motion.div>
+
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(270px,1fr))",gap:18}}>
+          {FEATURES.map((f,i)=>(
+            <motion.div key={f.title} className="gate-card" onClick={openSignup}
+              initial={{opacity:0,y:28,scale:0.96}} whileInView={{opacity:1,y:0,scale:1}}
+              viewport={{once:true}} transition={{duration:0.45,delay:i*0.08,ease:[.22,1,.36,1]}}
+              onMouseMove={tilt} onMouseLeave={untilt}
+              style={{background:"#fff",border:"1px solid #e2e8f0",borderRadius:18,padding:"28px 22px",boxShadow:"0 1px 4px rgba(0,0,0,0.05)",cursor:"pointer",position:"relative",overflow:"hidden",transformStyle:"preserve-3d"}}>
+              {/* Coloured accent bar */}
+              <div style={{position:"absolute",top:0,left:0,right:0,height:3,background:`linear-gradient(90deg,${f.color},transparent)`,borderRadius:"18px 18px 0 0"}}/>
+              {/* Background glow on hover */}
+              <div style={{position:"absolute",inset:0,background:`radial-gradient(circle at 0% 0%,${f.color}08 0%,transparent 60%)`,pointerEvents:"none"}}/>
+              <div style={{fontSize:32,marginBottom:14,filter:"drop-shadow(0 3px 8px rgba(0,0,0,0.12))",position:"relative"}}>{f.icon}</div>
+              <div style={{fontSize:14,fontWeight:700,color:"#0f172a",marginBottom:7,position:"relative"}}>{f.title}</div>
+              <div style={{fontSize:13,color:"#64748b",lineHeight:1.65,position:"relative"}}>{f.body}</div>
+              <div style={{marginTop:16,fontSize:12,fontWeight:700,color:f.color,display:"flex",alignItems:"center",gap:4,position:"relative"}}>
+                Unlock free
+                <motion.span animate={{x:[0,3,0]}} transition={{repeat:Infinity,duration:1.6,ease:"easeInOut"}}>→</motion.span>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* ── Bottom CTA ── */}
+        <motion.div initial={{opacity:0,y:28}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.55,delay:0.1}}
+          style={{textAlign:"center",marginTop:64,padding:"56px 28px",background:"linear-gradient(135deg,#f0fdfa 0%,#eff6ff 100%)",border:"1px solid #e2e8f0",borderRadius:24,boxShadow:"0 4px 30px rgba(13,148,136,0.08)",position:"relative",overflow:"hidden"}}>
+          <div style={{position:"absolute",top:-60,right:-60,width:220,height:220,borderRadius:"50%",background:"radial-gradient(circle,rgba(13,148,136,0.12) 0%,transparent 70%)",pointerEvents:"none",animation:"float-orb 12s ease-in-out infinite"}}/>
+          <div style={{position:"absolute",bottom:-40,left:-40,width:160,height:160,borderRadius:"50%",background:"radial-gradient(circle,rgba(99,102,241,0.1) 0%,transparent 70%)",pointerEvents:"none",animation:"float-orb2 15s ease-in-out infinite"}}/>
+          <div style={{position:"relative",zIndex:1}}>
+            <motion.div initial={{opacity:0,scale:0.9}} whileInView={{opacity:1,scale:1}} viewport={{once:true}} transition={{type:"spring",stiffness:200,damping:16}}>
+              <div style={{fontSize:"clamp(20px,3vw,28px)",fontWeight:900,marginBottom:10,letterSpacing:"-0.02em",color:"#0f172a"}}>Ready to stop getting rejected?</div>
+              <div style={{fontSize:14,color:"#64748b",marginBottom:28}}>Join thousands of candidates who landed their next role with CareerOS.</div>
+              <div className="glow-border" style={{borderRadius:14,display:"inline-block"}}>
+                <motion.button onClick={openSignup} className="cta-btn"
+                  whileHover={{scale:1.05}} whileTap={{scale:0.96}}
+                  style={{background:"linear-gradient(135deg,#0d9488,#0891b2)",border:"none",color:"#fff",borderRadius:12,padding:"16px 44px",fontSize:16,fontWeight:800,cursor:"pointer",boxShadow:"0 8px 32px rgba(13,148,136,0.3)",position:"relative",zIndex:1}}>
+                  Create your free account →
+                </motion.button>
+              </div>
+            </motion.div>
+          </div>
+        </motion.div>
+      </div>
+
+      <AnimatePresence>{showAuth&&<AuthModal initialMode={authMode} onClose={()=>setShowAuth(false)} onSuccess={u=>loadUser(u)}/>}</AnimatePresence>
+    </div>
+  );
+}
+
 // ─── API ──────────────────────────────────────────────────────────────────────
 async function scrapeJobURL(url) {
   try {
@@ -2105,201 +2432,7 @@ Return ONLY JSON:
   );
 
   // ── AUTH GATE — block app unless signed in ────────────────────────────────
-  if(!user) {
-    const FEATURES=[
-      {icon:"🎯",title:"Beats the ATS",body:"AI rewrites your CV to match every keyword the ATS scans for.",color:"#0d9488"},
-      {icon:"⚠️",title:"Rejection Risk Score",body:"Know exactly why you'll get rejected — and how to fix it before you apply.",color:"#dc2626"},
-      {icon:"💰",title:"Salary Negotiation",body:"Word-for-word script tailored to your role and market rate.",color:"#d97706"},
-      {icon:"🤖",title:"26 Premium Templates",body:"Stunning ATS-safe designs used by candidates landing roles at top companies.",color:"#7c3aed"},
-      {icon:"📊",title:"Interview Probability",body:"See your real odds of making it past the screen before you click send.",color:"#0891b2"},
-      {icon:"🔍",title:"Job Agent",body:"Autonomous agent scans 160+ sites nightly and queues your best matches.",color:"#059669"},
-    ];
-    const GATE_TABS=[
-      {id:"builder",   label:"Builder",    icon:"📝"},
-      {id:"templates", label:"Templates",  icon:"🎨"},
-      {id:"jobs",      label:"Jobs",       icon:"🔍"},
-      {id:"interview", label:"Interview",  icon:"🎤"},
-      {id:"dashboard", label:"Dashboard",  icon:"📊"},
-      {id:"plans",     label:"Plans",      icon:"💳"},
-      {id:"agent",     label:"🤖 Agent",   icon:""},
-    ];
-    const STATS=[["3×","more interview callbacks"],["95%","ATS pass rate"],["26","premium templates"],["160+","job sites scanned"]];
-    const openSignup=()=>{setAuthMode("signup");setShowAuth(true);};
-    const openLogin =()=>{setAuthMode("login"); setShowAuth(true);};
-    return (
-      <div style={{minHeight:"100vh",background:"#f8fafc",color:"#0f172a",fontFamily:"'DM Sans',sans-serif",overflowX:"hidden"}}>
-        <style>{`
-          @keyframes spin        {from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-          @keyframes fadeUp      {from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
-          @keyframes fadeIn      {from{opacity:0}to{opacity:1}}
-          @keyframes pulse-dot   {0%,100%{transform:scale(1);opacity:0.7}50%{transform:scale(1.4);opacity:1}}
-          @keyframes float-orb   {0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-20px) scale(1.05)}66%{transform:translate(-20px,15px) scale(0.97)}}
-          @keyframes float-orb2  {0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(-25px,20px) scale(1.03)}66%{transform:translate(20px,-15px) scale(0.98)}}
-          @keyframes shimmer     {0%{background-position:200% center}100%{background-position:-200% center}}
-          @keyframes grad-rotate {0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-          @keyframes badge-float {0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-          @keyframes stat-pop    {0%{opacity:0;transform:scale(0.7) translateY(12px)}70%{transform:scale(1.08)}100%{opacity:1;transform:scale(1) translateY(0)}}
-          @keyframes line-grow   {from{width:0}to{width:100%}}
-          @keyframes card-in     {from{opacity:0;transform:translateY(20px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
-
-          .gate-tab{transition:all 0.18s ease;border-radius:8px}
-          .gate-tab:hover{background:rgba(13,148,136,0.07)!important;color:#0d9488!important}
-
-          .gate-card{transition:transform 0.22s cubic-bezier(.34,1.56,.64,1),box-shadow 0.22s ease,border-color 0.22s ease}
-          .gate-card:hover{transform:translateY(-5px) scale(1.01)!important;box-shadow:0 20px 60px rgba(0,0,0,0.1)!important}
-
-          .cta-btn{position:relative;overflow:hidden;transition:transform 0.18s ease,box-shadow 0.18s ease}
-          .cta-btn::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);transform:skewX(-20deg);animation:shimmer-sweep 2.8s ease infinite}
-          @keyframes shimmer-sweep{0%{left:-100%}100%{left:200%}}
-          .cta-btn:hover{transform:translateY(-2px)!important;box-shadow:0 14px 40px rgba(13,148,136,0.45)!important}
-
-          .ghost-btn{transition:all 0.18s ease}
-          .ghost-btn:hover{background:#f0fdfa!important;border-color:#0d9488!important;color:#0d9488!important}
-
-          .stat-item{animation:stat-pop 0.6s cubic-bezier(.34,1.56,.64,1) both}
-
-          .nav-animate{animation:fadeIn 0.4s ease both}
-        `}</style>
-
-        {/* ── Floating background orbs ── */}
-        <div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:0,overflow:"hidden"}}>
-          <div style={{position:"absolute",top:"5%",left:"10%",width:500,height:500,borderRadius:"50%",background:"radial-gradient(circle,rgba(13,148,136,0.09) 0%,transparent 70%)",animation:"float-orb 14s ease-in-out infinite"}}/>
-          <div style={{position:"absolute",bottom:"10%",right:"5%",width:420,height:420,borderRadius:"50%",background:"radial-gradient(circle,rgba(99,102,241,0.08) 0%,transparent 70%)",animation:"float-orb2 18s ease-in-out infinite"}}/>
-          <div style={{position:"absolute",top:"40%",right:"20%",width:260,height:260,borderRadius:"50%",background:"radial-gradient(circle,rgba(14,165,233,0.06) 0%,transparent 70%)",animation:"float-orb 22s ease-in-out infinite reverse"}}/>
-        </div>
-
-        {/* ── Top nav ── */}
-        <nav className="nav-animate" style={{position:"sticky",top:0,zIndex:100,background:"rgba(255,255,255,0.88)",backdropFilter:"blur(18px)",borderBottom:"1px solid rgba(226,232,240,0.8)",padding:"0 24px",display:"flex",alignItems:"center",height:56}}>
-          <div style={{display:"flex",alignItems:"center",gap:9,marginRight:28,flexShrink:0}}>
-            <motion.div whileHover={{rotate:10,scale:1.1}} transition={{type:"spring",stiffness:400}}
-              style={{width:30,height:30,borderRadius:8,background:"linear-gradient(135deg,#0d9488,#6366f1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,cursor:"pointer"}}>🎯</motion.div>
-            <span style={{fontSize:17,fontWeight:800,letterSpacing:"-0.02em",color:"#0f172a"}}>CareerOS</span>
-          </div>
-          <div style={{display:"flex",alignItems:"center",gap:2,flex:1,overflowX:"auto"}}>
-            {GATE_TABS.map((t,i)=>(
-              <motion.button key={t.id} className="gate-tab" onClick={openSignup}
-                initial={{opacity:0,y:-8}} animate={{opacity:1,y:0}} transition={{delay:i*0.05+0.1}}
-                style={{background:"transparent",border:"none",color:"#64748b",padding:"8px 14px",fontSize:13,fontWeight:500,cursor:"pointer",whiteSpace:"nowrap",display:"flex",alignItems:"center",gap:5}}>
-                {t.id==="agent"?t.label:<><span>{t.icon}</span>{t.label}</>}
-              </motion.button>
-            ))}
-          </div>
-          <div style={{display:"flex",gap:8,flexShrink:0}}>
-            <motion.button whileHover={{scale:1.03}} whileTap={{scale:0.97}} onClick={openLogin}
-              className="ghost-btn" style={{background:"transparent",border:"1.5px solid #e2e8f0",color:"#475569",borderRadius:8,padding:"7px 16px",fontSize:13,fontWeight:600,cursor:"pointer"}}>
-              Sign in
-            </motion.button>
-            <motion.button whileHover={{scale:1.03}} whileTap={{scale:0.97}} onClick={openSignup}
-              className="cta-btn" style={{background:"linear-gradient(135deg,#0d9488,#0891b2)",border:"none",color:"#fff",borderRadius:8,padding:"7px 16px",fontSize:13,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 12px rgba(13,148,136,0.25)"}}>
-              Get started free
-            </motion.button>
-          </div>
-        </nav>
-
-        {/* ── Hero ── */}
-        <div style={{position:"relative",zIndex:1,textAlign:"center",padding:"76px 20px 60px"}}>
-          <motion.div initial={{opacity:0,y:16,scale:0.95}} animate={{opacity:1,y:0,scale:1}} transition={{duration:0.5}}
-            style={{display:"inline-flex",alignItems:"center",gap:8,background:"rgba(13,148,136,0.08)",border:"1px solid rgba(13,148,136,0.22)",borderRadius:20,padding:"6px 14px",marginBottom:28,animation:"badge-float 3s ease-in-out infinite"}}>
-            <span style={{width:7,height:7,borderRadius:"50%",background:"#0d9488",display:"inline-block",animation:"pulse-dot 2s ease infinite"}}/>
-            <span style={{fontSize:12,fontWeight:600,color:"#0d9488",letterSpacing:"0.05em"}}>AI-POWERED CAREER PLATFORM</span>
-          </motion.div>
-
-          <motion.h1 initial={{opacity:0,y:24}} animate={{opacity:1,y:0}} transition={{duration:0.6,delay:0.1}}
-            style={{fontSize:"clamp(36px,6vw,68px)",fontWeight:900,lineHeight:1.08,letterSpacing:"-0.03em",margin:"0 auto 20px",maxWidth:820,color:"#0f172a"}}>
-            Get the interview.<br/>
-            <span style={{background:"linear-gradient(270deg,#0d9488,#6366f1,#0891b2,#0d9488)",backgroundSize:"300% 300%",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",animation:"grad-rotate 5s ease infinite"}}>
-              Not the rejection.
-            </span>
-          </motion.h1>
-
-          <motion.p initial={{opacity:0,y:18}} animate={{opacity:1,y:0}} transition={{duration:0.6,delay:0.2}}
-            style={{fontSize:"clamp(15px,2vw,18px)",color:"#64748b",maxWidth:520,margin:"0 auto 36px",lineHeight:1.75}}>
-            CareerOS tailors your CV to every job description, scores your ATS odds, and arms you with a salary negotiation script — powered by AI.
-          </motion.p>
-
-          <motion.div initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{duration:0.55,delay:0.3}}
-            style={{display:"flex",gap:12,justifyContent:"center",flexWrap:"wrap"}}>
-            <motion.button onClick={openSignup} className="cta-btn"
-              whileHover={{scale:1.04}} whileTap={{scale:0.97}}
-              style={{background:"linear-gradient(135deg,#0d9488,#0891b2)",border:"none",color:"#fff",borderRadius:12,padding:"15px 34px",fontSize:16,fontWeight:800,cursor:"pointer",boxShadow:"0 8px 32px rgba(13,148,136,0.35)",display:"flex",alignItems:"center",gap:10}}>
-              Start for free — no card needed <span style={{fontSize:18}}>→</span>
-            </motion.button>
-            <motion.button onClick={openLogin} className="ghost-btn"
-              whileHover={{scale:1.03}} whileTap={{scale:0.97}}
-              style={{background:"#fff",border:"1.5px solid #e2e8f0",color:"#374151",borderRadius:12,padding:"15px 28px",fontSize:15,fontWeight:600,cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.05)"}}>
-              I have an account
-            </motion.button>
-          </motion.div>
-
-          <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{delay:0.5}}
-            style={{marginTop:18,fontSize:12,color:"#94a3b8",display:"flex",gap:20,justifyContent:"center",flexWrap:"wrap"}}>
-            {["✓ Free forever plan","✓ No credit card required","✓ Instant access"].map(t=><span key={t}>{t}</span>)}
-          </motion.div>
-        </div>
-
-        {/* ── Stats bar ── */}
-        <div style={{position:"relative",zIndex:1,display:"flex",justifyContent:"center",gap:"clamp(20px,4vw,60px)",flexWrap:"wrap",padding:"32px 20px",borderTop:"1px solid #e2e8f0",borderBottom:"1px solid #e2e8f0",marginBottom:60,background:"#fff"}}>
-          {STATS.map(([n,l],i)=>(
-            <motion.div key={l} className="stat-item" initial={{opacity:0,scale:0.7,y:12}} whileInView={{opacity:1,scale:1,y:0}}
-              viewport={{once:true}} transition={{type:"spring",stiffness:280,damping:18,delay:i*0.1}}
-              style={{textAlign:"center"}}>
-              <div style={{fontSize:"clamp(26px,4vw,38px)",fontWeight:900,background:"linear-gradient(135deg,#0d9488,#6366f1)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",lineHeight:1.1}}>{n}</div>
-              <div style={{fontSize:11,color:"#94a3b8",marginTop:4,textTransform:"uppercase",letterSpacing:"0.07em"}}>{l}</div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* ── Feature cards ── */}
-        <div style={{position:"relative",zIndex:1,maxWidth:960,margin:"0 auto",padding:"0 20px 80px"}}>
-          <motion.div initial={{opacity:0,y:16}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.5}}
-            style={{textAlign:"center",marginBottom:36}}>
-            <h2 style={{fontSize:"clamp(22px,3vw,32px)",fontWeight:800,letterSpacing:"-0.02em",margin:"0 0 10px",color:"#0f172a"}}>Everything you need to land the job</h2>
-            <p style={{fontSize:14,color:"#64748b"}}>Sign up free and get instant access to every feature.</p>
-          </motion.div>
-
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:16}}>
-            {FEATURES.map((f,i)=>(
-              <motion.div key={f.title} className="gate-card" onClick={openSignup}
-                initial={{opacity:0,y:22,scale:0.97}} whileInView={{opacity:1,y:0,scale:1}}
-                viewport={{once:true}} transition={{duration:0.45,delay:i*0.08}}
-                whileHover={{y:-5,scale:1.01}} whileTap={{scale:0.98}}
-                style={{background:"#fff",border:"1px solid #e2e8f0",borderRadius:16,padding:"26px 22px",boxShadow:"0 1px 4px rgba(0,0,0,0.05)",cursor:"pointer",position:"relative",overflow:"hidden"}}>
-                {/* Accent top line */}
-                <div style={{position:"absolute",top:0,left:0,right:0,height:3,background:`linear-gradient(90deg,${f.color},transparent)`,borderRadius:"16px 16px 0 0"}}/>
-                <div style={{fontSize:30,marginBottom:14,filter:"drop-shadow(0 2px 6px rgba(0,0,0,0.1))"}}>{f.icon}</div>
-                <div style={{fontSize:14,fontWeight:700,color:"#0f172a",marginBottom:7}}>{f.title}</div>
-                <div style={{fontSize:13,color:"#64748b",lineHeight:1.65}}>{f.body}</div>
-                <div style={{marginTop:14,fontSize:12,fontWeight:600,color:f.color,display:"flex",alignItems:"center",gap:4}}>
-                  Unlock free <span style={{fontSize:14}}>→</span>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* ── Bottom CTA ── */}
-          <motion.div initial={{opacity:0,y:24}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.55,delay:0.1}}
-            style={{textAlign:"center",marginTop:60,padding:"52px 24px",background:"linear-gradient(135deg,#f0fdfa 0%,#eff6ff 100%)",border:"1px solid #e2e8f0",borderRadius:24,boxShadow:"0 4px 24px rgba(13,148,136,0.07)",position:"relative",overflow:"hidden"}}>
-            {/* Decorative blobs */}
-            <div style={{position:"absolute",top:-40,right:-40,width:180,height:180,borderRadius:"50%",background:"radial-gradient(circle,rgba(13,148,136,0.1) 0%,transparent 70%)",pointerEvents:"none"}}/>
-            <div style={{position:"absolute",bottom:-30,left:-30,width:140,height:140,borderRadius:"50%",background:"radial-gradient(circle,rgba(99,102,241,0.08) 0%,transparent 70%)",pointerEvents:"none"}}/>
-            <div style={{position:"relative",zIndex:1}}>
-              <div style={{fontSize:"clamp(20px,3vw,26px)",fontWeight:900,marginBottom:10,letterSpacing:"-0.02em",color:"#0f172a"}}>Ready to stop getting rejected?</div>
-              <div style={{fontSize:14,color:"#64748b",marginBottom:28}}>Join thousands of candidates who landed their next role with CareerOS.</div>
-              <motion.button onClick={openSignup} className="cta-btn"
-                whileHover={{scale:1.05}} whileTap={{scale:0.96}}
-                style={{background:"linear-gradient(135deg,#0d9488,#0891b2)",border:"none",color:"#fff",borderRadius:12,padding:"15px 40px",fontSize:16,fontWeight:800,cursor:"pointer",boxShadow:"0 8px 32px rgba(13,148,136,0.3)"}}>
-                Create your free account →
-              </motion.button>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* ── Auth modal ── */}
-        <AnimatePresence>{showAuth&&<AuthModal initialMode={authMode} onClose={()=>setShowAuth(false)} onSuccess={u=>loadUser(u)}/>}</AnimatePresence>
-      </div>
-    );
-  }
-
+  if(!user) return <GatePage setAuthMode={setAuthMode} setShowAuth={setShowAuth} showAuth={showAuth} authMode={authMode} loadUser={loadUser}/>;
   return (
     <div style={{minHeight:"100vh",background:"#f8fafc",color:"#0f172a",fontFamily:"'DM Sans',sans-serif",fontSize:"15px",backgroundImage:"radial-gradient(circle at 20% 10%,rgba(13,148,136,0.04) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(56,189,248,0.04) 0%,transparent 50%)"}}>
       <style>{`
