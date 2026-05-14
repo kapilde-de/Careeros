@@ -2114,6 +2114,17 @@ Return ONLY JSON:
       {icon:"📊",title:"Interview Probability",body:"See your real odds of making it past the screen before you click send."},
       {icon:"🔍",title:"Job Agent",body:"Autonomous agent scans 160+ sites nightly and queues your best matches."},
     ];
+    const GATE_TABS=[
+      {id:"builder",   label:"Builder",    icon:"📝"},
+      {id:"templates", label:"Templates",  icon:"🎨"},
+      {id:"jobs",      label:"Jobs",       icon:"🔍"},
+      {id:"interview", label:"Interview",  icon:"🎤"},
+      {id:"dashboard", label:"Dashboard",  icon:"📊"},
+      {id:"plans",     label:"Plans",      icon:"💳"},
+      {id:"agent",     label:"🤖 Agent",   icon:""},
+    ];
+    const openSignup=()=>{setAuthMode("signup");setShowAuth(true);};
+    const openLogin =()=>{setAuthMode("login"); setShowAuth(true);};
     return (
       <div style={{minHeight:"100vh",background:"#f8fafc",color:"#0f172a",fontFamily:"'DM Sans',sans-serif",overflowX:"hidden",backgroundImage:"radial-gradient(circle at 20% 10%,rgba(13,148,136,0.06) 0%,transparent 50%),radial-gradient(circle at 80% 90%,rgba(99,102,241,0.05) 0%,transparent 50%)"}}>
         <style>{`
@@ -2122,57 +2133,70 @@ Return ONLY JSON:
           @keyframes glow{0%,100%{opacity:0.6}50%{opacity:1}}
           .gate-card:hover{border-color:rgba(13,148,136,0.3)!important;transform:translateY(-3px);box-shadow:0 12px 40px rgba(13,148,136,0.1)!important}
           .gate-card{transition:all 0.2s ease}
+          .gate-tab:hover{background:rgba(13,148,136,0.06)!important;color:#0d9488!important}
+          .gate-tab{transition:all 0.15s ease}
         `}</style>
 
-        {/* ── Top bar ── */}
-        <div style={{position:"relative",zIndex:10,padding:"18px 32px",display:"flex",alignItems:"center",justifyContent:"space-between",borderBottom:"1px solid #e2e8f0",background:"rgba(255,255,255,0.8)",backdropFilter:"blur(12px)"}}>
-          <div style={{display:"flex",alignItems:"center",gap:10}}>
-            <div style={{width:32,height:32,borderRadius:9,background:"linear-gradient(135deg,#0d9488,#6366f1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}}>🎯</div>
-            <span style={{fontSize:18,fontWeight:800,letterSpacing:"-0.02em",color:"#0f172a"}}>CareerOS</span>
+        {/* ── Top nav — same layout as the real app ── */}
+        <nav style={{position:"sticky",top:0,zIndex:100,background:"rgba(255,255,255,0.92)",backdropFilter:"blur(14px)",borderBottom:"1px solid #e2e8f0",padding:"0 24px",display:"flex",alignItems:"center",gap:0,height:56}}>
+          {/* Logo */}
+          <div style={{display:"flex",alignItems:"center",gap:9,marginRight:28,flexShrink:0}}>
+            <div style={{width:30,height:30,borderRadius:8,background:"linear-gradient(135deg,#0d9488,#6366f1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:15}}>🎯</div>
+            <span style={{fontSize:17,fontWeight:800,letterSpacing:"-0.02em",color:"#0f172a"}}>CareerOS</span>
           </div>
-          <div style={{display:"flex",gap:10}}>
-            <button onClick={()=>{setAuthMode("login");setShowAuth(true);}}
-              style={{background:"transparent",border:"1.5px solid #e2e8f0",color:"#475569",borderRadius:8,padding:"8px 18px",fontSize:13,fontWeight:600,cursor:"pointer"}}>
+          {/* Tabs — click prompts sign up */}
+          <div style={{display:"flex",alignItems:"center",gap:2,flex:1,overflowX:"auto"}}>
+            {GATE_TABS.map(t=>(
+              <button key={t.id} className="gate-tab" onClick={openSignup}
+                style={{background:"transparent",border:"none",color:"#64748b",padding:"8px 14px",fontSize:13,fontWeight:500,cursor:"pointer",borderRadius:8,whiteSpace:"nowrap",display:"flex",alignItems:"center",gap:5}}>
+                {t.id==="agent"?t.label:<><span style={{fontSize:13}}>{t.icon}</span>{t.label}</>}
+              </button>
+            ))}
+          </div>
+          {/* Auth buttons */}
+          <div style={{display:"flex",gap:8,flexShrink:0}}>
+            <button onClick={openLogin}
+              style={{background:"transparent",border:"1.5px solid #e2e8f0",color:"#475569",borderRadius:8,padding:"7px 16px",fontSize:13,fontWeight:600,cursor:"pointer"}}>
               Sign in
             </button>
-            <button onClick={()=>{setAuthMode("signup");setShowAuth(true);}}
-              style={{background:"linear-gradient(135deg,#0d9488,#0891b2)",border:"none",color:"#fff",borderRadius:8,padding:"8px 18px",fontSize:13,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 14px rgba(13,148,136,0.25)"}}>
+            <button onClick={openSignup}
+              style={{background:"linear-gradient(135deg,#0d9488,#0891b2)",border:"none",color:"#fff",borderRadius:8,padding:"7px 16px",fontSize:13,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 12px rgba(13,148,136,0.25)"}}>
               Get started free
             </button>
           </div>
-        </div>
+        </nav>
 
         {/* ── Hero ── */}
-        <div style={{textAlign:"center",padding:"80px 20px 60px",animation:"fadeUp 0.7s ease both"}}>
-          <div style={{display:"inline-flex",alignItems:"center",gap:8,background:"rgba(13,148,136,0.08)",border:"1px solid rgba(13,148,136,0.2)",borderRadius:20,padding:"6px 14px",marginBottom:28}}>
+        <div style={{textAlign:"center",padding:"72px 20px 56px",animation:"fadeUp 0.7s ease both"}}>
+          <div style={{display:"inline-flex",alignItems:"center",gap:8,background:"rgba(13,148,136,0.08)",border:"1px solid rgba(13,148,136,0.2)",borderRadius:20,padding:"6px 14px",marginBottom:26}}>
             <span style={{width:7,height:7,borderRadius:"50%",background:"#0d9488",display:"inline-block",animation:"glow 2s ease infinite"}}/>
             <span style={{fontSize:12,fontWeight:600,color:"#0d9488",letterSpacing:"0.04em"}}>AI-POWERED CAREER PLATFORM</span>
           </div>
-          <h1 style={{fontSize:"clamp(36px,6vw,68px)",fontWeight:900,lineHeight:1.08,letterSpacing:"-0.03em",margin:"0 auto 20px",maxWidth:820,color:"#0f172a"}}>
+          <h1 style={{fontSize:"clamp(36px,6vw,68px)",fontWeight:900,lineHeight:1.08,letterSpacing:"-0.03em",margin:"0 auto 18px",maxWidth:820,color:"#0f172a"}}>
             Get the interview.<br/>
             <span style={{background:"linear-gradient(90deg,#0d9488,#6366f1)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>Not the rejection.</span>
           </h1>
-          <p style={{fontSize:"clamp(15px,2vw,18px)",color:"#64748b",maxWidth:520,margin:"0 auto 40px",lineHeight:1.7}}>
-            CareerOS tailors your CV to every job description, scores your ATS odds, and arms you with a salary negotiation script — in under 30 seconds.
+          <p style={{fontSize:"clamp(15px,2vw,18px)",color:"#64748b",maxWidth:520,margin:"0 auto 36px",lineHeight:1.7}}>
+            CareerOS tailors your CV to every job description, scores your ATS odds, and arms you with a salary negotiation script — powered by AI.
           </p>
           <div style={{display:"flex",gap:12,justifyContent:"center",flexWrap:"wrap"}}>
-            <button onClick={()=>{setAuthMode("signup");setShowAuth(true);}}
-              style={{background:"linear-gradient(135deg,#0d9488,#0891b2)",border:"none",color:"#fff",borderRadius:12,padding:"14px 32px",fontSize:16,fontWeight:800,cursor:"pointer",boxShadow:"0 8px 30px rgba(13,148,136,0.3)",letterSpacing:"-0.01em",display:"flex",alignItems:"center",gap:10}}>
+            <button onClick={openSignup}
+              style={{background:"linear-gradient(135deg,#0d9488,#0891b2)",border:"none",color:"#fff",borderRadius:12,padding:"14px 32px",fontSize:16,fontWeight:800,cursor:"pointer",boxShadow:"0 8px 30px rgba(13,148,136,0.3)",display:"flex",alignItems:"center",gap:10}}>
               Start for free — no card needed <span style={{fontSize:18}}>→</span>
             </button>
-            <button onClick={()=>{setAuthMode("login");setShowAuth(true);}}
+            <button onClick={openLogin}
               style={{background:"#fff",border:"1.5px solid #e2e8f0",color:"#374151",borderRadius:12,padding:"14px 28px",fontSize:15,fontWeight:600,cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}}>
               I have an account
             </button>
           </div>
-          <div style={{marginTop:18,fontSize:12,color:"#94a3b8",display:"flex",gap:20,justifyContent:"center",flexWrap:"wrap"}}>
-            {["✓ Free forever plan","✓ No credit card","✓ 30-second setup"].map(t=><span key={t}>{t}</span>)}
+          <div style={{marginTop:16,fontSize:12,color:"#94a3b8",display:"flex",gap:20,justifyContent:"center",flexWrap:"wrap"}}>
+            {["✓ Free forever plan","✓ No credit card required","✓ Instant access"].map(t=><span key={t}>{t}</span>)}
           </div>
         </div>
 
         {/* ── Stats bar ── */}
-        <div style={{display:"flex",justifyContent:"center",gap:"clamp(20px,4vw,60px)",flexWrap:"wrap",padding:"28px 20px",borderTop:"1px solid #e2e8f0",borderBottom:"1px solid #e2e8f0",marginBottom:60,background:"#fff"}}>
-          {[["3×","more interview callbacks"],["< 2 min","to tailor your CV"],["26","premium templates"],["160+","job sites scanned"]].map(([n,l])=>(
+        <div style={{display:"flex",justifyContent:"center",gap:"clamp(20px,4vw,60px)",flexWrap:"wrap",padding:"28px 20px",borderTop:"1px solid #e2e8f0",borderBottom:"1px solid #e2e8f0",marginBottom:56,background:"#fff"}}>
+          {[["3×","more interview callbacks"],["95%","ATS pass rate"],["26","premium templates"],["160+","job sites scanned"]].map(([n,l])=>(
             <div key={l} style={{textAlign:"center"}}>
               <div style={{fontSize:"clamp(24px,4vw,36px)",fontWeight:900,background:"linear-gradient(135deg,#0d9488,#6366f1)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",lineHeight:1.1}}>{n}</div>
               <div style={{fontSize:12,color:"#94a3b8",marginTop:3,textTransform:"uppercase",letterSpacing:"0.06em"}}>{l}</div>
@@ -2182,14 +2206,14 @@ Return ONLY JSON:
 
         {/* ── Feature cards ── */}
         <div style={{maxWidth:960,margin:"0 auto",padding:"0 20px 80px"}}>
-          <div style={{textAlign:"center",marginBottom:40}}>
+          <div style={{textAlign:"center",marginBottom:36}}>
             <h2 style={{fontSize:"clamp(22px,3vw,32px)",fontWeight:800,letterSpacing:"-0.02em",margin:"0 0 10px",color:"#0f172a"}}>Everything you need to land the job</h2>
             <p style={{fontSize:14,color:"#64748b"}}>Sign up free and get instant access to every feature.</p>
           </div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:16}}>
             {FEATURES.map((f,i)=>(
-              <div key={f.title} className="gate-card"
-                style={{background:"#fff",border:"1px solid #e2e8f0",borderRadius:16,padding:"24px 20px",boxShadow:"0 1px 3px rgba(0,0,0,0.04)",animation:`fadeUp 0.5s ease ${i*0.07}s both`}}>
+              <div key={f.title} className="gate-card" onClick={openSignup}
+                style={{background:"#fff",border:"1px solid #e2e8f0",borderRadius:16,padding:"24px 20px",boxShadow:"0 1px 3px rgba(0,0,0,0.04)",cursor:"pointer",animation:`fadeUp 0.5s ease ${i*0.07}s both`}}>
                 <div style={{fontSize:28,marginBottom:12}}>{f.icon}</div>
                 <div style={{fontSize:14,fontWeight:700,color:"#0f172a",marginBottom:6}}>{f.title}</div>
                 <div style={{fontSize:13,color:"#64748b",lineHeight:1.6}}>{f.body}</div>
@@ -2198,10 +2222,10 @@ Return ONLY JSON:
           </div>
 
           {/* ── Bottom CTA ── */}
-          <div style={{textAlign:"center",marginTop:60,padding:"44px 20px",background:"linear-gradient(135deg,#f0fdfa,#eff6ff)",border:"1px solid #e2e8f0",borderRadius:20,boxShadow:"0 1px 3px rgba(0,0,0,0.04)"}}>
+          <div style={{textAlign:"center",marginTop:56,padding:"44px 20px",background:"linear-gradient(135deg,#f0fdfa,#eff6ff)",border:"1px solid #e2e8f0",borderRadius:20,boxShadow:"0 1px 3px rgba(0,0,0,0.04)"}}>
             <div style={{fontSize:24,fontWeight:800,marginBottom:10,letterSpacing:"-0.02em",color:"#0f172a"}}>Ready to stop getting rejected?</div>
             <div style={{fontSize:14,color:"#64748b",marginBottom:24}}>Join thousands of candidates who landed their next role with CareerOS.</div>
-            <button onClick={()=>{setAuthMode("signup");setShowAuth(true);}}
+            <button onClick={openSignup}
               style={{background:"linear-gradient(135deg,#0d9488,#0891b2)",border:"none",color:"#fff",borderRadius:12,padding:"14px 36px",fontSize:16,fontWeight:800,cursor:"pointer",boxShadow:"0 8px 30px rgba(13,148,136,0.25)"}}>
               Create your free account →
             </button>
