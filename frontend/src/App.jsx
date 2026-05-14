@@ -37,7 +37,7 @@ const JOB_PLATFORMS = [
 
 const TIERS = [
   { name:"Free", price:"£0", period:"forever", features:["2 resumes/month","Interview Probability Score","Basic ATS score","5 job searches/day","1 cover letter","Classic format only"], cta:"Get Started Free", highlight:false, color:"#6b7280", gumroad:null, tab:null },
-  { name:"Pro", price:"£9", period:"/month", badge:"Most Popular", features:["Unlimited resumes","ATS + Rejection Risk score","Salary intelligence + negotiation script","One-URL Apply","26 premium templates + preview","Unlimited searches","Interview prep AI","Interview Simulator","Resume history","Persistent tracker"], cta:"Explore Pro →", highlight:true, color:"#0d9488", gumroad:null, tab:"pro" },
+  { name:"Pro", price:"£9", period:"/month", badge:"Most Popular", features:["Unlimited resumes","ATS + Rejection Risk score","Salary intelligence + negotiation script","One-URL Apply","20+ premium templates + preview","Unlimited searches","Interview prep AI","Interview Simulator","Resume history","Persistent tracker"], cta:"Explore Pro →", highlight:true, color:"#0d9488", gumroad:null, tab:"pro" },
   { name:"Enterprise", price:"£29", period:"/month", features:["Everything in Pro","Team workspace","Bulk optimization","API access","Recruiter dashboard","White-label"], cta:"Explore Enterprise →", highlight:false, color:"#4f46e5", gumroad:null, tab:"enterprise" },
   { name:"Agent", price:"Beta", period:"free for now", badge:"🤖 ULTRA", features:["Everything in Pro","🤖 24/7 autonomous job hunter","Scans 160+ company job pages","AI evaluates every job for you","Auto-tailored CV per match","Daily review queue at 8am","Autopilot mode after 7 days","Local dashboard at localhost:3939","Windows · Mac · Linux","Feedback welcome!"], cta:"⬇ Download Agent (Beta)", highlight:false, color:"#dc2626", gumroad:"/downloads/careeros-agent.zip", isAgent:true, tab:null },
 ];
@@ -155,7 +155,7 @@ function GatePage({ setAuthMode, setShowAuth, showAuth, authMode, loadUser }) {
     const obs = new IntersectionObserver(([e]) => {
       if (e.isIntersecting && !counted) {
         setCounted(true);
-        [3, 95, 26, 160].forEach((target, i) => {
+        [3, 95, 50, 160].forEach((target, i) => {
           const dur = 1400, fps = 16;
           const steps = dur / fps;
           let s = 0;
@@ -175,8 +175,8 @@ function GatePage({ setAuthMode, setShowAuth, showAuth, authMode, loadUser }) {
   }, [counted]);
 
   const statDisplay = (i) => {
-    if (!counted) return ["3×","95%","26","160+"][i];
-    return [counts[0]+"×", counts[1]+"%", counts[2]+"", counts[3]+"+"][i];
+    if (!counted) return ["3×","95%","50K+","160+"][i];
+    return [counts[0]+"×", counts[1]+"%", counts[2]+"K+", counts[3]+"+"][i];
   };
 
   // 3D card tilt
@@ -208,7 +208,6 @@ function GatePage({ setAuthMode, setShowAuth, showAuth, authMode, loadUser }) {
     {id:"plans",     label:"Plans",      icon:"💳"},
     {id:"agent",     label:"🤖 Agent",   icon:""},
   ];
-  const MARQUEE_ITEMS = ["✓ 50,000+ resumes tailored","✓ 3× more interview callbacks","✓ 95% ATS pass rate","✓ 26 premium templates","✓ 160+ job sites scanned","✓ Word-for-word salary scripts","✓ AI-powered gap analysis","✓ Rejection risk scoring","✓ Interview probability score"];
   const HEADLINE_WORDS_1 = ["Get","the","interview."];
   const HEADLINE_WORDS_2 = ["Not","the","rejection."];
 
@@ -223,8 +222,7 @@ function GatePage({ setAuthMode, setShowAuth, showAuth, authMode, loadUser }) {
         @keyframes badge-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
         @keyframes grad-rotate { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
         @keyframes shimmer-btn { 0%{left:-100%} 100%{left:200%} }
-        @keyframes marquee     { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-        @keyframes particle-up { 0%{transform:translateY(0) scale(1);opacity:0.6} 100%{transform:translateY(-120px) scale(0);opacity:0} }
+@keyframes particle-up { 0%{transform:translateY(0) scale(1);opacity:0.6} 100%{transform:translateY(-120px) scale(0);opacity:0} }
         @keyframes border-spin { 0%{background-position:0% 0%} 100%{background-position:300% 0%} }
         @keyframes word-up     { from{opacity:0;transform:translateY(100%)} to{opacity:1;transform:translateY(0)} }
         @keyframes counter-in  { from{opacity:0;transform:scale(0.5)} to{opacity:1;transform:scale(1)} }
@@ -369,21 +367,9 @@ function GatePage({ setAuthMode, setShowAuth, showAuth, authMode, loadUser }) {
         </motion.div>
       </div>
 
-      {/* ── Marquee social proof ── */}
-      <div style={{position:"relative",zIndex:2,overflow:"hidden",background:"linear-gradient(135deg,#f0fdfa,#eff6ff)",borderTop:"1px solid #e2e8f0",borderBottom:"1px solid #e2e8f0",padding:"12px 0",marginBottom:0}}>
-        <div style={{display:"flex",animation:"marquee 28s linear infinite",width:"max-content",gap:0}}>
-          {[...MARQUEE_ITEMS,...MARQUEE_ITEMS].map((item,i)=>(
-            <span key={i} style={{padding:"0 32px",fontSize:12,fontWeight:600,color:"#0d9488",whiteSpace:"nowrap",display:"flex",alignItems:"center",gap:8}}>
-              {item}
-              <span style={{color:"#cbd5e1",margin:"0 0 0 32px"}}>·</span>
-            </span>
-          ))}
-        </div>
-      </div>
-
       {/* ── Stats ── */}
       <div ref={statsRef} style={{position:"relative",zIndex:2,display:"flex",justifyContent:"center",gap:"clamp(20px,5vw,70px)",flexWrap:"wrap",padding:"36px 20px",borderBottom:"1px solid #e2e8f0",background:"#fff"}}>
-        {[["more interview callbacks"],["ATS pass rate"],["premium templates"],["job sites scanned"]].map(([label],i)=>(
+        {[["more interview callbacks"],["ATS pass rate"],["resumes optimized"],["job sites scanned"]].map(([label],i)=>(
           <motion.div key={label} initial={{opacity:0,y:20,scale:0.8}} whileInView={{opacity:1,y:0,scale:1}}
             viewport={{once:true}} transition={{type:"spring",stiffness:260,damping:18,delay:i*0.1}}
             style={{textAlign:"center"}}>
