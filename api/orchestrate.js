@@ -64,17 +64,15 @@ CV: ${cv.slice(0, 2000)}`
 async function scoreCV(jd, cv, anthropic) {
   const res = await anthropic.messages.create({
     model: "claude-haiku-4-5-20251001",
-    max_tokens: 700,
-    system: "You are a senior ATS specialist. Return ONLY valid JSON, no markdown.",
+    max_tokens: 1100,
+    system: "You are a senior ATS specialist. Return ONLY valid JSON, no markdown fences.",
     messages: [{
       role: "user",
-      content: `Score this CV against the JD. Return JSON only:
-{"matchScore":75,"hiringManagerScore":70,
- "rejectionRisk":{"score":30,"topReasons":["r1","r2"],"ghostingRisk":"LOW","cvScreenRisk":"MEDIUM","interviewRisk":"LOW","howToFix":["f1","f2"]},
- "salaryIntelligence":{"marketMin":"$X","marketMax":"$Y","recommendedAsk":"$Z","insight":"1 sentence","negotiationScript":"1 sentence opener"},
- "hiringManagerInsights":{"firstImpression":"10-word view","humanAppeal":"standout quality","redFlags":["flag1"],"standoutFactors":["f1"]},
- "improvements":["tip1","tip2","tip3"]}
-JD: ${jd.slice(0, 1000)}
+      content: `Score this CV against the JD. Return ONLY this JSON, nothing else:
+{"matchScore":75,"hiringManagerScore":70,"rejectionRisk":{"score":30,"topReasons":["reason 1","reason 2"],"ghostingRisk":"LOW","cvScreenRisk":"MEDIUM","interviewRisk":"LOW","howToFix":["fix 1","fix 2"]},"salaryIntelligence":{"marketMin":"£50k","marketMax":"£70k","recommendedAsk":"£65k","insight":"one sentence about market","negotiationScript":"one sentence opener"},"hiringManagerInsights":{"firstImpression":"brief first impression","humanAppeal":"standout quality","redFlags":["flag 1"],"standoutFactors":["factor 1"]},"improvements":["improvement 1","improvement 2","improvement 3"]}
+
+Fill in real values based on:
+JD: ${jd.slice(0, 1200)}
 CV: ${cv.slice(0, 800)}`
     }],
   });
