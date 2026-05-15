@@ -18,7 +18,7 @@ export default async function handler(req, res) {
 
     const anthropic = new Anthropic({ apiKey, timeout: 55000 });
 
-    const usedModel = model || "claude-haiku-4-5";
+    const usedModel = model || "claude-3-5-haiku-20241022";
     console.log(`[claude] model=${usedModel} max_tokens=${max_tokens}`);
 
     const response = await anthropic.messages.create({

@@ -30,7 +30,7 @@ function safeJSON(text) {
 async function parseJD(jd, anthropic) {
   console.log("[phase:parseJD] start");
   const res = await anthropic.messages.create({
-    model: "claude-haiku-4-5",
+    model: "claude-3-5-haiku-20241022",
     max_tokens: 1200,
     system: "You are a senior talent strategist. Extract job requirements as structured JSON. Return ONLY valid JSON, no markdown.",
     messages: [{
@@ -51,7 +51,7 @@ async function analyzeGaps(analysis, cv, anthropic) {
   console.log("[phase:analyzeGaps] start");
   const a = analysis || {};
   const res = await anthropic.messages.create({
-    model: "claude-haiku-4-5",
+    model: "claude-3-5-haiku-20241022",
     max_tokens: 800,
     system: "You are a CV strategist. Analyse gaps between candidate and role. Return ONLY valid JSON, no markdown.",
     messages: [{
@@ -76,7 +76,7 @@ async function rewriteResume(analysis, gapAnalysis, cv, anthropic) {
   const a = analysis || {};
   const gaps = gapAnalysis || {};
   const res = await anthropic.messages.create({
-    model: "claude-sonnet-4-5",
+    model: "claude-3-5-sonnet-20241022",
     max_tokens: 3500,
     system: "You are a Director-level executive CV writer who has placed 500+ senior candidates. Return ONLY valid JSON, no markdown, no preamble.",
     messages: [{
@@ -127,7 +127,7 @@ async function scoreATS(analysis, cv, anthropic) {
   console.log("[phase:scoreATS] start");
   const a = analysis || {};
   const res = await anthropic.messages.create({
-    model: "claude-haiku-4-5",
+    model: "claude-3-5-haiku-20241022",
     max_tokens: 1400,
     system: "You are a senior ATS specialist and recruiting expert. Score the CV against job requirements. Return ONLY valid JSON, no markdown.",
     messages: [{
@@ -201,7 +201,7 @@ export default async function handler(req, res) {
       hiringManagerInsights: s.hiringManagerInsights || {},
       improvements:          s.improvements          || [],
       resume:                tailored,
-      _pipeline: "claude-haiku-parse → claude-haiku-gap → [claude-sonnet-rewrite ∥ claude-haiku-score]",
+      _pipeline: "claude-3-5-haiku-parse → claude-3-5-haiku-gap → [claude-3-5-sonnet-rewrite ∥ claude-3-5-haiku-score]",
     });
 
   } catch (err) {
