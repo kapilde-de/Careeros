@@ -1,19 +1,16 @@
 /**
- * CareerOS Resume Orchestrator — Claude-only pipeline
+ * CareerOS Resume Orchestrator — optimised for Vercel Hobby (≤10s)
  *
- * Phase 1  Claude Haiku  : Parse JD                        ~3s
- * Phase 2  Claude Haiku  : Gap analysis                    ~4s
- * Phase 3  PARALLEL:
- *            Claude Sonnet → Full rewrite                  ~18s
- *            Claude Haiku  → ATS score                     ~6s
- * Total ≈ 25s  (well under Vercel's 60s limit)
+ * Phase 1  Claude Haiku : Parse JD + Gap analysis (combined)   ~3s
+ * Phase 2  PARALLEL:
+ *            Claude Haiku → Full rewrite                        ~5s
+ *            Claude Haiku → ATS score                           ~3s
+ * Total ≈ 8s  (within Hobby plan 10s limit)
  *
  * Requires only: ANTHROPIC_API_KEY
  */
 
 import Anthropic from "@anthropic-ai/sdk";
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
 
 function safeJSON(text) {
   if (!text) return null;
@@ -25,95 +22,67 @@ function safeJSON(text) {
   return null;
 }
 
-// ── Phase 1: Parse JD ────────────────────────────────────────────────────────
-
-async function parseJD(jd, anthropic) {
-  console.log("[phase:parseJD] start");
+// Phase 1: parse JD + gap analysis combined (saves 1 round-trip)
+async function parseAndAnalyse(jd, cv, anthropic) {
+  console.log("[phase:parseAndAnalyse] start");
   const res = await anthropic.messages.create({
     model: "claude-3-5-haiku-20241022",
-    max_tokens: 1200,
-    system: "You are a senior talent strategist. Extract job requirements as structured JSON. Return ONLY valid JSON, no markdown.",
+    max_tokens: 1400,
+    system: "You are a talent strategist and CV coach. Return ONLY valid JSON, no markdown.",
     messages: [{
       role: "user",
-      content: `Extract all requirements from this job description. Return JSON:
-{"role":"exact title","company":"exact company","hiringIntent":"1 sentence","mustHave":["r1","r2","r3","r4","r5","r6"],"niceToHave":["n1","n2","n3"],"keywords":["k1","k2","k3","k4","k5","k6","k7","k8","k9","k10"],"leadershipLevel":"seniority level","domainContext":"industry domain","topBulletThemes":["t1","t2","t3","t4","t5"],"summaryAngle":"what the summary must communicate to get shortlisted"}
-JD: ${jd.slice(0, 3500)}`
+      content: `Analyse this job description and CV together. Return ONE JSON object:
+{
+  "role":"exact title","company":"exact company name","hiringIntent":"1 sentence",
+  "mustHave":["r1","r2","r3","r4","r5"],
+  "keywords":["k1","k2","k3","k4","k5","k6","k7","k8","k9","k10"],
+  "topBulletThemes":["t1","t2","t3","t4"],
+  "summaryAngle":"what summary must say to get shortlisted",
+  "leadershipLevel":"seniority level",
+  "strengths":["s1","s2","s3"],
+  "gaps":["g1","g2"],
+  "rewriteFocus":["specific rewrite instruction 1","specific rewrite instruction 2","specific rewrite instruction 3"]
+}
+JD: ${jd.slice(0, 2500)}
+CV: ${cv.slice(0, 1500)}`
     }],
   });
-  const analysis = safeJSON(res.content[0].text) || {};
-  console.log(`[phase:parseJD] role=${analysis.role} company=${analysis.company}`);
-  return analysis;
+  const data = safeJSON(res.content[0].text) || {};
+  console.log(`[phase:parseAndAnalyse] role=${data.role}`);
+  return data;
 }
 
-// ── Phase 2: Gap analysis ────────────────────────────────────────────────────
-
-async function analyzeGaps(analysis, cv, anthropic) {
-  console.log("[phase:analyzeGaps] start");
-  const a = analysis || {};
-  const res = await anthropic.messages.create({
-    model: "claude-3-5-haiku-20241022",
-    max_tokens: 800,
-    system: "You are a CV strategist. Analyse gaps between candidate and role. Return ONLY valid JSON, no markdown.",
-    messages: [{
-      role: "user",
-      content: `Analyse the gap between this CV and role requirements. Return JSON:
-{"strengths":["s1","s2","s3","s4"],"gaps":["g1","g2","g3"],"transferable":["t1","t2","t3"],"rewriteFocus":["specific instruction 1 for rewriter","specific instruction 2","specific instruction 3"]}
-Role: ${a.role||""} at ${a.company||""}
-Must-Have: ${(a.mustHave||[]).join(" | ")}
-Keywords needed: ${(a.keywords||[]).join(", ")}
-CV (first 2000 chars): ${cv.slice(0, 2000)}`,
-    }],
-  });
-  const gapAnalysis = safeJSON(res.content[0].text) || {};
-  console.log(`[phase:analyzeGaps] gaps=${(gapAnalysis.gaps||[]).length}`);
-  return gapAnalysis;
-}
-
-// ── Phase 3a: Resume rewrite ─────────────────────────────────────────────────
-
-async function rewriteResume(analysis, gapAnalysis, cv, anthropic) {
+// Phase 2a: full resume rewrite
+async function rewriteResume(ctx, cv, anthropic) {
   console.log("[phase:rewriteResume] start");
-  const a = analysis || {};
-  const gaps = gapAnalysis || {};
   const res = await anthropic.messages.create({
-    model: "claude-3-5-sonnet-20241022",
-    max_tokens: 3500,
-    system: "You are a Director-level executive CV writer who has placed 500+ senior candidates. Return ONLY valid JSON, no markdown, no preamble.",
+    model: "claude-3-5-haiku-20241022",
+    max_tokens: 2800,
+    system: "You are a Director-level executive CV writer. Return ONLY valid JSON, no markdown.",
     messages: [{
       role: "user",
-      content: `Rewrite this CV to be laser-targeted for the role.
+      content: `Rewrite this CV for the role. Return ONLY JSON, no extra text.
 
-═══ TARGET ROLE ═══
-Title: ${a.role||""}  |  Company: ${a.company||""}
-Must-Have (address ALL): ${(a.mustHave||[]).join(" | ")}
-ATS Keywords — USE VERBATIM: ${(a.keywords||[]).join(", ")}
-Bullet themes: ${(a.topBulletThemes||[]).join(" | ")}
-Summary must say: ${a.summaryAngle||""}
-Seniority: ${a.leadershipLevel||""}
+ROLE: ${ctx.role||""} at ${ctx.company||""}
+MUST-HAVE: ${(ctx.mustHave||[]).join(" | ")}
+ATS KEYWORDS (use verbatim): ${(ctx.keywords||[]).join(", ")}
+SUMMARY MUST SAY: ${ctx.summaryAngle||""}
+STRENGTHS: ${(ctx.strengths||[]).join(" | ")}
+REWRITE FOCUS: ${(ctx.rewriteFocus||[]).join(" | ")}
 
-═══ GAP ANALYSIS ═══
-Strengths to highlight: ${(gaps.strengths||[]).join(" | ")}
-Gaps to address: ${(gaps.gaps||[]).join(" | ")}
-Rewrite focus: ${(gaps.rewriteFocus||[]).join(" | ")}
+BULLET RULES: Past-tense verb + JD context + metric, max 18 words.
+✅ "Reduced deployment defects by 28% governing 8-team SDLC program"
+❌ "Responsible for leading teams"
 
-═══ BULLET FORMAT ═══
-[Strong past-tense verb] [JD-language context] [metric: number/£/%/time] — MAX 18 WORDS.
-✅ "Governed 8-team SDLC delivery program, reducing release defects by 28%"
-✅ "Aligned cross-functional stakeholders across 4 units via Jira, cutting escalations 40%"
-❌ "Responsible for leading and coordinating various cross-functional teams"
+SUMMARY: 4 sentences. S1: years+title+must-have. S2: best metric. S3: evidence. S4: name the company.
+SKILLS: Exactly 10, verbatim from JD keywords.
+BULLETS: 5 per role. Rotate verbs (Led/Drove/Reduced/Delivered/Aligned/Streamlined).
+PRESERVE all job titles, companies, dates exactly.
 
-═══ RULES ═══
-SUMMARY: 4 sentences. S1: years+title+top must-have. S2: best metric. S3: second must-have+evidence. S4: mention company by name. BANNED: passionate/driven/dynamic/results-oriented/proven track record.
-SKILLS: Exactly 12 — verbatim from JD keywords. Match JD capitalisation.
-BULLETS: 7 per role minimum. Rotate verbs: Led/Drove/Governed/Aligned/Streamlined/Delivered/Established/Coordinated/Championed/Reduced/Accelerated/Deployed/Orchestrated/Spearheaded/Built. Never "Responsible for".
-PRESERVE: Every job title, company, dates exactly. Never invent metrics.
-INCLUDE: Every single role, all education, all certifications.
+Return JSON:
+{"name":"","contact":"email • phone • city","summary":"4 sentences","skills":["s1"..."s10"],"experience":[{"title":"","company":"","period":"","bullets":["b1","b2","b3","b4","b5"]}],"education":["Qual — Institution (Year)"],"certifications":[]}
 
-Return ONLY valid JSON:
-{"name":"","contact":"email • phone • city","summary":"4 sentences","skills":["s1","s2","s3","s4","s5","s6","s7","s8","s9","s10","s11","s12"],"experience":[{"title":"","company":"","period":"","bullets":["b1","b2","b3","b4","b5","b6","b7"]}],"education":["Qualification — Institution (Year)"],"certifications":["c1"]}
-
-═══ FULL CV (preserve all roles/dates) ═══
-${cv.slice(0, 10000)}`,
+CV: ${cv.slice(0, 6000)}`
     }],
   });
   const tailored = safeJSON(res.content[0].text) || {};
@@ -121,23 +90,26 @@ ${cv.slice(0, 10000)}`,
   return tailored;
 }
 
-// ── Phase 3b: ATS scoring ────────────────────────────────────────────────────
-
-async function scoreATS(analysis, cv, anthropic) {
+// Phase 2b: ATS + hiring manager score
+async function scoreATS(ctx, cv, anthropic) {
   console.log("[phase:scoreATS] start");
-  const a = analysis || {};
   const res = await anthropic.messages.create({
     model: "claude-3-5-haiku-20241022",
-    max_tokens: 1400,
-    system: "You are a senior ATS specialist and recruiting expert. Score the CV against job requirements. Return ONLY valid JSON, no markdown.",
+    max_tokens: 1200,
+    system: "You are a senior ATS and hiring specialist. Return ONLY valid JSON, no markdown.",
     messages: [{
       role: "user",
-      content: `Score this CV against the role requirements. Be precise and critical. Return JSON:
-{"matchScore":78,"hiringManagerScore":72,"rejectionRisk":{"score":30,"topReasons":["r1","r2","r3"],"ghostingRisk":"LOW","cvScreenRisk":"MEDIUM","interviewRisk":"LOW","howToFix":["f1","f2","f3"]},"salaryIntelligence":{"marketMin":"£X","marketMax":"£Y","recommendedAsk":"£Z","insight":"1 sentence on market rate","negotiationScript":"Confident word-for-word script to use when offer is made — reference the specific salary range and role"},"gapAnalysis":{"strengths":["s1","s2","s3","s4"],"gaps":["g1","g2","g3"],"transferable":["t1","t2","t3"]},"hiringManagerInsights":{"firstImpression":"what a hiring manager notices in 10 seconds","humanAppeal":"what makes this candidate stand out as a person","redFlags":["flag1","flag2"],"standoutFactors":["f1","f2","f3"]},"improvements":["actionable tip 1","actionable tip 2","actionable tip 3"]}
-Role: ${a.role||""} at ${a.company||""}
-Must-have requirements: ${(a.mustHave||[]).join(", ")}
-Keywords: ${(a.keywords||[]).join(", ")}
-Candidate CV summary: ${cv.slice(0, 1000)}`,
+      content: `Score this CV for the role. Return JSON:
+{"matchScore":75,"hiringManagerScore":70,
+ "rejectionRisk":{"score":30,"topReasons":["r1","r2"],"ghostingRisk":"LOW","cvScreenRisk":"MEDIUM","interviewRisk":"LOW","howToFix":["f1","f2"]},
+ "salaryIntelligence":{"marketMin":"£X","marketMax":"£Y","recommendedAsk":"£Z","insight":"market context","negotiationScript":"word-for-word offer script"},
+ "gapAnalysis":{"strengths":["s1","s2"],"gaps":["g1","g2"],"transferable":["t1"]},
+ "hiringManagerInsights":{"firstImpression":"10-second view","humanAppeal":"standout quality","redFlags":["flag1"],"standoutFactors":["f1","f2"]},
+ "improvements":["tip1","tip2","tip3"]}
+ROLE: ${ctx.role||""} at ${ctx.company||""}
+MUST-HAVE: ${(ctx.mustHave||[]).join(", ")}
+KEYWORDS: ${(ctx.keywords||[]).join(", ")}
+CV: ${cv.slice(0, 800)}`
     }],
   });
   const scores = safeJSON(res.content[0].text) || {};
@@ -160,34 +132,31 @@ export default async function handler(req, res) {
   const anthropicKey = process.env.ANTHROPIC_API_KEY;
   if (!anthropicKey) return res.status(500).json({ error: "ANTHROPIC_API_KEY not configured" });
 
-  const anthropic = new Anthropic({ apiKey: anthropicKey, timeout: 55000 });
-  console.log("[orchestrate] pipeline start — claude-only");
+  const anthropic = new Anthropic({ apiKey: anthropicKey, timeout: 9000 });
+  console.log("[orchestrate] pipeline start");
 
   try {
-    // Phase 1 — Haiku parses JD
-    const analysis = await parseJD(jd, anthropic);
+    // Phase 1: combined parse + gap
+    const ctx = await parseAndAnalyse(jd, cv, anthropic);
 
-    // Phase 2 — Haiku gap analysis
-    const gapAnalysis = await analyzeGaps(analysis, cv, anthropic);
-
-    // Phase 3 — Sonnet rewrite + Haiku score IN PARALLEL
+    // Phase 2: rewrite + score in parallel
     const [tailored, scores] = await Promise.all([
-      rewriteResume(analysis, gapAnalysis, cv, anthropic),
-      scoreATS(analysis, cv, anthropic),
+      rewriteResume(ctx, cv, anthropic),
+      scoreATS(ctx, cv, anthropic),
     ]);
 
-    const g = gapAnalysis || {};
-    const s = scores     || {};
+    const s = scores || {};
+    const g = ctx    || {};
 
     console.log("[orchestrate] pipeline complete ✓");
     return res.json({
       jdAnalysis: {
-        role:         analysis.role         || "",
-        company:      analysis.company      || "",
-        mustHave:     analysis.mustHave     || [],
-        niceToHave:   analysis.niceToHave   || [],
-        keywords:     analysis.keywords     || [],
-        hiringIntent: analysis.hiringIntent || "",
+        role:         ctx.role         || "",
+        company:      ctx.company      || "",
+        mustHave:     ctx.mustHave     || [],
+        niceToHave:   [],
+        keywords:     ctx.keywords     || [],
+        hiringIntent: ctx.hiringIntent || "",
       },
       matchScore:            s.matchScore           || 75,
       hiringManagerScore:    s.hiringManagerScore   || 70,
@@ -196,16 +165,23 @@ export default async function handler(req, res) {
       gapAnalysis: {
         strengths:    g.strengths    || s.gapAnalysis?.strengths    || [],
         gaps:         g.gaps         || s.gapAnalysis?.gaps         || [],
-        transferable: g.transferable || s.gapAnalysis?.transferable || [],
+        transferable: s.gapAnalysis?.transferable || [],
       },
       hiringManagerInsights: s.hiringManagerInsights || {},
       improvements:          s.improvements          || [],
       resume:                tailored,
-      _pipeline: "claude-3-5-haiku-parse → claude-3-5-haiku-gap → [claude-3-5-sonnet-rewrite ∥ claude-3-5-haiku-score]",
+      _pipeline: "haiku-parse+gap → [haiku-rewrite ∥ haiku-score]",
     });
 
   } catch (err) {
-    console.error("[orchestrate] error:", err.message, err.stack?.slice(0, 400));
-    return res.status(500).json({ error: "Orchestration failed", details: err.message });
+    console.error("[orchestrate] error:", err.message, err.status, err.stack?.slice(0, 300));
+    return res.status(500).json({
+      error: "Orchestration failed",
+      details: err.message,
+      hint: err.status === 401 ? "Check ANTHROPIC_API_KEY in Vercel env vars"
+          : err.status === 403 ? "API key lacks model access — check Anthropic account"
+          : err.status === 429 ? "Rate limit hit — try again in a moment"
+          : undefined,
+    });
   }
 }
