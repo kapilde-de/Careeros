@@ -26,7 +26,7 @@ function safeJSON(text) {
 async function parseAndAnalyse(jd, cv, anthropic) {
   console.log("[phase:parseAndAnalyse] start");
   const res = await anthropic.messages.create({
-    model: "claude-3-5-haiku-20241022",
+    model: "claude-haiku-4-5-20251001",
     max_tokens: 1400,
     system: "You are a talent strategist and CV coach. Return ONLY valid JSON, no markdown.",
     messages: [{
@@ -56,7 +56,7 @@ CV: ${cv.slice(0, 1500)}`
 async function rewriteResume(ctx, cv, anthropic) {
   console.log("[phase:rewriteResume] start");
   const res = await anthropic.messages.create({
-    model: "claude-3-5-haiku-20241022",
+    model: "claude-haiku-4-5-20251001",
     max_tokens: 2800,
     system: "You are a Director-level executive CV writer. Return ONLY valid JSON, no markdown.",
     messages: [{
@@ -94,7 +94,7 @@ CV: ${cv.slice(0, 6000)}`
 async function scoreATS(ctx, cv, anthropic) {
   console.log("[phase:scoreATS] start");
   const res = await anthropic.messages.create({
-    model: "claude-3-5-haiku-20241022",
+    model: "claude-haiku-4-5-20251001",
     max_tokens: 1200,
     system: "You are a senior ATS and hiring specialist. Return ONLY valid JSON, no markdown.",
     messages: [{
