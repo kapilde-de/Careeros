@@ -4,3 +4,5 @@ careeros-agent/careeros-agent/.env
 node_modules
 dist
 *.zip
+
+.vercel

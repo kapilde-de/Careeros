@@ -1,21 +1,30 @@
 profile:
-  firstName: "npm startkapil "
-  lastName: manwani
+  firstName: Kapil
+  lastName: Manwani
   email: kapil.de@gmail.com
   phone: "07459718267"
   location: london
-  linkedin: www.linkedin.com/in/kapil-manwani-50363512
+  linkedin: https://www.linkedin.com/in/kapil-manwani-50363512/
   portfolio: ""
 search:
   keywords:
-    - project manager
-    - program manager
-  minSalary: 70000
+    - Programme Manager
+    - Program Manager
+    - Project Manager
+    - Senior Project Manager
+    - Senior Programme Manager
+    - Delivery Manager
+    - PMO Manager
+    - Senior PM
+    - IT Project Manager
+    - Digital Project Manager
+    - Transformation Manager
+  minSalary: 65000
   excludeCompanies: []
   remoteOnly: false
 behavior:
   intervalHours: 4
-  minMatchScore: 70
+  minMatchScore: 60
   showBrowser: true
   autopilot: false
   actuallySubmit: false

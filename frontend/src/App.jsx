@@ -2184,7 +2184,7 @@ export default function App() {
       let merged;
       try { merged = JSON.parse(rawText); }
       catch { throw new Error(res.status === 504 ? "Timed out — try a shorter JD or CV" : `Server error (${res.status})`); }
-      if (!res.ok) throw new Error(merged.error || `Orchestration failed (${res.status})`);
+      if (!res.ok) throw new Error((merged.details || merged.error) + (merged.hint ? ` — ${merged.hint}` : "") || `Server error (${res.status})`);
       if (merged.error) throw new Error(merged.error);
 
       clearInterval(iv); setResult(merged);

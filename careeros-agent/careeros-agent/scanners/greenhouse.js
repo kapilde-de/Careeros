@@ -1,17 +1,17 @@
 // ════════════════════════════════════════════════════════════════════════
-// Greenhouse Scanner — scrapes Greenhouse ATS pages directly
-// Greenhouse has a public JSON API at boards.greenhouse.io/embed/job_board?for={company}
+// Greenhouse Scanner — companies that hire Programme/Project Managers
 // ════════════════════════════════════════════════════════════════════════
 
 export class GreenhouseScanner {
   constructor() {
     this.name = "Greenhouse";
-    // Pre-configured AI/Tech companies on Greenhouse
+    // Mix of UK-active and global companies known to hire PMs
     this.companies = [
-      "anthropic", "openai", "stripe", "scale", "elevenlabs",
-      "huggingface", "perplexity", "pinecone", "langchain",
-      "retool", "vercel", "linear", "ramp", "notion",
-      "figma", "airtable", "github", "cloudflare", "discord",
+      "deliveroo", "monzo", "transferwise", "babylonhealth",
+      "citymapper", "onfido", "gousto", "bulb",
+      "thoughtworks", "globality", "cleo", "checkout",
+      "and-digital", "ovo", "cazoo", "gopuff",
+      "grammarly", "canva", "atlassian", "zendesk",
     ];
   }
 
@@ -21,16 +21,13 @@ export class GreenhouseScanner {
     for (const company of this.companies) {
       try {
         const url = `https://boards-api.greenhouse.io/v1/boards/${company}/jobs`;
-        const response = await fetch(url, {
-          signal: AbortSignal.timeout(8000),
-        });
-
+        const response = await fetch(url, { signal: AbortSignal.timeout(8000) });
         if (!response.ok) continue;
 
         const data = await response.json();
         const jobs = data.jobs || [];
 
-        // Filter by keywords if provided
+        // Filter by keywords
         const filtered = criteria.keywords?.length > 0
           ? jobs.filter(j => criteria.keywords.some(k =>
               j.title.toLowerCase().includes(k.toLowerCase())
@@ -51,9 +48,7 @@ export class GreenhouseScanner {
             tags: job.metadata?.map(m => m.value).filter(Boolean) || [],
           });
         }
-      } catch (err) {
-        // Silently skip companies that fail
-      }
+      } catch {}
     }
 
     return allJobs;

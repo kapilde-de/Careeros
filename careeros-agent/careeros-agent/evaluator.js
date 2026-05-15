@@ -53,7 +53,11 @@ Rules:
     });
 
     const text = response.content.map(b => b.text || "").join("");
-    return JSON.parse(text.replace(/```json|```/g, "").trim());
+    const cleaned = text.replace(/```json|```/g, "").trim();
+    // Extract JSON object if wrapped in extra text
+    const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error(`No JSON in evaluator response: ${cleaned.slice(0, 100)}`);
+    return JSON.parse(jsonMatch[0]);
   }
 
   async batchEvaluate(jobs, cv, concurrency = 3) {

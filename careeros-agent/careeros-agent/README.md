@@ -1,120 +1,187 @@
-# 🤖 CareerOS Agent — Your 24/7 Autonomous Job Hunter
+# 🤖 CareerOS Agent v1.2 — Your 24/7 Autonomous Job Hunter
 
-**Price: £99 one-time payment · Lifetime access · No subscriptions**
-
-The first AI that hunts for jobs while you sleep, tailors resumes, and applies on your behalf.
+The AI agent that scans 100+ companies across 9 job platforms, tailors your CV for every match, and applies automatically — while you sleep.
 
 ---
 
-## What Is CareerOS Agent?
+## What It Does
 
-While you're working, sleeping, or living your life — your CareerOS Agent is:
+Every 4 hours, your agent:
 
-- 🔍 **Scanning 50+ job boards** every 4 hours (LinkedIn, Indeed, Reed, Greenhouse, Ashby, Lever, plus your custom company list)
-- 🧠 **Evaluating each job** against your profile using AI (not keyword matching — actual reasoning)
-- ✍️ **Generating tailored resumes** for every match (uses CareerOS Pro engine)
-- 📊 **Scoring everything** — only roles that match your bar make it through
-- 📬 **Building your queue** — wake up to 5-10 hand-picked opportunities with CVs ready
-- ⚡ **One-click apply** when you approve
-
-After 1 week of training your agent learns your preferences and unlocks **Autopilot Mode** — fully autonomous job hunting with daily reports.
+1. **Scans 9 job platforms** — Greenhouse, Lever, Ashby, SmartRecruiters, Recruitee, iCIMS, BambooHR, Taleo, Workday (100+ top companies pre-loaded)
+2. **Evaluates every job** with Claude AI — not keyword matching, actual reasoning against your CV
+3. **Tailors your CV** — rewrites bullets for each role, generates a cover letter and PDF
+4. **Applies automatically** — fills forms via Playwright, submits or queues for your review
+5. **Emails you a report** — what was applied to, what needs your review, what failed
 
 ---
 
-## How It's Different
+## What's New in v1.2
 
-| Feature | LinkedIn Easy Apply | Sonara | LazyApply | **CareerOS Agent** |
-|---|---|---|---|---|
-| Auto-apply | ✅ | ✅ | ✅ | ✅ |
-| AI evaluates fit (not keywords) | ❌ | ⚠️ Basic | ❌ | ✅ Claude AI |
-| Tailored CV per job | ❌ | ❌ | ❌ | ✅ |
-| Review queue before apply | ⚠️ Manual | ❌ | ❌ | ✅ |
-| Works across 50+ boards | ❌ LinkedIn only | ⚠️ Limited | ⚠️ Limited | ✅ |
-| Salary intelligence | ❌ | ❌ | ❌ | ✅ |
-| Interview prep | ❌ | ❌ | ❌ | ✅ |
-| Pricing | Free (with limits) | $39/mo | $99 one-time | **£99 one-time** |
-| Owns your data | ❌ | ❌ | ❌ | ✅ Local-first |
-
----
-
-## The 3 Tiers of Use
-
-### Week 1 — Training Mode
-The agent observes which jobs you accept and reject. Learns your preferences. Builds your story bank from your CV. Calibrates salary expectations.
-
-### Week 2+ — Review Queue
-Every morning at 8am, you wake up to:
-- 5-10 hand-picked job matches
-- Pre-tailored CV for each one
-- AI-generated cover letter
-- Salary negotiation script
-- Application status tracker
-
-You review and click "Apply" on the ones you want.
-
-### Week 4+ — Autopilot Mode
-Once the agent knows your bar, you can enable Autopilot:
-- Auto-applies to anything scoring 85%+ match
-- Sends you daily reports of what it applied to
-- You can pause anytime
-
----
-
-## What's Inside
-
-```
-careeros-agent/
-├── 🤖 agent-core/           — The AI brain (Claude-powered)
-├── 🔍 scanners/             — Greenhouse, Ashby, Lever, Reed, Adzuna, JSearch
-├── 📝 cv-generator/         — Tailored CV per job
-├── 📊 scoring-engine/       — Match scoring, rejection risk
-├── 🎯 application-bot/      — Playwright auto-fill (with confirmation)
-├── 📬 dashboard/            — Local web UI to review queue
-├── 📧 notifier/             — Email + WhatsApp daily digest
-└── ⚙️  config/              — Your preferences, criteria, blocklist
-```
+- ✅ **Resend email** (replaces Gmail — no App Passwords, just a free API key)
+- ✅ **5 new ATS scanners**: SmartRecruiters, Recruitee, iCIMS, BambooHR, Taleo
+- ✅ **Real PDF generation** via Playwright (professional A4 layout, uploads to forms)
+- ✅ **`markSeen` deduplication** — never evaluates the same job twice across restarts
+- ✅ **`update-key.bat`** — safe API key rotation without touching `.env` manually
+- ✅ **Batch AI evaluation** — 3 jobs at a time, rate-limit safe
 
 ---
 
 ## Setup (10 minutes)
 
-1. **Buy the agent** at gumroad.com/l/careeros-agent (£99)
-2. **Download** the installer for your OS (Windows/Mac/Linux)
-3. **Run installer** — it sets up Node.js + Playwright automatically
-4. **Open dashboard** at localhost:3939 in your browser
-5. **Connect your CareerOS account** (uses your existing login)
-6. **Import your CV + preferences** (we read your CareerOS profile)
-7. **Start the agent** — it begins scanning immediately
+### Step 1 — Prerequisites
+
+- Node.js 18+ → nodejs.org
+- An Anthropic API key → console.anthropic.com
+
+### Step 2 — Install
+
+```bash
+cd careeros-agent
+npm install
+npx playwright install chromium
+```
+
+### Step 3 — Run the setup wizard
+
+```bash
+node setup.js
+```
+
+The wizard will ask for:
+- Your name, email, phone, location, LinkedIn URL
+- Your Anthropic API key
+- Optional: Adzuna API (free at developer.adzuna.com — adds UK/US/India jobs)
+- Optional: Reed API (free at reed.co.uk/developers — adds UK jobs)
+- Optional: Resend API key (free at resend.com — enables email reports)
+- Job keywords, minimum salary, remote preference
+- Scan interval (default: 4 hours)
+
+### Step 4 — Add your CV
+
+Open `data/cv.md` and paste your full CV in plain text. The more detail, the better the AI tailoring.
+
+Optionally drop `cv.pdf` in the `data/` folder — it'll be uploaded to forms that require a PDF.
+
+### Step 5 — Start
+
+```bash
+npm start
+```
+
+Open **http://localhost:3939** to see your dashboard.
 
 ---
 
-## Tech Stack
+## File Structure
 
-- **Backend:** Node.js + Playwright for browser automation
-- **AI:** Claude API (your CareerOS Pro key works)
-- **Database:** Local SQLite (your data never leaves your machine)
-- **UI:** Web dashboard (localhost only)
-- **Notifications:** Email + WhatsApp Cloud API
+```
+careeros-agent/
+├── index.js              — Entry point, loads config, starts agent
+├── setup.js              — Interactive setup wizard
+├── agent-core.js         — Orchestrator: Scan → Evaluate → Generate → Apply
+├── evaluator.js          — Claude AI job scoring (match %, rejection risk)
+├── cv-generator.js       — Tailored CV + PDF generation via Playwright
+├── application-bot.js    — Playwright form filler (7 ATS platforms)
+├── notifier.js           — Email reports via Resend
+├── dashboard.js          — Local web UI at localhost:3939
+├── storage.js            — JSON persistence (queue, applied, seen, rejected)
+├── review-queue.js       — Jobs needing manual review
+├── update-key.js         — Safe API key updater
+├── update-key.bat        — Windows shortcut for above
+├── start.bat             — Windows shortcut for npm start
+├── setup.bat             — Windows shortcut for node setup.js
+├── config/
+│   └── config.yml        — Your preferences (generated by setup wizard)
+├── data/
+│   ├── cv.md             — Your CV in markdown (paste here)
+│   ├── cv.pdf            — Your CV as PDF (optional, for form uploads)
+│   ├── queue.json        — Jobs pending your review
+│   ├── applied.json      — Jobs applied to
+│   ├── rejected.json     — Jobs that didn't meet your bar
+│   └── seen.json         — All seen job IDs (prevents re-evaluation)
+└── scanners/
+    ├── index.js          — Scanner orchestrator
+    ├── greenhouse.js     — Greenhouse ATS (20 companies)
+    ├── lever.js          — Lever ATS (20 companies)
+    ├── ashby.js          — Ashby ATS (20 companies)
+    ├── workday.js        — Workday (10 enterprise companies)
+    ├── smartrecruiters.js — SmartRecruiters (22 companies)
+    ├── recruitee.js      — Recruitee (19 companies, incl. Monzo, Revolut)
+    ├── icims.js          — iCIMS (16 companies, incl. Tesco, M&S)
+    ├── bamboohr.js       — BambooHR (20 companies, incl. Figma, Notion)
+    ├── taleo.js          — Taleo (20 companies, incl. Accenture, SAP)
+    ├── adzuna.js         — Adzuna API (requires free key)
+    ├── reed.js           — Reed.co.uk (requires free key)
+    ├── remotive.js       — Remotive (remote jobs, no key needed)
+    └── jobicy.js         — Jobicy (remote jobs, no key needed)
+```
 
 ---
 
-## What You Get
+## .env File Reference
 
-✅ Lifetime license — no subscription
-✅ All future updates included
-✅ Source code (MIT-licensed core)
-✅ 30-day money-back guarantee
-✅ Priority Discord support
-✅ Custom job board integration on request
+```env
+CAREEROS_LICENSE_KEY=        # Your license key (or leave as TRIAL_MODE)
+ANTHROPIC_API_KEY=           # Required — console.anthropic.com
+ADZUNA_APP_ID=               # Optional — developer.adzuna.com
+ADZUNA_APP_KEY=              # Optional
+REED_API_KEY=                # Optional — reed.co.uk/developers
+RESEND_API_KEY=              # Optional — resend.com (for email reports)
+RESEND_FROM_EMAIL=           # Optional — defaults to onboarding@resend.dev
+SKIP_LICENSE_CHECK=true      # Set to true for dev/beta testing
+```
+
+To update your Anthropic API key safely, run:
+```bash
+update-key.bat       # Windows
+node update-key.js   # Mac/Linux
+```
 
 ---
 
-## Important Disclaimers
+## Dashboard — localhost:3939
 
-⚠️ **Quality over quantity.** This tool will never spam apply. We strongly cap autonomous apply to 5-10 high-quality matches per day.
+The local dashboard shows:
+- **Queue** — jobs the agent found and wants to apply to (awaiting your approval)
+- **Applied** — everything submitted (with timestamp, match score, link)
+- **Stats** — total scanned, matched, applied, success rate
 
-⚠️ **You own the risk.** Some job boards (LinkedIn, Indeed) ban automation. We use compliant APIs where possible. Use at your own risk.
+In the current version, auto-submission is **disabled by default** — the agent fills forms and queues them for your one-click approval. To enable full autopilot, set `actuallySubmit: true` in `config/config.yml` after you've reviewed 5+ applications manually.
 
-⚠️ **Always review before submission.** Even in Autopilot, you can review what was applied to and pause anytime.
+---
 
-⚠️ **Requires CareerOS Pro.** Agent uses your CareerOS Pro account for AI features. £9.99/mo + £99 one-time = full access.
+## Email Reports (optional)
+
+Sign up free at **resend.com**, create an API key, and add it to your `.env`. After each cycle where applications were processed, you'll receive a rich HTML email showing submitted, pending, and failed jobs.
+
+No Gmail credentials, no App Passwords. Just an API key you can revoke anytime.
+
+---
+
+## Platforms Covered
+
+| Platform | Companies | Example |
+|---|---|---|
+| Greenhouse | 20 | Stripe, Airbnb, Dropbox, Figma |
+| Lever | 20 | Netflix, Uber, Lyft, Coinbase |
+| Ashby | 20 | Linear, Vercel, Retool, Ramp |
+| SmartRecruiters | 22 | LinkedIn, Visa, Bosch, Siemens |
+| Recruitee | 19 | Monzo, Revolut, Wise, Deliveroo |
+| iCIMS | 16 | Tesco, M&S, John Lewis, Boeing |
+| BambooHR | 20 | Zapier, Figma, Notion, Airtable |
+| Taleo | 20 | Accenture, SAP, Oracle, Pfizer |
+| Workday | 10 | HSBC, Barclays, Deloitte, PwC |
+| Adzuna API | Thousands | All UK/US/India jobs |
+| Reed API | Thousands | UK jobs |
+| Remotive | Live feed | Remote-only |
+| Jobicy | Live feed | Remote-only |
+
+---
+
+## Important
+
+- The agent **never submits without your approval** until you explicitly enable autopilot
+- Some job boards detect automation — use `showBrowser: true` in config to monitor what it's doing
+- Your data is 100% local — nothing is sent to any CareerOS server except license validation
+- Run `node setup.js` again anytime to update your preferences

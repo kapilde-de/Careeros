@@ -1,0 +1,46 @@
+{
+  "name": "careeros-desktop",
+  "version": "1.0.0",
+  "description": "CareerOS Desktop — AI Job Hunter",
+  "main": "electron/main.js",
+  "scripts": {
+    "dev": "concurrently \"vite\" \"wait-on http://localhost:5174 && electron .\"",
+    "build": "vite build && electron-builder",
+    "vite": "vite",
+    "electron": "electron ."
+  },
+  "build": {
+    "appId": "com.careeros.desktop",
+    "productName": "CareerOS",
+    "win": {
+      "target": "nsis",
+      "icon": "public/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "files": ["dist/**/*", "electron/**/*", "node_modules/**/*"],
+    "directories": { "output": "release" }
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.94.0",
+    "axios": "^1.7.0",
+    "cheerio": "^1.0.0",
+    "dotenv": "^16.4.0",
+    "mammoth": "^1.8.0",
+    "nodemailer": "^6.9.0",
+    "pdf-parse": "^1.1.1",
+    "playwright": "^1.45.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.0",
+    "concurrently": "^8.2.0",
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "vite": "^5.3.0",
+    "wait-on": "^7.2.0"
+  }
+}

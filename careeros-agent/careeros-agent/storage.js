@@ -8,12 +8,14 @@ export class Storage {
     this.queueFile = path.join(dataDir, "queue.json");
     this.appliedFile = path.join(dataDir, "applied.json");
     this.rejectedFile = path.join(dataDir, "rejected.json");
+    this.seenFile = path.join(dataDir, "seen.json");
     this.metaFile = path.join(dataDir, "meta.json");
 
     if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
     [this.queueFile, this.appliedFile, this.rejectedFile].forEach(f => {
       if (!fs.existsSync(f)) fs.writeFileSync(f, "[]");
     });
+    if (!fs.existsSync(this.seenFile)) fs.writeFileSync(this.seenFile, "{}");
     if (!fs.existsSync(this.metaFile)) {
       fs.writeFileSync(this.metaFile, JSON.stringify({
         firstRun: new Date().toISOString(),
@@ -23,7 +25,17 @@ export class Storage {
     }
   }
 
-  read(file) { return JSON.parse(fs.readFileSync(file, "utf8")); }
+  read(file) {
+    try {
+      const raw = fs.readFileSync(file, "utf8").replace(/^﻿/, "").trim(); // strip BOM
+      return JSON.parse(raw || (file.endsWith("seen.json") || file.endsWith("meta.json") ? "{}" : "[]"));
+    } catch {
+      // File corrupt — reset it
+      const empty = file.endsWith("seen.json") || file.endsWith("meta.json") ? "{}" : "[]";
+      fs.writeFileSync(file, empty);
+      return JSON.parse(empty);
+    }
+  }
   write(file, data) { fs.writeFileSync(file, JSON.stringify(data, null, 2)); }
 
   async getQueue() { return this.read(this.queueFile); }
@@ -33,10 +45,25 @@ export class Storage {
   async rejectedCount() { return this.read(this.rejectedFile).length; }
 
   async getSeenJobIds() {
+    // Combine the fast seen-ids map with full records from queue/applied/rejected
+    const seenMap = JSON.parse(fs.readFileSync(this.seenFile, "utf8"));
     const queue = await this.getQueue();
     const applied = await this.getApplied();
     const rejected = this.read(this.rejectedFile);
-    return new Set([...queue, ...applied, ...rejected].map(j => j.id));
+    const fromRecords = [...queue, ...applied, ...rejected].map(j => j.id);
+    return new Set([...Object.keys(seenMap), ...fromRecords]);
+  }
+
+  async markSeen(jobId) {
+    const seenMap = JSON.parse(fs.readFileSync(this.seenFile, "utf8"));
+    seenMap[jobId] = Date.now();
+    // Keep only last 10,000 entries to prevent unbounded growth
+    const keys = Object.keys(seenMap);
+    if (keys.length > 10000) {
+      const sorted = keys.sort((a, b) => seenMap[a] - seenMap[b]);
+      sorted.slice(0, keys.length - 10000).forEach(k => delete seenMap[k]);
+    }
+    fs.writeFileSync(this.seenFile, JSON.stringify(seenMap));
   }
 
   async addToQueue(job) {

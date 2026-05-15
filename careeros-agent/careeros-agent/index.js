@@ -16,7 +16,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // ── Banner ──
 console.log(chalk.cyan(`
 ╔════════════════════════════════════════╗
-║  🤖  CareerOS Agent v1.0              ║
+║  🤖  CareerOS Agent v1.2              ║
 ║  Your 24/7 AI Job Hunter              ║
 ╚════════════════════════════════════════╝
 `));
@@ -88,7 +88,9 @@ const config = {
 
   // Notifications
   emailEnabled: userConfig.notifications?.email?.enabled,
-  emailTo: userConfig.notifications?.email?.to,
+  emailTo: userConfig.notifications?.email?.to || userConfig.profile.email,
+  resendApiKey: process.env.RESEND_API_KEY,
+  resendFromEmail: process.env.RESEND_FROM_EMAIL,
   whatsappEnabled: userConfig.notifications?.whatsapp?.enabled,
   whatsappNumber: userConfig.notifications?.whatsapp?.number,
 

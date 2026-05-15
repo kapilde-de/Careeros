@@ -1,182 +1,217 @@
 // ════════════════════════════════════════════════════════════════════════
-// Application Bot — auto-fills job applications with Playwright
-// SAFETY: Always confirms before submission unless Autopilot enabled
+// Application Bot — auto-fills and submits job applications
+// Supports: Greenhouse, Lever, Ashby, Workable, Workday, SmartRecruiters
 // ════════════════════════════════════════════════════════════════════════
 
 import { chromium } from "playwright";
+import path from "path";
 
 export class ApplicationBot {
   constructor(config) {
     this.config = config;
-    this.profile = config.applicationProfile; // Saved answers
-    this.userCV = config.cv;
     this.userInfo = {
       firstName: config.firstName,
       lastName: config.lastName,
+      fullName: `${config.firstName} ${config.lastName}`,
       email: config.email,
       phone: config.phone,
       location: config.location,
-      linkedIn: config.linkedinURL,
-      portfolio: config.portfolioURL,
+      linkedin: config.linkedinURL || "",
+      portfolio: config.portfolioURL || "",
     };
   }
 
   async apply(job) {
-    if (!job.url) {
-      throw new Error("No application URL");
-    }
+    if (!job.url) return { status: "failed", error: "No URL", job };
 
     const browser = await chromium.launch({
       headless: !this.config.showBrowser,
-      args: ["--no-sandbox"],
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
 
     const context = await browser.newContext({
-      userAgent: "Mozilla/5.0 (compatible; CareerOS-Agent/1.0)",
+      userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
     });
 
     const page = await context.newPage();
 
     try {
-      console.log(`📝 Applying to ${job.title} at ${job.company}...`);
-      await page.goto(job.url, { waitUntil: "networkidle", timeout: 20000 });
+      console.log(`\n📝 Applying: ${job.title} at ${job.company}`);
+      await page.goto(job.url, { waitUntil: "domcontentloaded", timeout: 25000 });
+      await page.waitForTimeout(1500);
 
-      // Detect ATS type
-      const atsType = await this.detectATS(page, job.url);
-      console.log(`   Detected ATS: ${atsType}`);
+      const atsType = this.detectATS(job.url, await page.content());
+      console.log(`   ATS: ${atsType}`);
 
+      let result;
       switch (atsType) {
-        case "greenhouse":
-          await this.applyGreenhouse(page, job);
-          break;
-        case "lever":
-          await this.applyLever(page, job);
-          break;
-        case "ashby":
-          await this.applyAshby(page, job);
-          break;
-        case "workable":
-          await this.applyWorkable(page, job);
-          break;
+        case "greenhouse":   result = await this.applyGreenhouse(page, job); break;
+        case "lever":        result = await this.applyLever(page, job); break;
+        case "ashby":        result = await this.applyAshby(page, job); break;
+        case "workable":     result = await this.applyWorkable(page, job); break;
+        case "workday":      result = await this.applyWorkday(page, job); break;
+        case "smartrecruiters": result = await this.applySmartRecruiters(page, job); break;
+        case "recruitee":    result = await this.applyRecruitee(page, job); break;
         default:
-          console.log("   ⚠ Unknown ATS — skipping auto-apply");
-          return { status: "manual_required", job };
+          console.log("   ⚠ ATS not supported — flagging for manual apply");
+          result = { status: "manual_required" };
       }
 
-      // SAFETY: Don't actually submit unless explicitly enabled
-      if (this.config.actuallySubmit) {
-        await page.click('button[type="submit"], input[type="submit"]', { timeout: 5000 });
-        console.log("   ✅ Submitted!");
-        return { status: "submitted", job };
-      } else {
-        console.log("   📋 Form filled — waiting for user to review and submit");
-        return { status: "filled_pending_review", job, formData: await this.captureFormState(page) };
+      if (result.status === "ready_to_submit") {
+        if (this.config.actuallySubmit) {
+          // Try common submit button selectors
+          const submitted = await this.submitForm(page);
+          result.status = submitted ? "submitted" : "filled_pending_review";
+          console.log(submitted ? "   ✅ SUBMITTED!" : "   📋 Filled — submit manually");
+        } else {
+          result.status = "filled_pending_review";
+          console.log("   📋 Form filled — auto-submit disabled. Enable in config.");
+        }
       }
+
+      return { ...result, job, title: job.title, company: job.company, url: job.url, matchScore: job.matchScore, location: job.location, salary: job.salary };
 
     } catch (err) {
-      console.error(`   ❌ Failed:`, err.message);
-      return { status: "failed", job, error: err.message };
+      console.error(`   ❌ Failed: ${err.message}`);
+      return { status: "failed", error: err.message, job, title: job.title, company: job.company, url: job.url };
     } finally {
-      if (this.config.actuallySubmit) {
-        await browser.close();
-      }
-      // If review needed, leave browser open
+      await browser.close();
     }
   }
 
-  async detectATS(page, url) {
-    if (url.includes("greenhouse.io") || url.includes("grnh.se")) return "greenhouse";
-    if (url.includes("lever.co")) return "lever";
-    if (url.includes("ashbyhq.com")) return "ashby";
-    if (url.includes("workable.com")) return "workable";
-
-    // Check page content
-    const html = await page.content();
-    if (html.includes("greenhouse")) return "greenhouse";
-    if (html.includes("lever-jobs")) return "lever";
-    if (html.includes("ashby")) return "ashby";
-
+  detectATS(url, html) {
+    if (url.includes("greenhouse.io") || url.includes("grnh.se") || html.includes("greenhouse-job-board")) return "greenhouse";
+    if (url.includes("lever.co") || html.includes("lever-jobs")) return "lever";
+    if (url.includes("ashbyhq.com") || html.includes("ashby-job")) return "ashby";
+    if (url.includes("workable.com") || html.includes("whr.tn")) return "workable";
+    if (url.includes("myworkdayjobs.com") || url.includes("workday.com")) return "workday";
+    if (url.includes("smartrecruiters.com") || html.includes("SmartRecruiters")) return "smartrecruiters";
+    if (html.includes("recruitee.com") || url.includes("recruitee.com")) return "recruitee";
     return "unknown";
   }
 
   async applyGreenhouse(page, job) {
-    // Greenhouse common form fields
-    await this.tryFill(page, '#first_name, [name="first_name"]', this.userInfo.firstName);
-    await this.tryFill(page, '#last_name, [name="last_name"]', this.userInfo.lastName);
-    await this.tryFill(page, '#email, [name="email"]', this.userInfo.email);
-    await this.tryFill(page, '#phone, [name="phone"]', this.userInfo.phone);
-
-    // Resume upload
-    if (this.config.cvFile) {
-      await this.tryUpload(page, 'input[type="file"][name*="resume"], #resume', this.config.cvFile);
-    }
-
-    // Cover letter
-    if (job.coverLetter) {
-      await this.tryFill(page, '[name*="cover_letter"], textarea[id*="cover"]', job.coverLetter);
-    }
-
-    // LinkedIn
-    await this.tryFill(page, '[name*="linkedin"], [id*="linkedin"]', this.userInfo.linkedIn);
+    await this.fill(page, '#first_name, [name="first_name"]', this.userInfo.firstName);
+    await this.fill(page, '#last_name, [name="last_name"]', this.userInfo.lastName);
+    await this.fill(page, '#email, [name="email"]', this.userInfo.email);
+    await this.fill(page, '#phone, [name="phone"]', this.userInfo.phone);
+    await this.fill(page, '[name*="linkedin"], [id*="linkedin"]', this.userInfo.linkedin);
+    await this.fill(page, '[name*="website"], [id*="website"]', this.userInfo.portfolio);
+    if (job.cvPath) await this.upload(page, '#resume, input[type="file"][name*="resume"], input[type="file"][name*="cv"]', job.cvPath);
+    if (job.coverLetter?.letter) await this.fill(page, '[name*="cover"], textarea[id*="cover"], #cover_letter_text', job.coverLetter.letter);
+    return { status: "ready_to_submit" };
   }
 
   async applyLever(page, job) {
-    await this.tryFill(page, '[name="name"]', `${this.userInfo.firstName} ${this.userInfo.lastName}`);
-    await this.tryFill(page, '[name="email"]', this.userInfo.email);
-    await this.tryFill(page, '[name="phone"]', this.userInfo.phone);
-    await this.tryFill(page, '[name="urls[LinkedIn]"]', this.userInfo.linkedIn);
-
-    if (this.config.cvFile) {
-      await this.tryUpload(page, 'input[type="file"][name="resume"]', this.config.cvFile);
-    }
+    await this.fill(page, '[name="name"]', this.userInfo.fullName);
+    await this.fill(page, '[name="email"]', this.userInfo.email);
+    await this.fill(page, '[name="phone"]', this.userInfo.phone);
+    await this.fill(page, '[name="org"]', "Open to opportunities");
+    await this.fill(page, '[name="urls[LinkedIn]"]', this.userInfo.linkedin);
+    await this.fill(page, '[name="urls[Portfolio]"]', this.userInfo.portfolio);
+    if (job.cvPath) await this.upload(page, 'input[type="file"][name="resume"]', job.cvPath);
+    if (job.coverLetter?.letter) await this.fill(page, '[name="comments"]', job.coverLetter.letter);
+    return { status: "ready_to_submit" };
   }
 
   async applyAshby(page, job) {
-    await this.tryFill(page, '[name="_systemfield_name"]', `${this.userInfo.firstName} ${this.userInfo.lastName}`);
-    await this.tryFill(page, '[name="_systemfield_email"]', this.userInfo.email);
-    await this.tryFill(page, '[name="_systemfield_phone"]', this.userInfo.phone);
-
-    if (this.config.cvFile) {
-      await this.tryUpload(page, 'input[type="file"][name*="resume"]', this.config.cvFile);
-    }
+    await this.fill(page, '[name="_systemfield_name"], [placeholder*="Name"]', this.userInfo.fullName);
+    await this.fill(page, '[name="_systemfield_email"], [placeholder*="email"]', this.userInfo.email);
+    await this.fill(page, '[name="_systemfield_phone"], [placeholder*="phone"]', this.userInfo.phone);
+    await this.fill(page, '[name*="linkedin"]', this.userInfo.linkedin);
+    if (job.cvPath) await this.upload(page, 'input[type="file"]', job.cvPath);
+    return { status: "ready_to_submit" };
   }
 
   async applyWorkable(page, job) {
-    await this.tryFill(page, '#firstname, [name="firstname"]', this.userInfo.firstName);
-    await this.tryFill(page, '#lastname, [name="lastname"]', this.userInfo.lastName);
-    await this.tryFill(page, '#email, [name="email"]', this.userInfo.email);
-    await this.tryFill(page, '#phone, [name="phone"]', this.userInfo.phone);
-
-    if (this.config.cvFile) {
-      await this.tryUpload(page, 'input[type="file"][name="resume"]', this.config.cvFile);
-    }
+    // Click apply button if present
+    await this.tryClick(page, '[data-ui="apply-button"], .apply-button, a[href*="apply"]');
+    await page.waitForTimeout(1000);
+    await this.fill(page, '#firstname, [name="firstname"], [name="first_name"]', this.userInfo.firstName);
+    await this.fill(page, '#lastname, [name="lastname"], [name="last_name"]', this.userInfo.lastName);
+    await this.fill(page, '#email, [name="email"]', this.userInfo.email);
+    await this.fill(page, '#phone, [name="phone"]', this.userInfo.phone);
+    if (job.cvPath) await this.upload(page, 'input[type="file"]', job.cvPath);
+    if (job.coverLetter?.letter) await this.fill(page, '[name*="summary"], [name*="cover"], textarea', job.coverLetter.letter);
+    return { status: "ready_to_submit" };
   }
 
-  async tryFill(page, selector, value) {
+  async applyWorkday(page, job) {
+    // Click "Apply" button on Workday job page
+    await this.tryClick(page, '[data-automation-id="applyButton"], [aria-label*="Apply"], button:has-text("Apply")');
+    await page.waitForTimeout(2000);
+    // Workday often requires account — flag for manual
+    const requiresLogin = await page.$('[data-automation-id="signInBlock"], .wd-login');
+    if (requiresLogin) {
+      console.log("   ⚠ Workday requires account login — flagging for manual");
+      return { status: "manual_required" };
+    }
+    await this.fill(page, '[data-automation-id="legalNameSection_firstName"]', this.userInfo.firstName);
+    await this.fill(page, '[data-automation-id="legalNameSection_lastName"]', this.userInfo.lastName);
+    await this.fill(page, '[data-automation-id="email"]', this.userInfo.email);
+    await this.fill(page, '[data-automation-id="phone-number"]', this.userInfo.phone);
+    if (job.cvPath) await this.upload(page, 'input[type="file"]', job.cvPath);
+    return { status: "ready_to_submit" };
+  }
+
+  async applySmartRecruiters(page, job) {
+    await this.tryClick(page, '[data-label="apply"], .js-apply-button, a[href*="apply"]');
+    await page.waitForTimeout(1500);
+    await this.fill(page, '[name="firstName"], [id*="firstName"]', this.userInfo.firstName);
+    await this.fill(page, '[name="lastName"], [id*="lastName"]', this.userInfo.lastName);
+    await this.fill(page, '[name="email"], [type="email"]', this.userInfo.email);
+    await this.fill(page, '[name="phoneNumber"], [type="tel"]', this.userInfo.phone);
+    if (job.cvPath) await this.upload(page, 'input[type="file"]', job.cvPath);
+    return { status: "ready_to_submit" };
+  }
+
+  async applyRecruitee(page, job) {
+    await this.tryClick(page, '.offer-apply-btn, [data-apply], a[href*="apply"]');
+    await page.waitForTimeout(1500);
+    await this.fill(page, '[name="name"], [name="full_name"]', this.userInfo.fullName);
+    await this.fill(page, '[name="email"]', this.userInfo.email);
+    await this.fill(page, '[name="phone"]', this.userInfo.phone);
+    if (job.cvPath) await this.upload(page, 'input[type="file"]', job.cvPath);
+    if (job.coverLetter?.letter) await this.fill(page, 'textarea[name*="cover"], textarea[name*="message"]', job.coverLetter.letter);
+    return { status: "ready_to_submit" };
+  }
+
+  async submitForm(page) {
+    const submitSelectors = [
+      'button[type="submit"]',
+      'input[type="submit"]',
+      'button:has-text("Submit")',
+      'button:has-text("Apply")',
+      'button:has-text("Submit Application")',
+      '[data-qa="submit-application"]',
+      '[data-automation-id="submitButton"]',
+    ];
+    for (const sel of submitSelectors) {
+      try {
+        await page.click(sel, { timeout: 3000 });
+        await page.waitForTimeout(2000);
+        return true;
+      } catch {}
+    }
+    return false;
+  }
+
+  async fill(page, selector, value) {
     if (!value) return;
     try {
-      await page.fill(selector, value, { timeout: 2000 });
-    } catch {
-      // Field doesn't exist — skip
-    }
+      await page.fill(selector, String(value), { timeout: 3000 });
+    } catch {}
   }
 
-  async tryUpload(page, selector, filePath) {
+  async upload(page, selector, filePath) {
     try {
-      await page.setInputFiles(selector, filePath, { timeout: 3000 });
-    } catch {
-      // No upload field
-    }
+      await page.setInputFiles(selector, filePath, { timeout: 5000 });
+    } catch {}
   }
 
-  async captureFormState(page) {
-    return await page.evaluate(() => {
-      const inputs = document.querySelectorAll("input, textarea, select");
-      const state = {};
-      inputs.forEach(i => {
-        if (i.name) state[i.name] = i.value;
-      });
-      return state;
-    });
+  async tryClick(page, selector) {
+    try {
+      await page.click(selector, { timeout: 5000 });
+    } catch {}
   }
 }

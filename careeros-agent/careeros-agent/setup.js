@@ -71,6 +71,12 @@ const config = {
   console.log("\nOptional — Reed.co.uk (free at reed.co.uk/developers):");
   const reedKey = await ask("REED_API_KEY (or skip): ");
 
+  console.log(chalk.cyan("\n📧 Step 3b: Email Notifications (optional but recommended)\n"));
+  console.log("CareerOS can email you a report after each application cycle.");
+  console.log("Uses Resend — a free email API (3,000 emails/month, no Gmail credentials needed).");
+  console.log("Sign up free at: resend.com → API Keys → Create Key\n");
+  const resendApiKey = await ask("RESEND_API_KEY (or press Enter to skip): ");
+
   // ── Search Criteria ──
   console.log(chalk.cyan("\n🎯 Step 4: What jobs do you want?\n"));
   const keywords = await ask("Keywords (comma-separated, e.g. 'product manager, senior PM'): ");
@@ -121,6 +127,8 @@ ANTHROPIC_API_KEY=${anthropicKey}
 ADZUNA_APP_ID=${adzunaAppId || ""}
 ADZUNA_APP_KEY=${adzunaAppKey || ""}
 REED_API_KEY=${reedKey || ""}
+RESEND_API_KEY=${resendApiKey || ""}
+RESEND_FROM_EMAIL=
 SKIP_LICENSE_CHECK=${licenseKey ? "false" : "true"}
 `;
   fs.writeFileSync(path.join(__dirname, ".env"), envContent);
