@@ -20,6 +20,28 @@ function safeJSON(text) {
   return null;
 }
 
+// Detect currency symbol + label from JD text
+function detectCurrency(jd) {
+  const t = jd.toLowerCase();
+  // India
+  if (/\b(india|bangalore|bengaluru|mumbai|hyderabad|chennai|pune|delhi|kolkata|noida|gurgaon|gurugram|₹|inr|lpa|lakhs?)\b/.test(t))
+    return { symbol: "₹", label: "INR", example: "₹20L" };
+  // US
+  if (/\b(united states|usa|u\.s\.a|new york|san francisco|seattle|austin|chicago|boston|los angeles|california|texas|florida|remote.*us|us.*remote|\$[0-9]|usd)\b/.test(t))
+    return { symbol: "$", label: "USD", example: "$120k" };
+  // Canada
+  if (/\b(canada|toronto|vancouver|montreal|cad|ontario|british columbia)\b/.test(t))
+    return { symbol: "CA$", label: "CAD", example: "CA$90k" };
+  // Australia
+  if (/\b(australia|sydney|melbourne|brisbane|aud)\b/.test(t))
+    return { symbol: "A$", label: "AUD", example: "A$100k" };
+  // Europe (€)
+  if (/\b(germany|france|netherlands|spain|italy|amsterdam|berlin|paris|munich|barcelona|madrid|dublin|ireland|€|eur)\b/.test(t))
+    return { symbol: "€", label: "EUR", example: "€70k" };
+  // Default UK
+  return { symbol: "£", label: "GBP", example: "£60k" };
+}
+
 // Call A: analyse JD + rewrite CV in one shot
 async function analyseAndRewrite(jd, cv, anthropic) {
   const res = await anthropic.messages.create({
@@ -62,6 +84,7 @@ CV: ${cv.slice(0, 2000)}`
 
 // Call B: score directly from JD + CV
 async function scoreCV(jd, cv, anthropic) {
+  const { symbol, label, example } = detectCurrency(jd);
   const res = await anthropic.messages.create({
     model: "claude-haiku-4-5-20251001",
     max_tokens: 1100,
@@ -69,7 +92,9 @@ async function scoreCV(jd, cv, anthropic) {
     messages: [{
       role: "user",
       content: `Score this CV against the JD. Return ONLY this JSON, nothing else:
-{"matchScore":75,"hiringManagerScore":70,"rejectionRisk":{"score":30,"topReasons":["reason 1","reason 2"],"ghostingRisk":"LOW","cvScreenRisk":"MEDIUM","interviewRisk":"LOW","howToFix":["fix 1","fix 2"]},"salaryIntelligence":{"marketMin":"£50k","marketMax":"£70k","recommendedAsk":"£65k","insight":"one sentence about market","negotiationScript":"one sentence opener"},"hiringManagerInsights":{"firstImpression":"brief first impression","humanAppeal":"standout quality","redFlags":["flag 1"],"standoutFactors":["factor 1"]},"improvements":["improvement 1","improvement 2","improvement 3"]}
+{"matchScore":75,"hiringManagerScore":70,"rejectionRisk":{"score":30,"topReasons":["reason 1","reason 2"],"ghostingRisk":"LOW","cvScreenRisk":"MEDIUM","interviewRisk":"LOW","howToFix":["fix 1","fix 2"]},"salaryIntelligence":{"marketMin":"${example}","marketMax":"${example}","recommendedAsk":"${example}","insight":"one sentence about market","negotiationScript":"one sentence opener"},"hiringManagerInsights":{"firstImpression":"brief first impression","humanAppeal":"standout quality","redFlags":["flag 1"],"standoutFactors":["factor 1"]},"improvements":["improvement 1","improvement 2","improvement 3"]}
+
+IMPORTANT: All salary figures MUST use the ${label} currency symbol "${symbol}" (e.g. "${example}"). Do NOT use any other currency symbol.
 
 Fill in real values based on:
 JD: ${jd.slice(0, 1200)}

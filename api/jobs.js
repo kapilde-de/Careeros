@@ -134,7 +134,7 @@ async function fetchAdzuna(query, country = "gb") {
     return (data.results||[]).map(job => ({
       id:`adzuna_${job.id}`, title:job.title||"", company:job.company?.display_name||"",
       location:job.location?.display_name||"",
-      salary: job.salary_min ? `£${Math.round(job.salary_min/1000)}k – £${Math.round((job.salary_max||job.salary_min)/1000)}k` : "Salary not listed",
+      salary: job.salary_min ? `${cc==="us"?"$":cc==="in"?"₹":"£"}${Math.round(job.salary_min/1000)}k – ${cc==="us"?"$":cc==="in"?"₹":"£"}${Math.round((job.salary_max||job.salary_min)/1000)}k` : "Salary not listed",
       posted: job.created ? new Date(job.created).toLocaleDateString("en-GB") : "Recently",
       description:(job.description||"").slice(0,300),
       url:job.redirect_url||"", platform:"adzuna", tags:[] }));
