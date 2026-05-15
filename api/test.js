@@ -11,11 +11,11 @@ export default async function handler(req, res) {
   try {
     const anthropic = new Anthropic({ apiKey: key, timeout: 8000 });
     const r = await anthropic.messages.create({
-      model: "claude-3-5-haiku-20241022",
+      model: "claude-haiku-4-5-20251001",
       max_tokens: 20,
       messages: [{ role: "user", content: "Reply with the word OK only." }],
     });
-    return res.json({ ok: true, reply: r.content[0].text, model: "claude-3-5-haiku-20241022" });
+    return res.json({ ok: true, reply: r.content[0].text, model: "claude-haiku-4-5-20251001" });
   } catch (err) {
     return res.json({ ok: false, error: err.message, status: err.status, step: "anthropic" });
   }
